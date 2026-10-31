@@ -25,7 +25,7 @@ Prompt Builder is a private, local web app that turns a filled-in template into 
 - Task list preamble, two Review closings, the Open scope line and the Case-closed instruction are reworded to remove mismatches.
 - Open scope renders its instruction even when no sources are listed.
 - Review lists Goal type and Goal first, so the form and the prompt start with the goal.
-- Review gains a required Action required field (Prepare context, Write a report, Update codebase) with a report destination shown only for Write a report. Files is merged into Sources.
+- Review gains a required Action required field (Prepare context, Write a report, Update codebase, Chat) with a report destination shown only for Write a report. Files is merged into Sources.
 - Conditional form fields (`showWhen`) are supported, reversing that v1 non-goal. Choice options can carry an instruction, text fields a default, a hint and `output: "none"`, and templates can place the reply mode radio with `replyModesAfter`.
 - Standard is a fixed mode. Templates can offer all reply modes, so new custom modes need no template edit.
 - History: hand edits are saved to the entry, identical regenerations are skipped, summaries work for every template, single deletes are confirmed, and Restore handles changed or deleted templates.
@@ -149,7 +149,7 @@ Custom templates have only a stored version and a Delete action, with no reset. 
 
 ## Built-in templates
 
-Two built-in templates ship with the app: Task list at `version: 1` and Review at `version: 3` (2: Goal type and Goal moved first; 3: Action required added, Files merged into Sources). Both are rendered by the generic renderer, with no special-case code. All wording below becomes final once the sign-offs under Open items are given.
+Two built-in templates ship with the app: Task list at `version: 1` and Review at `version: 4` (2: Goal type and Goal moved first; 3: Action required added, Files merged into Sources; 4: Learn the stack became Teaches the user about, a goal type where the AI gathers knowledge, then teaches step by step; 5: Chat action added). Both are rendered by the generic renderer, with no special-case code. All wording below becomes final once the sign-offs under Open items are given.
 
 ### Task list
 
@@ -199,7 +199,7 @@ Generated Markdown:
 
 | Field | Type | Required | Details |
 | --- | --- | --- | --- |
-| `goalType` | choice | yes | Label "Goal type", `output: "none"`, no default. Options: `fix` Fix a bug, `prevent` Prevent a bug, `learn` Learn the stack, `answer` Answer a question |
+| `goalType` | choice | yes | Label "Goal type", `output: "none"`, no default. Options: `fix` Fix a bug, `prevent` Prevent a bug, `learn` Teaches the user about, `answer` Answer a question |
 | `goal` | longtext | yes | Label "Goal", `prefixFrom: "goalType"`. The user's own statement of what they want |
 | `action` | choice | yes | Label "Action required", no default. Options and instructions below |
 | `reportLocation` | text | yes, while shown | Label "Report destination", default "Markdown document", `output: "none"`, `showWhen: { "field": "action", "value": "report" }`. Hint: "Where should the report go? For example: Markdown document, GitHub PR comment, issue comment, or Confluence page." |
@@ -216,13 +216,14 @@ Generated Markdown:
 | Prepare context | `context` | Investigate the goal, situation, and sources to build a clear understanding. Read code and run tests or read-only commands as needed. Do not edit files, commit, push, or open a pull request. Reply briefly with what you understand and any open questions or gaps, then wait for the next task. |
 | Write a report | `report` | Investigate the goal, situation, and sources, then write a report to {{reportLocation}}. Do not change code or post anywhere else; writing the report itself is allowed. Do not commit, push, or open a pull request. |
 | Update codebase | `update` | Investigate the goal, situation, and sources, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request. |
+| Chat | `chat` | Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request. |
 - Preamble and closing are variant maps with `by: "goalType"`.
 
 | Goal type | Preamble | Closing |
 | --- | --- | --- |
 | Fix a bug | Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior. | Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources. |
 | Prevent a bug | Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior. | Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources. |
-| Learn the stack | Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together. | Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference. |
+| Teaches the user about | Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong. | Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference. |
 | Answer a question | Review the goal, situation, and sources. Find and combine the evidence needed to answer the question. | Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer. |
 | Fallback | Review the goal, situation, and sources. | Report your findings. Cite supporting files and sources. |
 
@@ -265,7 +266,7 @@ A reply mode adds a response-format instruction to the prompt. A source scope te
 | Mode | Id | Behaviour |
 | --- | --- | --- |
 | Standard | `standard` | Adds nothing. Fixed, always first, the starting selection |
-| Case-closed | `case-closed` | Built-in, editable and resettable. The AI acts like a lawyer closing a case |
+| Case-closed | `case-closed` | Built-in (`version: 2`), editable and resettable. The AI acts like a lawyer closing a case |
 | Custom | `m-` plus a random suffix | Added in Settings (label plus instruction). Offered on every template with `replyModes: "all"`, or where listed by id |
 
 When the selected mode has a non-empty instruction, the renderer appends:
@@ -282,7 +283,7 @@ The override line is needed because the closings ask for a report shape that a m
 Full instruction for Case-closed, which covers all four Review goal types:
 
 ```markdown
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 ```
@@ -728,7 +729,7 @@ Resolved in this version:
 Pending your sign-off:
 
 - [ ] New Task list preamble wording.
-- [ ] Reworded closings for Learn the stack and Answer a question, and the new fallback wording.
+- [ ] Reworded closings for Teaches the user about and Answer a question, and the new fallback wording.
 - [ ] Revised Case-closed instruction.
 - [ ] Open scope wording: "label each cited source" and the new no-sources line.
 - [ ] Adding Export/Import, which reverses the v1 "no export" non-goal.

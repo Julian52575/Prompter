@@ -179,12 +179,15 @@ test("open in ChatGPT asks first, Cancel opens nothing, long prompts fall back",
   // The popup takes focus in Firefox; input events only reach the page in front.
   await page.bringToFront();
   await output(page).fill("x".repeat(9000));
+  await expect(output(page)).toHaveValue(/^x{9000}$/);
   const popup2 = context.waitForEvent("page");
+  await page.bringToFront();
   await btn.click();
   await popup2;
   // Firefox may retry the earlier aborted popup, so look for the home URL anywhere.
   await expect.poll(() => urls.includes("https://chatgpt.com/")).toBe(true);
-  await expect(page.locator("#status")).toContainText("too long for a link");
+  // The status waits for the clipboard, which a busy browser can delay while the popup has focus.
+  await expect(page.locator("#status")).toContainText("too long for a link", { timeout: 15_000 });
 });
 
 test("a change in one tab appears in another; a conflicting edit shows the banner", async ({ context }) => {

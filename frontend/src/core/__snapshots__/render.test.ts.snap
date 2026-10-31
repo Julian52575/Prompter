@@ -1,5 +1,170 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Review > answer / chat / case-closed / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > answer / chat / case-closed / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > answer / chat / case-closed / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > answer / chat / standard / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+"
+`;
+
+exports[`Review > answer / chat / standard / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+"
+`;
+
+exports[`Review > answer / chat / standard / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+"
+`;
+
 exports[`Review > answer / context / case-closed / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
@@ -24,7 +189,7 @@ Answer the question directly. Cite supporting files and sources, and identify an
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -55,7 +220,7 @@ Answer the question directly. Cite supporting files and sources, and identify an
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -87,7 +252,7 @@ Answer the question directly. Cite supporting files and sources, and identify an
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -189,7 +354,7 @@ Answer the question directly. Cite supporting files and sources, and identify an
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -220,7 +385,7 @@ Answer the question directly. Cite supporting files and sources, and identify an
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -252,7 +417,7 @@ Answer the question directly. Cite supporting files and sources, and identify an
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -354,7 +519,7 @@ Answer the question directly. Cite supporting files and sources, and identify an
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -385,7 +550,7 @@ Answer the question directly. Cite supporting files and sources, and identify an
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -417,7 +582,7 @@ Answer the question directly. Cite supporting files and sources, and identify an
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -495,6 +660,171 @@ Answer the question directly. Cite supporting files and sources, and identify an
 "
 `;
 
+exports[`Review > fix / chat / case-closed / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > fix / chat / case-closed / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > fix / chat / case-closed / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > fix / chat / standard / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+"
+`;
+
+exports[`Review > fix / chat / standard / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+"
+`;
+
+exports[`Review > fix / chat / standard / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+"
+`;
+
 exports[`Review > fix / context / case-closed / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
@@ -519,7 +849,7 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -550,7 +880,7 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -582,7 +912,7 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -684,7 +1014,7 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -715,7 +1045,7 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -747,7 +1077,7 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -849,7 +1179,7 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -880,7 +1210,7 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -912,7 +1242,7 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -990,13 +1320,178 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 "
 `;
 
+exports[`Review > learn / chat / case-closed / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
+
+## Goal
+**Teaches the user about:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > learn / chat / case-closed / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
+
+## Goal
+**Teaches the user about:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > learn / chat / case-closed / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
+
+## Goal
+**Teaches the user about:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > learn / chat / standard / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
+
+## Goal
+**Teaches the user about:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
+"
+`;
+
+exports[`Review > learn / chat / standard / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
+
+## Goal
+**Teaches the user about:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
+"
+`;
+
+exports[`Review > learn / chat / standard / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
+
+## Goal
+**Teaches the user about:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
+"
+`;
+
 exports[`Review > learn / context / case-closed / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1009,12 +1504,12 @@ The app crashes.
 ## Sources
 No sources are listed. You may search for sources; cite each one you use.
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1023,10 +1518,10 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 exports[`Review > learn / context / case-closed / open with 1 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1040,12 +1535,12 @@ The app crashes.
 Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
 - src/a.ts: docs
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1054,10 +1549,10 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 exports[`Review > learn / context / case-closed / restricted with 2 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1072,12 +1567,12 @@ Use only the listed sources. Treat anything else as off-limits.
 - src/a.ts: docs
 - RFC 9110
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1086,10 +1581,10 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 exports[`Review > learn / context / standard / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1102,17 +1597,17 @@ The app crashes.
 ## Sources
 No sources are listed. You may search for sources; cite each one you use.
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 "
 `;
 
 exports[`Review > learn / context / standard / open with 1 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1126,17 +1621,17 @@ The app crashes.
 Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
 - src/a.ts: docs
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 "
 `;
 
 exports[`Review > learn / context / standard / restricted with 2 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1151,17 +1646,17 @@ Use only the listed sources. Treat anything else as off-limits.
 - src/a.ts: docs
 - RFC 9110
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 "
 `;
 
 exports[`Review > learn / report / case-closed / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1174,12 +1669,12 @@ The app crashes.
 ## Sources
 No sources are listed. You may search for sources; cite each one you use.
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1188,10 +1683,10 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 exports[`Review > learn / report / case-closed / open with 1 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1205,12 +1700,12 @@ The app crashes.
 Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
 - src/a.ts: docs
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1219,10 +1714,10 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 exports[`Review > learn / report / case-closed / restricted with 2 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1237,12 +1732,12 @@ Use only the listed sources. Treat anything else as off-limits.
 - src/a.ts: docs
 - RFC 9110
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1251,10 +1746,10 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 exports[`Review > learn / report / standard / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1267,17 +1762,17 @@ The app crashes.
 ## Sources
 No sources are listed. You may search for sources; cite each one you use.
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 "
 `;
 
 exports[`Review > learn / report / standard / open with 1 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1291,17 +1786,17 @@ The app crashes.
 Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
 - src/a.ts: docs
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 "
 `;
 
 exports[`Review > learn / report / standard / restricted with 2 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1316,17 +1811,17 @@ Use only the listed sources. Treat anything else as off-limits.
 - src/a.ts: docs
 - RFC 9110
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 "
 `;
 
 exports[`Review > learn / update / case-closed / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1339,12 +1834,12 @@ The app crashes.
 ## Sources
 No sources are listed. You may search for sources; cite each one you use.
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1353,10 +1848,10 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 exports[`Review > learn / update / case-closed / open with 1 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1370,12 +1865,12 @@ The app crashes.
 Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
 - src/a.ts: docs
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1384,10 +1879,10 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 exports[`Review > learn / update / case-closed / restricted with 2 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1402,12 +1897,12 @@ Use only the listed sources. Treat anything else as off-limits.
 - src/a.ts: docs
 - RFC 9110
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1416,10 +1911,10 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 exports[`Review > learn / update / standard / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1432,17 +1927,17 @@ The app crashes.
 ## Sources
 No sources are listed. You may search for sources; cite each one you use.
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 "
 `;
 
 exports[`Review > learn / update / standard / open with 1 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1456,17 +1951,17 @@ The app crashes.
 Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
 - src/a.ts: docs
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 "
 `;
 
 exports[`Review > learn / update / standard / restricted with 2 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.
 
 ## Goal
-**Learn the stack:** Make it stop.
+**Teaches the user about:** Make it stop.
 
 ## Action required
 This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
@@ -1481,7 +1976,172 @@ Use only the listed sources. Treat anything else as off-limits.
 - src/a.ts: docs
 - RFC 9110
 
-Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
+"
+`;
+
+exports[`Review > prevent / chat / case-closed / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > prevent / chat / case-closed / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > prevent / chat / case-closed / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > prevent / chat / standard / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+"
+`;
+
+exports[`Review > prevent / chat / standard / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+"
+`;
+
+exports[`Review > prevent / chat / standard / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
 "
 `;
 
@@ -1509,7 +2169,7 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1540,7 +2200,7 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1572,7 +2232,7 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1674,7 +2334,7 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1705,7 +2365,7 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1737,7 +2397,7 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1839,7 +2499,7 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1870,7 +2530,7 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "
@@ -1902,7 +2562,7 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 "

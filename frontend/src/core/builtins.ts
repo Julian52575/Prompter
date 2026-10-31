@@ -47,7 +47,8 @@ export const REVIEW: Template = {
   name: "Review",
   schema: 1,
   // 2: Goal type and Goal first. 3: Action required added, Files merged into Sources.
-  version: 3,
+  // 4: Learn the stack became Teaches the user about. 5: Chat action added.
+  version: 5,
   fields: [
     {
       id: "goalType",
@@ -58,7 +59,7 @@ export const REVIEW: Template = {
       options: [
         { value: "fix", label: "Fix a bug" },
         { value: "prevent", label: "Prevent a bug" },
-        { value: "learn", label: "Learn the stack" },
+        { value: "learn", label: "Teaches the user about" },
         { value: "answer", label: "Answer a question" },
       ],
     },
@@ -83,6 +84,11 @@ export const REVIEW: Template = {
           value: "update",
           label: "Update codebase",
           instruction: `${ACTION_PRECEDENCE}\n\n${ACTION_SCOPE}, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request.`,
+        },
+        {
+          value: "chat",
+          label: "Chat",
+          instruction: `${ACTION_PRECEDENCE}\n\nDiscuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.`,
         },
       ],
     },
@@ -112,7 +118,7 @@ export const REVIEW: Template = {
     variants: {
       fix: `${REVIEW_INTRO} Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.`,
       prevent: `${REVIEW_INTRO} Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.`,
-      learn: `${REVIEW_INTRO} Trace the relevant stack and explain how its parts work together.`,
+      learn: `${REVIEW_INTRO} Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.`,
       answer: `${REVIEW_INTRO} Find and combine the evidence needed to answer the question.`,
     },
     fallback: REVIEW_INTRO,
@@ -124,7 +130,7 @@ export const REVIEW: Template = {
       prevent:
         "Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.",
       learn:
-        "Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.",
+        "Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.",
       answer:
         "Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.",
     },
@@ -142,8 +148,9 @@ export const STANDARD_MODE: ReplyMode = { id: "standard", label: "Standard", ins
 export const CASE_CLOSED: ReplyMode = {
   id: "case-closed",
   label: "Case-closed",
-  version: 1,
-  instruction: `Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+  // 2: "a stack to learn" became "a topic to teach".
+  version: 2,
+  instruction: `Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.`,
 };
