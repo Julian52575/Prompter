@@ -1,0 +1,58 @@
+name: check-conventional-commit-pr-title
+
+# Validate that the pull-request title is a Conventional Commit.
+# rule-for-rule identical to the local hook .githooks/check-conventional-commit-msg.
+#
+# Uses `pull_request` (not `pull_request_target`): it never checks out PR code
+# and needs no secrets, so the privileged trigger buys nothing but risk.
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  pull-requests: read
+
+# Cancel superseded runs for the same PR. `event_name` keeps an `edited` run
+# from cancelling a concurrent `opened` / `synchronize` one.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  conventional-title:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+
+      - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Defaults to the Conventional Commits set; listed here to make the
+          # allowed types visible and easy to trim.
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+          # Forbid a capitalised first word and a trailing period in the
+          # subject. The local hook applies this exact pattern to the same
+          # substring.
+          subjectPattern: ^(?![A-Z])(?!.*\.$).+$
+          subjectPatternError: |
+            The subject "{subject}" is invalid: it must start lower-case and
+            must not end with a period.
+          # If the PR has a single commit, GitHub squashes using that commit
+          # message rather than the PR title -- validate it too.
+          validateSingleCommit: true
