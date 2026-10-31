@@ -41,10 +41,9 @@ export const REVIEW: Template = {
   id: "review",
   name: "Review",
   schema: 1,
-  version: 1,
+  // 2: Goal type and Goal moved first.
+  version: 2,
   fields: [
-    { id: "situation", label: "Situation", type: "longtext", required: false },
-    { id: "files", label: "Files", type: "list", required: false, itemLabel: "File", noteLabel: "Note", format: "code" },
     {
       id: "goalType",
       label: "Goal type",
@@ -59,6 +58,8 @@ export const REVIEW: Template = {
       ],
     },
     { id: "goal", label: "Goal", type: "longtext", required: true, prefixFrom: "goalType" },
+    { id: "situation", label: "Situation", type: "longtext", required: false },
+    { id: "files", label: "Files", type: "list", required: false, itemLabel: "File", noteLabel: "Note", format: "code" },
     {
       id: "sources",
       label: "Sources",

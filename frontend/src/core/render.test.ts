@@ -120,15 +120,15 @@ describe("Review", () => {
     const close = (REVIEW.closing as { variants: Record<string, string> }).variants.fix;
     expect(out).toBe(`${pre}
 
+## Goal
+**Fix a bug:** Make it stop.
+
 ## Situation
 The app crashes.
 
 ## Files
 - \`src/a.ts\`: entry
 - \`b.ts\`
-
-## Goal
-**Fix a bug:** Make it stop.
 
 ## Sources
 ${SCOPE_TEXT.open}
@@ -173,7 +173,7 @@ ${CASE_CLOSED.instruction}
 
 describe("summary", () => {
   test("first line of the first text value", () => {
-    expect(summarize(REVIEW, { situation: "\n  First line\nsecond", goal: "g" }, "")).toBe("First line");
+    expect(summarize(REVIEW, { goal: "\n  First line\nsecond", situation: "s" }, "")).toBe("First line");
   });
   test("falls back to group items, then the prompt after the preamble", () => {
     const inputs = { blocks: [block("Work", [sub("A", "x".repeat(100))])] };

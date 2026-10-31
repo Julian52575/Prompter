@@ -22,6 +22,7 @@ Prompt Builder is a private, local web app that turns a filled-in template into 
 - Wording variants name their choice field and carry a fallback. Placeholder substitution is one pass and never touches user text.
 - Task list preamble, two Review closings, the Open scope line and the Case-closed instruction are reworded to remove mismatches.
 - Open scope renders its instruction even when no sources are listed.
+- Review lists Goal type and Goal first, so the form and the prompt start with the goal.
 - Standard is a fixed mode. Templates can offer all reply modes, so new custom modes need no template edit.
 - History: hand edits are saved to the entry, identical regenerations are skipped, summaries work for every template, single deletes are confirmed, and Restore handles changed or deleted templates.
 - Storage: multi-tab sync, corrected corrupt-data rule, history index repair, built-in update notices, a storage meter, and Export/Import (reverses the v1 "no export" non-goal).
@@ -139,7 +140,7 @@ Custom templates have only a stored version and a Delete action, with no reset. 
 
 ## Built-in templates
 
-Two built-in templates ship with the app, both at `version: 1`. Both are rendered by the generic renderer, with no special-case code. All wording below becomes final once the sign-offs under Open items are given.
+Two built-in templates ship with the app: Task list at `version: 1` and Review at `version: 2` (Goal type and Goal moved first). Both are rendered by the generic renderer, with no special-case code. All wording below becomes final once the sign-offs under Open items are given.
 
 ### Task list
 
@@ -189,10 +190,10 @@ Generated Markdown:
 
 | Field | Type | Required | Details |
 | --- | --- | --- | --- |
-| `situation` | longtext | no | Label "Situation" |
-| `files` | list | no | Label "Files", item "File", note "Note", `format: "code"` |
 | `goalType` | choice | yes | Label "Goal type", `output: "none"`, no default. Options: `fix` Fix a bug, `prevent` Prevent a bug, `learn` Learn the stack, `answer` Answer a question |
 | `goal` | longtext | yes | Label "Goal", `prefixFrom: "goalType"`. The user's own statement of what they want |
+| `situation` | longtext | no | Label "Situation" |
+| `files` | list | no | Label "Files", item "File", note "Note", `format: "code"` |
 | `sources` | list | no | Label "Sources", item "Source (name or link)", note "Note", `format: "plain"` |
 
 - `id: "review"`, `replyModes: ["case-closed"]` (Standard is added automatically), `sourceScope: { "field": "sources" }`.
@@ -211,14 +212,14 @@ Generated Markdown (empty sections are skipped, except that the Sources section 
 ```markdown
 <preamble for the goal type>
 
+## Goal
+**<goal type label>:** <goal>
+
 ## Situation
 <situation>
 
 ## Files
 - `<path>`: <note>
-
-## Goal
-**<goal type label>:** <goal>
 
 ## Sources
 <source scope instruction>

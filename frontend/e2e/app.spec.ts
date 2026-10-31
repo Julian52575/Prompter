@@ -108,7 +108,7 @@ test("hand edits: confirm before replacing, saved to history, identical regenera
   await page.getByRole("link", { name: "History" }).click();
   await expect(page.locator(".history-row")).toHaveCount(1);
   await expect(page.locator(".history-row")).toContainText("Edited");
-  await expect(page.locator(".history-row .summary")).toHaveText("The app crashes on save.");
+  await expect(page.locator(".history-row .summary")).toHaveText("Stop the crash.");
 });
 
 test("drafts survive a reload; restore brings an entry back", async ({ page }) => {
