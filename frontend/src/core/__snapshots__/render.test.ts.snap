@@ -1,7 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Review > answer / context / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -29,7 +31,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > answer / context / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -58,7 +62,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > answer / context / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -88,7 +94,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > answer / context / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -109,7 +117,9 @@ Answer the question directly. Cite supporting files and sources, and identify an
 `;
 
 exports[`Review > answer / context / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -131,7 +141,9 @@ Answer the question directly. Cite supporting files and sources, and identify an
 `;
 
 exports[`Review > answer / context / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -154,7 +166,9 @@ Answer the question directly. Cite supporting files and sources, and identify an
 `;
 
 exports[`Review > answer / report / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -182,7 +196,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > answer / report / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -211,7 +227,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > answer / report / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -241,7 +259,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > answer / report / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -262,7 +282,9 @@ Answer the question directly. Cite supporting files and sources, and identify an
 `;
 
 exports[`Review > answer / report / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -284,7 +306,9 @@ Answer the question directly. Cite supporting files and sources, and identify an
 `;
 
 exports[`Review > answer / report / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -307,7 +331,9 @@ Answer the question directly. Cite supporting files and sources, and identify an
 `;
 
 exports[`Review > answer / update / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -335,7 +361,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > answer / update / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -364,7 +392,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > answer / update / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -394,7 +424,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > answer / update / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -415,7 +447,9 @@ Answer the question directly. Cite supporting files and sources, and identify an
 `;
 
 exports[`Review > answer / update / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -437,7 +471,9 @@ Answer the question directly. Cite supporting files and sources, and identify an
 `;
 
 exports[`Review > answer / update / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Find and combine the evidence needed to answer the question.
 
 ## Goal
 **Answer a question:** Make it stop.
@@ -460,7 +496,9 @@ Answer the question directly. Cite supporting files and sources, and identify an
 `;
 
 exports[`Review > fix / context / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -488,7 +526,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > fix / context / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -517,7 +557,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > fix / context / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -547,7 +589,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > fix / context / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -568,7 +612,9 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 `;
 
 exports[`Review > fix / context / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -590,7 +636,9 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 `;
 
 exports[`Review > fix / context / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -613,7 +661,9 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 `;
 
 exports[`Review > fix / report / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -641,7 +691,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > fix / report / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -670,7 +722,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > fix / report / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -700,7 +754,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > fix / report / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -721,7 +777,9 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 `;
 
 exports[`Review > fix / report / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -743,7 +801,9 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 `;
 
 exports[`Review > fix / report / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -766,7 +826,9 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 `;
 
 exports[`Review > fix / update / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -794,7 +856,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > fix / update / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -823,7 +887,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > fix / update / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -853,7 +919,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > fix / update / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -874,7 +942,9 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 `;
 
 exports[`Review > fix / update / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -896,7 +966,9 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 `;
 
 exports[`Review > fix / update / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -919,7 +991,9 @@ Run relevant tests and report the root cause, change, and test results. Cite sup
 `;
 
 exports[`Review > learn / context / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -947,7 +1021,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > learn / context / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -976,7 +1052,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > learn / context / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1006,7 +1084,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > learn / context / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1027,7 +1107,9 @@ Address the goal with a concise explanation grounded in the files and sources. C
 `;
 
 exports[`Review > learn / context / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1049,7 +1131,9 @@ Address the goal with a concise explanation grounded in the files and sources. C
 `;
 
 exports[`Review > learn / context / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1072,7 +1156,9 @@ Address the goal with a concise explanation grounded in the files and sources. C
 `;
 
 exports[`Review > learn / report / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1100,7 +1186,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > learn / report / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1129,7 +1217,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > learn / report / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1159,7 +1249,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > learn / report / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1180,7 +1272,9 @@ Address the goal with a concise explanation grounded in the files and sources. C
 `;
 
 exports[`Review > learn / report / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1202,7 +1296,9 @@ Address the goal with a concise explanation grounded in the files and sources. C
 `;
 
 exports[`Review > learn / report / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1225,7 +1321,9 @@ Address the goal with a concise explanation grounded in the files and sources. C
 `;
 
 exports[`Review > learn / update / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1253,7 +1351,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > learn / update / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1282,7 +1382,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > learn / update / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1312,7 +1414,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > learn / update / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1333,7 +1437,9 @@ Address the goal with a concise explanation grounded in the files and sources. C
 `;
 
 exports[`Review > learn / update / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1355,7 +1461,9 @@ Address the goal with a concise explanation grounded in the files and sources. C
 `;
 
 exports[`Review > learn / update / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together.
 
 ## Goal
 **Learn the stack:** Make it stop.
@@ -1378,7 +1486,9 @@ Address the goal with a concise explanation grounded in the files and sources. C
 `;
 
 exports[`Review > prevent / context / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1406,7 +1516,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > prevent / context / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1435,7 +1547,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > prevent / context / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1465,7 +1579,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > prevent / context / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1486,7 +1602,9 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 `;
 
 exports[`Review > prevent / context / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1508,7 +1626,9 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 `;
 
 exports[`Review > prevent / context / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1531,7 +1651,9 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 `;
 
 exports[`Review > prevent / report / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1559,7 +1681,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > prevent / report / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1588,7 +1712,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > prevent / report / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1618,7 +1744,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > prevent / report / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1639,7 +1767,9 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 `;
 
 exports[`Review > prevent / report / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1661,7 +1791,9 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 `;
 
 exports[`Review > prevent / report / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1684,7 +1816,9 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 `;
 
 exports[`Review > prevent / update / case-closed / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1712,7 +1846,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > prevent / update / case-closed / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1741,7 +1877,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > prevent / update / case-closed / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1771,7 +1909,9 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 `;
 
 exports[`Review > prevent / update / standard / open with 0 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1792,7 +1932,9 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 `;
 
 exports[`Review > prevent / update / standard / open with 1 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.
@@ -1814,7 +1956,9 @@ Run relevant tests and report the risk, preventive change, and test results. Cit
 `;
 
 exports[`Review > prevent / update / standard / restricted with 2 sources 1`] = `
-"Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
 
 ## Goal
 **Prevent a bug:** Make it stop.

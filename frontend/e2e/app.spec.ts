@@ -174,7 +174,7 @@ test("open in ChatGPT asks first, Cancel opens nothing, long prompts fall back",
   const popup = context.waitForEvent("page");
   await dialog.getByRole("button", { name: "Open ChatGPT" }).click();
   await popup;
-  await expect.poll(() => urls.at(-1)).toMatch(/^https:\/\/chatgpt\.com\/\?q=Review%20the%20goal/);
+  await expect.poll(() => urls.at(-1)).toMatch(/^https:\/\/chatgpt\.com\/\?q=Write%20all%20of%20your%20replies%20to%20me%20in%20English\.%20[^\n]*%0A%0AReview%20the%20goal/);
 
   // The popup takes focus in Firefox; input events only reach the page in front.
   await page.bringToFront();
@@ -303,6 +303,34 @@ test("template tabs switch with the keyboard", async ({ page }) => {
   await expect(page).toHaveTitle("Settings – Prompt Builder");
   await expect(page.getByRole("heading", { name: "New template" })).toBeVisible();
   await expect(page.getByLabel("Name", { exact: true })).toHaveValue("New template");
+});
+
+test.describe("language", () => {
+  test.use({ locale: "fr-FR" });
+
+  test("a French browser gets the French UI, and the prompt stays English with a French reply line", async ({ page }) => {
+    await page.goto(FILE);
+    await expect(page.locator("html")).toHaveAttribute("lang", "fr");
+    await expect(page).toHaveTitle("Éditeur – Prompt Builder");
+    await page.getByRole("tab", { name: "Revue" }).click();
+    await page.getByRole("radio", { name: "Corriger un bug" }).check();
+    await page.getByRole("button", { name: "Générer" }).click();
+    await expect(page.locator("#error-summary")).toContainText("Le champ « Objectif » est obligatoire.");
+    await page.getByLabel("Objectif (obligatoire)").fill("Arrêter le crash.");
+    await page.getByRole("radio", { name: "Modifier le code" }).check();
+    await page.getByRole("button", { name: "Générer" }).click();
+    const prompt = page.getByLabel("Prompt généré");
+    await expect(prompt).toHaveValue(/^Write all of your replies to me in French\. [^\n]+\n\nReview the goal/);
+    await expect(prompt).toHaveValue(/## Goal\n\*\*Fix a bug:\*\* Arrêter le crash\./);
+    await expect(prompt).toHaveValue(/## Action required\n/);
+
+    await page.getByRole("link", { name: "Paramètres" }).click();
+    await page.getByRole("radio", { name: "English" }).check();
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.getByRole("heading", { name: "Settings", level: 2 })).toBeVisible();
+    await page.getByRole("radio", { name: /^Browser default \(Français\)/ }).check();
+    await expect(page.getByRole("heading", { name: "Paramètres", level: 2 })).toBeVisible();
+  });
 });
 
 test("JSON view: lint errors are listed and block Apply", async ({ page }) => {

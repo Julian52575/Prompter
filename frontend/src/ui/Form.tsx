@@ -36,7 +36,8 @@ const invalid = (id: string, errors: Errors) =>
   errors.has(id) ? { "aria-invalid": true as const, "aria-describedby": errId(id) } : {};
 
 function Req({ on }: { on: boolean }) {
-  return on ? <span class="req"> (required)</span> : null;
+  const { t } = useApp();
+  return on ? <span class="req">{t.common.required}</span> : null;
 }
 
 export function Form({ fields, values, onChange, errors, path = "", before, after }: FormProps) {
@@ -138,11 +139,11 @@ interface MoveProps {
 
 /** Move up / Move down with the spec's focus rules. */
 function MoveButtons({ index, count, name, baseId, move }: MoveProps) {
-  const { announce } = useApp();
+  const { announce, t } = useApp();
   const go = (dir: -1 | 1) => {
     const to = index + dir;
     move(index, to);
-    announce(`${name} moved to position ${to + 1} of ${count}`);
+    announce(t.common.movedTo(name, to + 1, count));
     const self = dir < 0 ? "up" : "down";
     const other = dir < 0 ? "down" : "up";
     // Ids are keyed by item, so they follow the item to its new position.
@@ -150,17 +151,17 @@ function MoveButtons({ index, count, name, baseId, move }: MoveProps) {
   };
   return (
     <>
-      <button type="button" id={`${baseId}-up`} disabled={index === 0} aria-label={`Move up: ${name}`} onClick={() => go(-1)}>
-        Move up
+      <button type="button" id={`${baseId}-up`} disabled={index === 0} aria-label={t.common.named(t.common.moveUp, name)} onClick={() => go(-1)}>
+        {t.common.moveUp}
       </button>
       <button
         type="button"
         id={`${baseId}-down`}
         disabled={index === count - 1}
-        aria-label={`Move down: ${name}`}
+        aria-label={t.common.named(t.common.moveDown, name)}
         onClick={() => go(1)}
       >
-        Move down
+        {t.common.moveDown}
       </button>
     </>
   );
@@ -174,6 +175,7 @@ function moved<T>(arr: T[], from: number, to: number): T[] {
 }
 
 function ListInput({ field, value, set, errors, path }: FieldProps<ListField>) {
+  const { t } = useApp();
   const id = domId.field(path);
   const rows = (Array.isArray(value) ? value : []) as ListRow[];
   const addId = `${id}-add`;
@@ -194,26 +196,26 @@ function ListInput({ field, value, set, errors, path }: FieldProps<ListField>) {
       <ol class="rows">
         {rows.map((r, i) => {
           const rid = domId.row(path, r.k);
-          const name = r.text.trim() || `${field.itemLabel} ${i + 1}`;
+          const name = r.text.trim() || t.form.numbered(field.itemLabel, i + 1);
           return (
             <li key={r.k} class="row">
               <div class="field">
                 <label for={rid}>
-                  {field.itemLabel} {i + 1}
+                  {t.form.numbered(field.itemLabel, i + 1)}
                 </label>
                 <ErrorText id={rid} errors={errors} />
                 <input type="text" id={rid} value={r.text} onInput={(e) => setRow(i, { ...r, text: e.currentTarget.value })} {...invalid(rid, errors)} />
               </div>
               <div class="field">
                 <label for={`${rid}-note`}>
-                  {field.noteLabel} {i + 1}
+                  {t.form.numbered(field.noteLabel, i + 1)}
                 </label>
                 <input type="text" id={`${rid}-note`} value={r.note} onInput={(e) => setRow(i, { ...r, note: e.currentTarget.value })} />
               </div>
               <div class="item-actions">
                 <MoveButtons index={i} count={rows.length} name={name} baseId={rid} move={(a, b) => set(moved(rows, a, b))} />
-                <button type="button" aria-label={`Remove: ${name}`} onClick={() => remove(i)}>
-                  Remove
+                <button type="button" aria-label={t.common.named(t.common.remove, name)} onClick={() => remove(i)}>
+                  {t.common.remove}
                 </button>
               </div>
             </li>
@@ -229,25 +231,24 @@ function ListInput({ field, value, set, errors, path }: FieldProps<ListField>) {
           focusLater(domId.row(path, r.k));
         }}
       >
-        Add {field.itemLabel.toLowerCase()}
+        {t.form.add(field.itemLabel)}
       </button>
     </fieldset>
   );
 }
 
 function GroupInput({ field, value, set, errors, path }: FieldProps<GroupField>) {
-  const { dialogs } = useApp();
+  const { dialogs, t } = useApp();
   const id = domId.field(path);
   const items = (Array.isArray(value) ? value : []) as GroupItem[];
   const addId = `${id}-add`;
-  const lower = field.itemLabel.toLowerCase();
   const setItem = (i: number, it: GroupItem) => set(items.map((x, j) => (j === i ? it : x)));
   const single = field.children.length === 1 && field.children[0].type !== "group" ? field.children[0] : null;
   const remove = async (i: number) => {
     const it = items[i];
     const name = it.name.trim() || field.itemLabel;
     if (itemHasContent(field, it)) {
-      const r = await dialogs.confirm({ title: `Remove ${name} and its contents?`, confirm: "Remove", danger: true });
+      const r = await dialogs.confirm({ title: t.form.removeWithContents(name), confirm: t.common.remove, danger: true });
       if (r.choice !== "confirm") return;
     }
     const next = items.filter((_, j) => j !== i);
@@ -265,13 +266,13 @@ function GroupInput({ field, value, set, errors, path }: FieldProps<GroupField>)
       <ol class="items">
         {items.map((it, i) => {
           const nid = domId.itemName(path, it.k);
-          const name = it.name.trim() || `${field.itemLabel} ${i + 1}`;
+          const name = it.name.trim() || t.form.numbered(field.itemLabel, i + 1);
           const childPath = (cid: string) => domId.child(path, it.k, cid);
           return (
             <li key={it.k} class="item">
               <div class="field">
                 <label for={nid}>
-                  {field.itemLabel} {i + 1} name
+                  {t.form.itemName(field.itemLabel, i + 1)}
                 </label>
                 <ErrorText id={nid} errors={errors} />
                 <input
@@ -284,8 +285,8 @@ function GroupInput({ field, value, set, errors, path }: FieldProps<GroupField>)
               </div>
               <div class="item-actions">
                 <MoveButtons index={i} count={items.length} name={name} baseId={nid} move={(a, b) => set(moved(items, a, b))} />
-                <button type="button" aria-label={`Remove: ${name}`} onClick={() => remove(i)}>
-                  Remove
+                <button type="button" aria-label={t.common.named(t.common.remove, name)} onClick={() => remove(i)}>
+                  {t.common.remove}
                 </button>
               </div>
               {single ? (
@@ -295,7 +296,7 @@ function GroupInput({ field, value, set, errors, path }: FieldProps<GroupField>)
                   set={(v) => setItem(i, { ...it, values: { ...it.values, [single.id]: v } })}
                   errors={errors}
                   path={childPath(single.id)}
-                  label={it.name.trim() || `${field.itemLabel} ${i + 1}`}
+                  label={name}
                 />
               ) : (
                 field.children.map((c) => (
@@ -322,7 +323,7 @@ function GroupInput({ field, value, set, errors, path }: FieldProps<GroupField>)
           focusLater(domId.itemName(path, it.k));
         }}
       >
-        Add {lower}
+        {t.form.add(field.itemLabel)}
       </button>
     </fieldset>
   );

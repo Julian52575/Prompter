@@ -150,6 +150,8 @@ export type HistoryIndexRow = Pick<
 
 export interface Settings {
   theme: "system" | "light" | "dark";
+  /** null: follow the browser. */
+  language: "en" | "fr" | null;
   lastTemplate: string | null;
   dismissed: string[];
   confirmedProviders: string[];

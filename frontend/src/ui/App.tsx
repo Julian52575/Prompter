@@ -1,25 +1,27 @@
-import { useEffect, useRef, useState } from "preact/hooks";
-import { repo, type Store } from "../core/storage";
+import { useEffect, useReducer, useRef, useState } from "preact/hooks";
+import { recordKind, repo, type Store } from "../core/storage";
 import { Builder } from "./Builder";
 import { type AppApi, AppContext, type DirtySource, useApp, useStoreVersion, type View } from "./context";
 import { useDialogHost } from "./Dialogs";
 import { History } from "./History";
+import { browserLanguage, DICTS } from "./i18n";
 import { Notice } from "./Notice";
 import { Settings } from "./Settings";
 
-const VIEWS: { id: View; label: string }[] = [
-  { id: "builder", label: "Builder" },
-  { id: "history", label: "History" },
-  { id: "settings", label: "Settings" },
-];
+const VIEWS: View[] = ["builder", "history", "settings"];
 
 const viewFromHash = (): View => {
   const v = location.hash.replace(/^#\//, "");
-  return VIEWS.some((x) => x.id === v) ? (v as View) : "builder";
+  return VIEWS.includes(v as View) ? (v as View) : "builder";
 };
 
 export function App({ store }: { store: Store }) {
   const [view, setView] = useState<View>(viewFromHash);
+  // The language lives in settings, so the whole app re-renders when the store changes.
+  const [, bump] = useReducer((n: number) => n + 1, 0);
+  useEffect(() => store.subscribe(() => bump(0)), [store]);
+  const lang = repo(store).settings().language ?? browserLanguage();
+  const t = DICTS[lang];
   const [dialogs, dialogNodes] = useDialogHost();
   const [live, setLive] = useState("");
   const [conflict, setConflict] = useState<DirtySource | null>(null);
@@ -38,6 +40,8 @@ export function App({ store }: { store: Store }) {
 
   const api: AppApi = {
     store,
+    t,
+    lang,
     dialogs,
     announce: (msg) => {
       // Cleared first so the same message is announced again.
@@ -104,30 +108,31 @@ export function App({ store }: { store: Store }) {
   }, []);
 
   useEffect(() => {
-    document.title = `${VIEWS.find((v) => v.id === view)!.label} – Prompt Builder`;
-  }, [view]);
+    document.title = t.app.pageTitle(t.app.nav[view]);
+    document.documentElement.lang = lang;
+  }, [view, lang]);
 
   return (
     <AppContext.Provider value={api}>
       <Theme />
       <a class="skip" href="#main" onClick={(e) => (e.preventDefault(), document.getElementById("main")?.focus())}>
-        Skip to main content
+        {t.app.skip}
       </a>
       <header>
         <h1>Prompt Builder</h1>
-        <nav aria-label="Views">
+        <nav aria-label={t.app.views}>
           <ul>
             {VIEWS.map((v) => (
-              <li key={v.id}>
+              <li key={v}>
                 <a
-                  href={`#/${v.id}`}
-                  aria-current={view === v.id ? "page" : undefined}
+                  href={`#/${v}`}
+                  aria-current={view === v ? "page" : undefined}
                   onClick={(e) => {
                     e.preventDefault();
-                    api.navigate(v.id);
+                    api.navigate(v);
                   }}
                 >
-                  {v.label}
+                  {t.app.nav[v]}
                 </a>
               </li>
             ))}
@@ -137,7 +142,7 @@ export function App({ store }: { store: Store }) {
       <StoreNotices />
       {conflict && (
         <Notice>
-          This data was changed in another tab.{" "}
+          {t.app.otherTab}{" "}
           <span class="inline-actions">
             <button
               type="button"
@@ -147,7 +152,7 @@ export function App({ store }: { store: Store }) {
                 setConflict(null);
               }}
             >
-              Load theirs
+              {t.app.loadTheirs}
             </button>
             <button
               type="button"
@@ -156,7 +161,7 @@ export function App({ store }: { store: Store }) {
                 setConflict(null);
               }}
             >
-              Keep mine
+              {t.common.keepMine}
             </button>
           </span>
         </Notice>
@@ -167,10 +172,7 @@ export function App({ store }: { store: Store }) {
         {view === "settings" && <Settings />}
       </main>
       <footer>
-        <p class="hint">
-          Runs offline in this browser and sends nothing unless you press an Open button. Markdown headings you type are kept
-          as typed and can look like sections to the model.
-        </p>
+        <p class="hint">{t.app.footer}</p>
       </footer>
       <div class="sr-only" aria-live="polite" aria-atomic="true">
         {live}
@@ -182,12 +184,12 @@ export function App({ store }: { store: Store }) {
 
 function StoreNotices() {
   useStoreVersion();
-  const { store } = useApp();
+  const { store, t } = useApp();
   return (
     <>
       {store.getNotices().map((n) => (
         <Notice key={n.id} kind={n.kind === "alert" ? "alert" : "status"} onDismiss={n.id === "full" || n.kind === "banner" ? undefined : () => store.dismiss(n.id)}>
-          {n.text}
+          {t.notices.text(n.code, n.record ? t.notices.records[recordKind(n.record)] : "")}
         </Notice>
       ))}
     </>

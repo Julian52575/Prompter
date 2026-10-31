@@ -154,19 +154,26 @@ function renderGroupItems(group: GroupField, v: Value | undefined, level: number
     .map((it) => renderItem(group, it, level));
 }
 
+/** The prompt is always English; only this line names the language the user reads. */
+export const LANGUAGE_NAMES = { en: "English", fr: "French" } as const;
+export type Language = keyof typeof LANGUAGE_NAMES;
+export const languageLine = (lang: Language) =>
+  `Write all of your replies to me in ${LANGUAGE_NAMES[lang]}. Keep code, identifiers and file contents in their original language.`;
+
 export interface RenderInput {
   template: Template;
   inputs: Inputs;
   mode: ReplyMode | null;
   scope: Scope;
+  language: Language;
 }
 
 export function renderPreamble(template: Template, inputs: Inputs): string {
   return clean(resolveWording(template.preamble, template, inputs));
 }
 
-export function render({ template, inputs, mode, scope }: RenderInput): string {
-  const parts: string[] = [renderPreamble(template, inputs)];
+export function render({ template, inputs, mode, scope, language }: RenderInput): string {
+  const parts: string[] = [languageLine(language), renderPreamble(template, inputs)];
   for (const f of template.fields) {
     const v = inputs[f.id];
     if (!isShown(f, inputs)) continue;
@@ -232,8 +239,9 @@ function firstText(fields: Field[], inputs: Inputs): string {
 export function summarize(template: Template, inputs: Inputs, prompt: string): string {
   let s = firstText(template.fields, inputs);
   if (!s) {
+    const body = prompt.replace(/^Write all of your replies to me in [^\n]*\n+/, "");
     const pre = renderPreamble(template, inputs);
-    s = firstLine(pre && prompt.startsWith(pre) ? prompt.slice(pre.length) : prompt);
+    s = firstLine(pre && body.startsWith(pre) ? body.slice(pre.length) : body);
   }
   return s.length > 80 ? `${s.slice(0, 79)}…` : s;
 }

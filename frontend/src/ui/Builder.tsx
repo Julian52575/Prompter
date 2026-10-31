@@ -17,47 +17,50 @@ import { addHistoryEntry, KEYS, providerList, repo, saveHistoryEntry, updateReco
 import type { Draft, OutputType, Provider, Scope, Settings, Template } from "../core/types";
 import { domId, type InputError, validateInputs } from "../core/validate";
 import { buildLink, wrapPrompt } from "../core/wrap";
-import { COPY_MANUAL, copyText } from "./clipboard";
+import { copyText } from "./clipboard";
 import { focusLater, focusNow, useApp, useStoreVersion } from "./context";
 import { Form } from "./Form";
+import { localizeMode, localizeTemplate } from "./i18n";
 import { Notice } from "./Notice";
 
 const DEBOUNCE = 500;
 /** Row and item keys are random, so they are left out when comparing values. */
 const noKeys = (k: string, v: unknown) => (k === "k" ? undefined : v);
-export const MISSING_MODE = "The saved reply mode no longer exists. Standard is selected.";
-export const UPDATED_BUILTIN = "The built-in version of this template was updated after you customised it.";
+/** One-off notices, as codes so they follow the UI language. */
+export type BuilderNotice = "missingMode" | "inputsDropped";
 
 export function Builder() {
   const app = useApp();
-  const { store, dialogs, announce } = app;
+  const { store, dialogs, announce, t, lang } = app;
   useStoreVersion();
   const r = repo(store);
   const templates = effectiveTemplates(r.templates());
   const settings = r.settings();
   const [tid, setTid] = useState(() =>
-    templates.some((t) => t.id === settings.lastTemplate) ? settings.lastTemplate! : templates[0].id,
+    templates.some((x) => x.id === settings.lastTemplate) ? settings.lastTemplate! : templates[0].id,
   );
-  const template = templates.find((t) => t.id === tid) ?? templates[0];
+  const template = templates.find((x) => x.id === tid) ?? templates[0];
+  // The form shows `view` (translated labels); the prompt is rendered from `template`.
+  const view = localizeTemplate(t, template);
   const offered = offeredModes(template, effectiveModes(r.modes()));
   const wrapper = effectiveWrapper(r.wrapper());
   const providers = providerList(store);
 
-  const [notices, setNotices] = useState<string[]>(() => {
-    const n = app.builderNotice.current;
+  const [notices, setNotices] = useState<BuilderNotice[]>(() => {
+    const n = app.builderNotice.current as BuilderNotice | null;
     app.builderNotice.current = null;
     return n ? [n] : [];
   });
-  const addNotice = (n: string) => setNotices((ns) => (ns.includes(n) ? ns : [...ns, n]));
+  const addNotice = (n: BuilderNotice) => setNotices((ns) => (ns.includes(n) ? ns : [...ns, n]));
 
-  const loadDraft = (t: Template): Draft => {
-    const stored = repo(store).drafts()[t.id];
-    const d: Draft = stored
-      ? { ...newDraft(t), ...stored, values: matchValues(t.fields, stored.values ?? {}).values }
-      : newDraft(t);
-    const modes = offeredModes(t, effectiveModes(repo(store).modes()));
+  const loadDraft = (tpl: Template): Draft => {
+    const stored = repo(store).drafts()[tpl.id];
+    // Fresh values come from the translated template, so default block names follow the UI language.
+    const fresh = newDraft(localizeTemplate(t, tpl));
+    const d: Draft = stored ? { ...fresh, ...stored, values: matchValues(tpl.fields, stored.values ?? {}).values } : fresh;
+    const modes = offeredModes(tpl, effectiveModes(repo(store).modes()));
     if (modes.length && !modes.some((m) => m.id === d.mode)) {
-      if (d.mode !== STANDARD_MODE.id) setTimeout(() => addNotice(MISSING_MODE), 0);
+      if (d.mode !== STANDARD_MODE.id) setTimeout(() => addNotice("missingMode"), 0);
       d.mode = STANDARD_MODE.id;
     }
     return d;
@@ -81,7 +84,7 @@ export function Builder() {
     saveTimer.current = undefined;
     const d = { ...draftRef.current, updatedAt: Date.now() };
     updateRecord<Record<string, Draft>>(store, KEYS.drafts, {}, (all) => ({ ...all, [tidRef.current]: d }));
-    if (store.writable) setStatus("Draft saved");
+    if (store.writable) setStatus(t.builder.draftSaved);
   };
 
   const setDraft = (d: Draft) => {
@@ -138,15 +141,15 @@ export function Builder() {
 
   const switchTemplate = (id: string) => {
     saveDraft();
-    const t = templateById(id);
-    tidRef.current = t.id;
-    setTid(t.id);
-    const d = loadDraft(t);
+    const next = templateById(id);
+    tidRef.current = next.id;
+    setTid(next.id);
+    const d = loadDraft(next);
     draftRef.current = d;
     setDraftState(d);
     setErrors([]);
     setNotices([]);
-    updateSettings({ lastTemplate: t.id });
+    updateSettings({ lastTemplate: next.id });
   };
 
   const builtin = builtinTemplate(template.id);
@@ -154,7 +157,7 @@ export function Builder() {
 
   const generate = async () => {
     const d = draftRef.current;
-    const errs = validateInputs(template, d.values, d.scope);
+    const errs = validateInputs(view, d.values, d.scope, t.inputs);
     setErrors(errs);
     if (errs.length) {
       focusLater("error-summary");
@@ -162,23 +165,23 @@ export function Builder() {
     }
     if (d.output !== d.baseline) {
       const res = await dialogs.confirm({
-        title: "Replace your edits?",
-        body: "The generated prompt has edits that Generate would replace.",
-        cancel: "Keep editing",
-        confirm: "Replace",
+        title: t.builder.replaceEditsTitle,
+        body: t.builder.replaceEditsBody,
+        cancel: t.common.keepEditing,
+        confirm: t.common.replace,
         danger: true,
       });
       if (res.choice !== "confirm") return;
     }
     const mode = offered.find((m) => m.id === d.mode) ?? null;
-    const text = render({ template, inputs: d.values, mode, scope: d.scope });
+    const text = render({ template, inputs: d.values, mode, scope: d.scope, language: lang });
     const rr = repo(store);
     const lastRow = rr.historyIndex().find((row) => row.templateId === template.id);
     const last = lastRow && rr.entry(lastRow.id);
     let entryId: string;
     if (last && last.generated === text && !last.edited) {
       entryId = last.id;
-      setStatus("Prompt generated. Identical to the last history entry, so none was added");
+      setStatus(t.builder.generatedIdentical);
     } else {
       entryId = randomId();
       const inputs = structuredClone(d.values);
@@ -196,22 +199,22 @@ export function Builder() {
         edited: false,
         summary: summarize(template, inputs, text),
       });
-      setStatus("Prompt generated");
+      setStatus(t.builder.generated);
     }
     patch({ output: text, baseline: text, entryId });
     setTimeout(() => outRef.current?.focus(), 0);
-    announce("Prompt generated");
+    announce(t.builder.generated);
   };
 
   const clearForm = async () => {
     const d = draftRef.current;
-    const fresh = newDraft(template);
+    const fresh = newDraft(view);
     const unchanged = d.output === "" && JSON.stringify(d.values, noKeys) === JSON.stringify(fresh.values, noKeys);
     if (!unchanged) {
       const res = await dialogs.confirm({
-        title: "Clear the form?",
-        body: "Every field and the generated prompt return to their starting state. History entries are kept.",
-        confirm: "Clear",
+        title: t.builder.clearTitle,
+        body: t.builder.clearBody,
+        confirm: t.builder.clear,
         danger: true,
       });
       if (res.choice !== "confirm") return;
@@ -219,8 +222,8 @@ export function Builder() {
     clearTimeout(entryTimer.current);
     patch({ ...fresh, outputType: d.outputType });
     setErrors([]);
-    setStatus("Form cleared");
-    announce("Form cleared");
+    setStatus(t.builder.cleared);
+    announce(t.builder.cleared);
     const first = template.fields[0];
     if (first) focusLater(domId.field(first.id), `tab-${template.id}`);
   };
@@ -246,7 +249,7 @@ export function Builder() {
 
   const copy = async () => {
     const res = await copyText(finalText(), fallbackField());
-    const msg = res === "copied" ? "Copied" : COPY_MANUAL;
+    const msg = res === "copied" ? t.common.copied : t.common.copyManual;
     setStatus(msg);
     announce(msg);
   };
@@ -254,10 +257,10 @@ export function Builder() {
   const openProvider = async (p: Provider) => {
     if (!repo(store).settings().confirmedProviders.includes(p.id)) {
       const res = await dialogs.confirm({
-        title: `Send this prompt to ${p.label}?`,
-        body: `The prompt is placed in a link to ${hostOf(p)}, so ${p.company} receives it, and the link may be kept in your browser history.`,
-        confirm: `Open ${p.label}`,
-        checkbox: `Don't ask again for ${p.label}`,
+        title: t.builder.sendTitle(p.label),
+        body: t.builder.sendBody(hostOf(p), p.company),
+        confirm: t.builder.openProvider(p.label),
+        checkbox: t.builder.dontAsk(p.label),
       });
       if (res.choice !== "confirm") return;
       if (res.checked)
@@ -268,19 +271,20 @@ export function Builder() {
     const { url, kind } = buildLink(p, text);
     window.open(url, "_blank", "noopener,noreferrer");
     const copied = (await copying) === "copied";
-    const L = p.label;
-    const msg =
+    const b = t.builder;
+    const msg = (
       kind === "link"
         ? copied
-          ? `Opened ${L} in a new tab. The prompt is also on your clipboard if it does not appear.`
-          : `Opened ${L} in a new tab. The prompt could not be copied; if it does not appear, use Copy.`
+          ? b.openedLink
+          : b.openedLinkNoCopy
         : kind === "long"
           ? copied
-            ? `The prompt is too long for a link. Opened ${L}: paste the prompt from your clipboard.`
-            : `The prompt is too long for a link and could not be copied. Use Copy, then paste it into ${L}.`
+            ? b.tooLong
+            : b.tooLongNoCopy
           : copied
-            ? `Opened ${L}: paste the prompt from your clipboard.`
-            : `The prompt could not be copied. Use Copy, then paste it into ${L}.`;
+            ? b.openedHome
+            : b.openedHomeNoCopy
+    )(p.label);
     setStatus(msg);
     announce(msg);
   };
@@ -297,8 +301,8 @@ export function Builder() {
         <button
           type="button"
           class="tab-add"
-          aria-label="New template"
-          title="New template"
+          aria-label={t.builder.newTemplate}
+          title={t.builder.newTemplate}
           onClick={() => {
             app.openNewTemplate.current = true;
             app.navigate("settings");
@@ -306,17 +310,17 @@ export function Builder() {
         >
           +
         </button>
-        <div class="tablist" role="tablist" aria-label="Template">
-        {templates.map((t, i) => (
+        <div class="tablist" role="tablist" aria-label={t.builder.template}>
+        {templates.map((x, i) => (
           <button
             type="button"
             role="tab"
-            key={t.id}
-            id={`tab-${t.id}`}
-            aria-selected={t.id === template.id}
+            key={x.id}
+            id={`tab-${x.id}`}
+            aria-selected={x.id === template.id}
             aria-controls="form-panel"
-            tabIndex={t.id === template.id ? 0 : -1}
-            onClick={() => t.id !== template.id && switchTemplate(t.id)}
+            tabIndex={x.id === template.id ? 0 : -1}
+            onClick={() => x.id !== template.id && switchTemplate(x.id)}
             onKeyDown={(e) => {
               // Automatic activation: arrows, Home and End select the tab they move to.
               const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: templates.length - 1 }[e.key];
@@ -327,32 +331,32 @@ export function Builder() {
               focusLater(`tab-${next.id}`);
             }}
           >
-            {t.name}
+            {localizeTemplate(t, x).name}
           </button>
         ))}
         </div>
         <div class="tab-fill" aria-hidden="true" />
       </div>
       <section class="pane tab-panel" id="form-panel" role="tabpanel" aria-labelledby={`tab-${template.id}`}>
-        <h2 id="form-heading">Form</h2>
+        <h2 id="form-heading">{t.builder.form}</h2>
         {showUpdate && (
           <Notice>
-            {UPDATED_BUILTIN}{" "}
+            {t.builder.updatedBuiltin}{" "}
             <span class="inline-actions">
               <button
                 type="button"
                 onClick={async () => {
                   const res = await dialogs.confirm({
-                    title: `Reset ${template.name}?`,
-                    body: "Your customised version is deleted and the current built-in is shown.",
-                    confirm: "Reset",
+                    title: t.common.resetTitle(view.name),
+                    body: t.common.resetBody,
+                    confirm: t.common.reset,
                     danger: true,
                   });
                   if (res.choice === "confirm")
                     updateRecord<Record<string, Template>>(store, KEYS.templates, {}, (all) => omit(all, template.id));
                 }}
               >
-                Reset
+                {t.common.reset}
               </button>
               <button
                 type="button"
@@ -363,20 +367,20 @@ export function Builder() {
                   }))
                 }
               >
-                Keep mine
+                {t.common.keepMine}
               </button>
             </span>
           </Notice>
         )}
         {notices.map((n) => (
           <Notice key={n} onDismiss={() => setNotices((ns) => ns.filter((x) => x !== n))}>
-            {n}
+            {n === "missingMode" ? t.builder.missingMode : t.history.inputsDropped}
           </Notice>
         ))}
         {errors.length > 0 && (
           <div id="error-summary" class="error-summary" tabIndex={-1} role="group" aria-labelledby="error-summary-title">
             <h3 id="error-summary-title">
-              {errors.length === 1 ? "There is 1 problem" : `There are ${errors.length} problems`}
+              {t.builder.problems(errors.length)}
             </h3>
             <ul>
               {errors.map((e) => (
@@ -398,8 +402,8 @@ export function Builder() {
         {(() => {
           const modeNode = offered.length > 0 && (
             <fieldset>
-              <legend>Reply mode</legend>
-              {offered.map((m) => (
+              <legend>{t.builder.replyMode}</legend>
+              {offered.map((m) => localizeMode(t, m)).map((m) => (
                 <label class="radio" key={m.id}>
                   <input type="radio" name="reply-mode" checked={draft.mode === m.id} onChange={() => patch({ mode: m.id })} /> {m.label}
                 </label>
@@ -408,11 +412,11 @@ export function Builder() {
           );
           const scopeNode = scopeField && (
             <fieldset>
-              <legend>Source scope</legend>
+              <legend>{t.builder.sourceScope}</legend>
               {(
                 [
-                  ["open", "Open: listed sources first, others allowed"],
-                  ["restricted", "Restricted: listed sources only"],
+                  ["open", t.builder.scopeOpen],
+                  ["restricted", t.builder.scopeRestricted],
                 ] as [Scope, string][]
               ).map(([v, l]) => (
                 <label class="radio" key={v}>
@@ -426,7 +430,7 @@ export function Builder() {
             <>
               <Form
                 key={template.id}
-                fields={template.fields}
+                fields={view.fields}
                 values={draft.values}
                 onChange={(values) => patch({ values })}
                 errors={errorMap}
@@ -438,18 +442,18 @@ export function Builder() {
           );
         })()}
         <button type="button" id="generate" class="primary big" onClick={generate}>
-          Generate
+          {t.builder.generate}
         </button>{" "}
         <button type="button" id="clear-form" onClick={clearForm}>
-          Clear form
+          {t.builder.clearForm}
         </button>
       </section>
       </div>
 
       <section class="pane" aria-labelledby="output-heading">
-        <h2 id="output-heading">Prompt</h2>
+        <h2 id="output-heading">{t.builder.prompt}</h2>
         <div class="field">
-          <label for="output">Generated prompt</label>
+          <label for="output">{t.builder.generatedPrompt}</label>
           <textarea
             id="output"
             ref={outRef}
@@ -461,11 +465,11 @@ export function Builder() {
           />
         </div>
         <fieldset>
-          <legend>Output type</legend>
+          <legend>{t.builder.outputType}</legend>
           {(
             [
-              ["bare", "Bare prompt"],
-              ["review", "Review request"],
+              ["bare", t.builder.bare],
+              ["review", t.builder.review],
             ] as [OutputType, string][]
           ).map(([v, l]) => (
             <label class="radio" key={v}>
@@ -475,16 +479,16 @@ export function Builder() {
         </fieldset>
         {draft.outputType === "review" && (
           <details ref={detailsRef}>
-            <summary>Review request preview</summary>
+            <summary>{t.builder.preview}</summary>
             <label for="review-preview" class="sr-only">
-              Review request preview
+              {t.builder.preview}
             </label>
             <textarea id="review-preview" ref={previewRef} class="output" rows={12} readOnly value={finalText("review")} />
           </details>
         )}
         <div class="actions">
           <button type="button" class="primary" onClick={copy} disabled={empty}>
-            Copy
+            {t.common.copy}
           </button>
           {providers.map((p) => (
             <button
@@ -492,9 +496,9 @@ export function Builder() {
               key={p.id}
               onClick={() => openProvider(p)}
               disabled={empty}
-              aria-label={`Open in ${p.label} (opens in a new tab)`}
+              aria-label={t.builder.openInLabel(p.label)}
             >
-              Open in {p.label}
+              {t.builder.openIn(p.label)}
               <ExternalIcon />
             </button>
           ))}

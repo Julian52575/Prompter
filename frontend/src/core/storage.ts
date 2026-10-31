@@ -19,25 +19,19 @@ export const KEYS = {
   entry: (id: string) => `pb.h.${id}`,
 } as const;
 
-const RECORD_NAMES: Record<string, string> = {
+export type RecordKind = "settings" | "templates" | "modes" | "wrapper" | "providers" | "drafts" | "history" | "entry" | "other";
+const RECORD_KINDS: Record<string, RecordKind> = {
   [KEYS.settings]: "settings",
   [KEYS.templates]: "templates",
-  [KEYS.modes]: "reply modes",
-  [KEYS.wrapper]: "review wrapper",
-  [KEYS.providers]: "chatbot links",
+  [KEYS.modes]: "modes",
+  [KEYS.wrapper]: "wrapper",
+  [KEYS.providers]: "providers",
   [KEYS.drafts]: "drafts",
-  [KEYS.history]: "history index",
+  [KEYS.history]: "history",
 };
-export const recordName = (key: string) =>
-  RECORD_NAMES[key] ?? (key.startsWith("pb.h.") ? "history entry" : key);
+export const recordKind = (key: string): RecordKind =>
+  RECORD_KINDS[key] ?? (key.startsWith("pb.h.") ? "entry" : "other");
 
-export const MSG = {
-  full: "Your last change was not saved because browser storage is full. Delete history entries or export your data to free space.",
-  unavailable: "Storage is unavailable. Nothing will be kept after you close this page. Use Export to save your work.",
-  newer: "This data was saved by a newer version of Prompt Builder. It is open read-only: nothing you change will be saved. Export still works.",
-  migrationFailed: "Your saved data could not be upgraded to this version. It is open read-only: nothing you change will be saved. Export still works.",
-  importFull: "Import failed: not enough storage. Nothing was changed.",
-};
 
 export interface Backend {
   get(key: string): string | null;
@@ -82,10 +76,13 @@ export function memoryBackend(init: Record<string, string> = {}, quota = Infinit
 }
 
 export type StoreMode = "ok" | "memory" | "readonly";
+export type NoticeCode = "unavailable" | "newer" | "migrationFailed" | "full" | "corruptCopied" | "corruptKept";
+/** The UI words each code in the chosen language; `record` is the storage key concerned. */
 export interface Notice {
   id: string;
   kind: "alert" | "banner";
-  text: string;
+  code: NoticeCode;
+  record?: string;
 }
 
 type Migration = (mem: Map<string, string>) => void;
@@ -110,7 +107,7 @@ export class Store {
     const b = this.backend;
     if (!b) {
       this.mode = "memory";
-      this.notice({ id: "unavailable", kind: "banner", text: MSG.unavailable });
+      this.notice({ id: "unavailable", kind: "banner", code: "unavailable" });
       return;
     }
     const raw = new Map<string, string>();
@@ -118,7 +115,7 @@ export class Store {
     const version = Number(raw.get(KEYS.version) ?? (raw.size ? 1 : STORAGE_VERSION));
     if (!(version <= STORAGE_VERSION)) {
       this.mode = "readonly";
-      this.notice({ id: "readonly", kind: "banner", text: MSG.newer });
+      this.notice({ id: "readonly", kind: "banner", code: "newer" });
     }
     for (const [k, v] of raw) {
       if (k.startsWith("pb.corrupt.") || k === KEYS.version) {
@@ -140,7 +137,7 @@ export class Store {
         next.set(KEYS.version, String(STORAGE_VERSION));
       } catch {
         this.mode = "readonly";
-        this.notice({ id: "readonly", kind: "banner", text: MSG.migrationFailed });
+        this.notice({ id: "readonly", kind: "banner", code: "migrationFailed" });
         return;
       }
       for (const [k, v] of next) if (this.mem.get(k) !== v) this.set(k, v, true);
@@ -149,7 +146,6 @@ export class Store {
   }
 
   private quarantine(key: string, value: string): void {
-    const name = recordName(key);
     if (this.mode === "readonly") {
       this.memOnly.add(key);
       return;
@@ -162,14 +158,16 @@ export class Store {
       this.notice({
         id: `corrupt-${key}`,
         kind: "alert",
-        text: `The saved ${name} could not be read and was reset. A copy of the broken data is kept in Settings, Data.`,
+        code: "corruptCopied",
+        record: key,
       });
     } catch {
       this.memOnly.add(key);
       this.notice({
         id: `corrupt-${key}`,
         kind: "alert",
-        text: `The saved ${name} could not be read, and there is no room to keep a copy. The broken data is left untouched; changes to the ${name} are kept in memory only.`,
+        code: "corruptKept",
+        record: key,
       });
     }
   }
@@ -282,7 +280,7 @@ export class Store {
         if (keys.includes(k)) ok = false;
       }
     }
-    if (this.failed.size) this.notice({ id: "full", kind: "alert", text: MSG.full });
+    if (this.failed.size) this.notice({ id: "full", kind: "alert", code: "full" });
     else this.dismiss("full");
     return ok;
   }
@@ -336,15 +334,17 @@ export function indexRow(e: HistoryEntry): HistoryIndexRow {
   return { id, createdAt, templateId, templateName, summary, edited };
 }
 
-export function formatMeter(bytes: number): string {
+/** "1.2 MB" / "1,2 Mo": the meter's size in the UI locale. */
+export function formatSize(bytes: number, locale = "en"): string {
+  const fr = locale === "fr";
   const mb = bytes / (1024 * 1024);
-  const used = mb < 0.1 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${mb.toFixed(1)} MB`;
-  return `Storage used: about ${used} of 5 MB`;
+  if (mb < 0.1) return `${Math.max(1, Math.round(bytes / 1024))} ${fr ? "Ko" : "KB"}`;
+  return `${mb.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ${fr ? "Mo" : "MB"}`;
 }
 
 // --- typed records -----------------------------------------------------------
 
-export const DEFAULT_SETTINGS: Settings = { theme: "system", lastTemplate: null, dismissed: [], confirmedProviders: [] };
+export const DEFAULT_SETTINGS: Settings = { theme: "system", language: null, lastTemplate: null, dismissed: [], confirmedProviders: [] };
 
 export const repo = (s: Store) => ({
   settings: (): Settings => ({ ...DEFAULT_SETTINGS, ...s.get<Partial<Settings>>(KEYS.settings, {}) }),

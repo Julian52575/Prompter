@@ -1,4 +1,5 @@
 import type { ComponentChildren } from "preact";
+import { useApp } from "./context";
 
 export function Notice({
   children,
@@ -9,6 +10,7 @@ export function Notice({
   kind?: "status" | "alert";
   onDismiss?: () => void;
 }) {
+  const { t } = useApp();
   return (
     <div class={`notice ${kind === "alert" ? "notice-alert" : ""}`} role={kind}>
       <p>
@@ -17,7 +19,7 @@ export function Notice({
       </p>
       {onDismiss && (
         <button type="button" onClick={onDismiss}>
-          Dismiss
+          {t.common.dismiss}
         </button>
       )}
     </div>

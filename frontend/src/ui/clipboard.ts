@@ -1,5 +1,3 @@
-export const COPY_MANUAL = "Press Ctrl+C (⌘C on Mac) to copy.";
-
 /**
  * Clipboard API, then the legacy copy on `select` (a field holding exactly
  * `text`). Resolves "selected" when both fail, leaving the text selected.

@@ -51,7 +51,7 @@ interface Props {
 }
 
 export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props) {
-  const { dialogs, setLeaveGuard, registerDirty } = useApp();
+  const { dialogs, setLeaveGuard, registerDirty, t } = useApp();
   const [tpl, setTplState] = useState(initial);
   const [json, setJson] = useState(() => stringify(initial));
   const [saved, setSaved] = useState(initial);
@@ -67,7 +67,7 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
 
   const confirmLeave = async () => {
     if (!dirtyRef.current) return true;
-    const r = await dialogs.confirm({ title: "Discard unsaved changes?", cancel: "Keep editing", confirm: "Discard", danger: true });
+    const r = await dialogs.confirm({ title: t.common.discardTitle, cancel: t.common.keepEditing, confirm: t.common.discard, danger: true });
     return r.choice === "confirm";
   };
   useEffect(() => {
@@ -104,20 +104,20 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
     <section class="editor" aria-labelledby="tpl-editor-title">
       <h3 id="tpl-editor-title">{title}</h3>
       <div class="field">
-        <label for="tpl-name">Name</label>
+        <label for="tpl-name">{t.editor.name}</label>
         <input id="tpl-name" type="text" value={tpl.name} onInput={(e) => setTpl({ ...tpl, name: e.currentTarget.value })} />
       </div>
-      <WordingEditor label="Preamble" id="tpl-preamble" value={tpl.preamble} choices={choices} onChange={(preamble) => setTpl({ ...tpl, preamble })} />
+      <WordingEditor label={t.editor.preamble} id="tpl-preamble" value={tpl.preamble} choices={choices} onChange={(preamble) => setTpl({ ...tpl, preamble })} />
 
       <fieldset>
-        <legend>Fields</legend>
+        <legend>{t.editor.fields}</legend>
         <FieldsEditor fields={tpl.fields} onChange={setFields} depth={0} path="fe" taken={allIds(tpl.fields)} choices={choices} />
       </fieldset>
 
-      <WordingEditor label="Closing" id="tpl-closing" value={tpl.closing} choices={choices} onChange={(closing) => setTpl({ ...tpl, closing })} />
+      <WordingEditor label={t.editor.closing} id="tpl-closing" value={tpl.closing} choices={choices} onChange={(closing) => setTpl({ ...tpl, closing })} />
 
       <fieldset>
-        <legend>Reply modes offered</legend>
+        <legend>{t.editor.modesOffered}</legend>
         {(["none", "all", "list"] as const).map((k) => (
           <label class="radio" key={k}>
             <input
@@ -126,12 +126,12 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
               checked={k === "list" ? Array.isArray(tpl.replyModes) : tpl.replyModes === k}
               onChange={() => setTpl({ ...tpl, replyModes: k === "list" ? [] : k })}
             />{" "}
-            {k === "none" ? "None" : k === "all" ? "All (Standard plus every mode, including new ones)" : "Standard plus selected modes"}
+            {k === "none" ? t.editor.modesNone : k === "all" ? t.editor.modesAll : t.editor.modesList}
           </label>
         ))}
         {Array.isArray(tpl.replyModes) && (
           <fieldset>
-            <legend>Selected modes</legend>
+            <legend>{t.editor.selectedModes}</legend>
             {modes.map((m) => (
               <label class="check" key={m.id}>
                 <input
@@ -151,16 +151,16 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
 
       {tpl.replyModes !== "none" && (
         <div class="field">
-          <label for="tpl-modes-after">Reply mode radio position in the form</label>
+          <label for="tpl-modes-after">{t.editor.modesPosition}</label>
           <select
             id="tpl-modes-after"
             value={tpl.replyModesAfter ?? ""}
             onChange={(e) => setTpl(withOptional(tpl, "replyModesAfter", e.currentTarget.value))}
           >
-            <option value="">After all fields</option>
+            <option value="">{t.editor.afterAll}</option>
             {top.map((f) => (
               <option key={f.id} value={f.id}>
-                After {f.label}
+                {t.editor.after(f.label)}
               </option>
             ))}
           </select>
@@ -168,16 +168,16 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
       )}
 
       <div class="field">
-        <label for="tpl-scope">Source scope</label>
+        <label for="tpl-scope">{t.editor.sourceScope}</label>
         <select
           id="tpl-scope"
           value={tpl.sourceScope?.field ?? ""}
           onChange={(e) => setTpl({ ...tpl, sourceScope: e.currentTarget.value ? { field: e.currentTarget.value } : null })}
         >
-          <option value="">Off</option>
+          <option value="">{t.editor.off}</option>
           {lists.map((f) => (
             <option key={f.id} value={f.id}>
-              Attach to {f.label}
+              {t.editor.attachTo(f.label)}
             </option>
           ))}
         </select>
@@ -185,11 +185,11 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
 
       {issues.length > 0 && (
         <div role="alert" class="lint">
-          <p>{errors.length ? "Fix these before saving:" : "Warnings:"}</p>
+          <p>{errors.length ? t.editor.fixFirst : t.editor.warnings}</p>
           <ul>
             {issues.map((i, n) => (
               <li key={n}>
-                <strong>{i.level === "error" ? "Error" : "Warning"}:</strong> {i.message}
+                <strong>{i.level === "error" ? t.editor.error : t.editor.warning} :</strong> {i.message}
               </li>
             ))}
           </ul>
@@ -197,9 +197,9 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
       )}
 
       <details>
-        <summary>Advanced: JSON view</summary>
+        <summary>{t.editor.jsonView}</summary>
         <div class="field">
-          <label for="tpl-json">Template JSON</label>
+          <label for="tpl-json">{t.editor.jsonLabel}</label>
           <textarea
             id="tpl-json"
             ref={jsonRef}
@@ -223,9 +223,9 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
                       goTo(i.offset);
                     }}
                   >
-                    Line {i.line}, column {i.column}
+                    {t.editor.lineCol(i.line, i.column)}
                   </a>{" "}
-                  — {i.level === "error" ? "Error" : "Warning"}: {i.message}
+                  — {i.level === "error" ? t.editor.error : t.editor.warning} : {i.message}
                 </li>
               ))}
             </ul>
@@ -233,10 +233,10 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
         </div>
         <div class="actions">
           <button type="button" onClick={apply} disabled={!jsonLint.value || !jsonDirty}>
-            Apply
+            {t.editor.apply}
           </button>
           <button type="button" onClick={() => setJson(stringify(tpl))} disabled={!jsonDirty}>
-            Revert JSON
+            {t.editor.revertJson}
           </button>
         </div>
       </details>
@@ -251,7 +251,7 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
             setSaved(tpl);
           }}
         >
-          Save
+          {t.common.save}
         </button>
         <button
           type="button"
@@ -259,10 +259,10 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
             if (await confirmLeave()) onClose();
           }}
         >
-          Close
+          {t.common.close}
         </button>
       </div>
-      {jsonDirty && <p class="hint">Apply or revert the JSON edits before saving.</p>}
+      {jsonDirty && <p class="hint">{t.editor.applyFirst}</p>}
     </section>
   );
 }
@@ -280,13 +280,14 @@ function WordingEditor({
   choices: ChoiceField[];
   onChange(w: Wording): void;
 }) {
+  const { t } = useApp();
   const plain = typeof value === "string";
   const by = plain ? null : choices.find((c) => c.id === value.by);
   return (
     <fieldset>
       <legend>{label}</legend>
       <label class="radio">
-        <input type="radio" name={`${id}-kind`} checked={plain} onChange={() => onChange(plain ? value : value.fallback)} /> Plain text
+        <input type="radio" name={`${id}-kind`} checked={plain} onChange={() => onChange(plain ? value : value.fallback)} /> {t.editor.plainText}
       </label>
       <label class="radio">
         <input
@@ -296,17 +297,18 @@ function WordingEditor({
           disabled={choices.length === 0}
           onChange={() => onChange({ by: choices[0].id, variants: {}, fallback: plain ? value : "" })}
         />{" "}
-        Varies by a choice field{choices.length === 0 && " (add a choice field first)"}
+        {t.editor.variesByChoice}
+        {choices.length === 0 && t.editor.addChoiceFirst}
       </label>
       {plain ? (
         <div class="field">
-          <label for={id}>{label} text</label>
+          <label for={id}>{t.editor.wordingText(label)}</label>
           <textarea id={id} rows={3} value={value} onInput={(e) => onChange(e.currentTarget.value)} />
         </div>
       ) : (
         <>
           <div class="field">
-            <label for={`${id}-by`}>Choice field</label>
+            <label for={`${id}-by`}>{t.editor.choiceField}</label>
             <select id={`${id}-by`} value={value.by} onChange={(e) => onChange({ ...value, by: e.currentTarget.value, variants: {} })}>
               {choices.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -332,12 +334,12 @@ function WordingEditor({
             </div>
           ))}
           <div class="field">
-            <label for={`${id}-fallback`}>Fallback (no choice, or no variant)</label>
+            <label for={`${id}-fallback`}>{t.editor.fallback}</label>
             <textarea id={`${id}-fallback`} rows={2} value={value.fallback} onInput={(e) => onChange({ ...value, fallback: e.currentTarget.value })} />
           </div>
         </>
       )}
-      <p class="hint">Placeholders such as {"{{fieldId}}"} insert a top-level text or choice field.</p>
+      <p class="hint">{t.editor.placeholderHint}</p>
     </fieldset>
   );
 }
@@ -352,9 +354,9 @@ interface FieldsProps {
 }
 
 function FieldsEditor({ fields, onChange, depth, path, taken, choices }: FieldsProps) {
-  const { dialogs, announce } = useApp();
+  const { dialogs, announce, t } = useApp();
   const [addType, setAddType] = useState<FieldType>("text");
-  const types = (Object.keys(TYPE_LABELS) as FieldType[]).filter((t) => t !== "group" || depth < 2);
+  const types = (Object.keys(TYPE_LABELS) as FieldType[]).filter((ty) => ty !== "group" || depth < 2);
   const move = (i: number, to: number) => {
     const next = fields.slice();
     const [f] = next.splice(i, 1);
@@ -379,40 +381,40 @@ function FieldsEditor({ fields, onChange, depth, path, taken, choices }: FieldsP
               choices={choices}
             />
             <div class="item-actions">
-              <button type="button" id={`${path}-${f.id}-up`} disabled={i === 0} aria-label={`Move up: ${f.label}`} onClick={() => move(i, i - 1)}>
-                Move up
+              <button type="button" id={`${path}-${f.id}-up`} disabled={i === 0} aria-label={t.common.named(t.common.moveUp, f.label)} onClick={() => move(i, i - 1)}>
+                {t.common.moveUp}
               </button>
               <button
                 type="button"
                 id={`${path}-${f.id}-down`}
                 disabled={i === fields.length - 1}
-                aria-label={`Move down: ${f.label}`}
+                aria-label={t.common.named(t.common.moveDown, f.label)}
                 onClick={() => move(i, i + 1)}
               >
-                Move down
+                {t.common.moveDown}
               </button>
               <button
                 type="button"
-                aria-label={`Remove field: ${f.label}`}
+                aria-label={t.editor.removeField(f.label)}
                 onClick={async () => {
-                  const r = await dialogs.confirm({ title: `Remove the field ${f.label}?`, confirm: "Remove", danger: true });
+                  const r = await dialogs.confirm({ title: t.editor.removeFieldTitle(f.label), confirm: t.common.remove, danger: true });
                   if (r.choice !== "confirm") return;
                   onChange(fields.filter((_, j) => j !== i));
                   focusLater(`${path}-add`);
                 }}
               >
-                Remove
+                {t.common.remove}
               </button>
             </div>
           </li>
         ))}
       </ol>
       <div class="inline-actions">
-        <label for={`${path}-type`}>New field type</label>
+        <label for={`${path}-type`}>{t.editor.newFieldType}</label>
         <select id={`${path}-type`} value={addType} onChange={(e) => setAddType(e.currentTarget.value as FieldType)}>
-          {types.map((t) => (
-            <option key={t} value={t}>
-              {TYPE_LABELS[t]}
+          {types.map((ty) => (
+            <option key={ty} value={ty}>
+              {t.editor.types[ty]}
             </option>
           ))}
         </select>
@@ -424,7 +426,7 @@ function FieldsEditor({ fields, onChange, depth, path, taken, choices }: FieldsP
             focusLater(`${path}-${fields.length}-label`);
           }}
         >
-          Add field
+          {t.editor.addField}
         </button>
       </div>
     </>
@@ -437,44 +439,45 @@ interface FieldProps extends Omit<FieldsProps, "fields" | "onChange"> {
 }
 
 function FieldEditor({ field: f, onChange, depth, path, taken, choices }: FieldProps) {
+  const { t } = useApp();
   const set = (p: Partial<Field>) => onChange({ ...f, ...p } as Field);
   return (
     <fieldset>
       <legend>
-        {TYPE_LABELS[f.type]} field: {f.label}
+        {t.editor.fieldLegend(t.editor.types[f.type], f.label)}
       </legend>
       <div class="grid2">
         <div class="field">
-          <label for={`${path}-label`}>Label</label>
+          <label for={`${path}-label`}>{t.editor.label}</label>
           <input id={`${path}-label`} type="text" value={f.label} onInput={(e) => set({ label: e.currentTarget.value })} />
         </div>
         <div class="field">
-          <label for={`${path}-id`}>Id (letters and digits, starting lower-case)</label>
+          <label for={`${path}-id`}>{t.editor.id}</label>
           <input id={`${path}-id`} type="text" value={f.id} onInput={(e) => set({ id: e.currentTarget.value })} />
         </div>
       </div>
       <label class="check">
-        <input type="checkbox" checked={f.required} onChange={(e) => set({ required: e.currentTarget.checked })} /> Required
+        <input type="checkbox" checked={f.required} onChange={(e) => set({ required: e.currentTarget.checked })} /> {t.editor.required}
       </label>
       {depth === 0 && <ShowWhenEditor f={f} onChange={onChange} path={path} choices={choices} />}
       {(f.type === "text" || f.type === "longtext") && (
         <>
           <div class="grid2">
             <div class="field">
-              <label for={`${path}-default`}>Default value</label>
+              <label for={`${path}-default`}>{t.editor.defaultValue}</label>
               <input id={`${path}-default`} type="text" value={f.default ?? ""} onInput={(e) => onChange(withOptional(f, "default", e.currentTarget.value))} />
             </div>
             <div class="field">
-              <label for={`${path}-hint`}>Hint shown under the label</label>
+              <label for={`${path}-hint`}>{t.editor.hint}</label>
               <input id={`${path}-hint`} type="text" value={f.hint ?? ""} onInput={(e) => onChange(withOptional(f, "hint", e.currentTarget.value))} />
             </div>
           </div>
           <fieldset>
-            <legend>In the prompt</legend>
+            <legend>{t.editor.inPrompt}</legend>
             {(["section", "none"] as const).map((v) => (
               <label class="radio" key={v}>
                 <input type="radio" name={`${path}-toutput`} checked={(f.output ?? "section") === v} onChange={() => onChange({ ...f, output: v })} />{" "}
-                {v === "section" ? "Own section" : "Not shown (feeds placeholders only)"}
+                {v === "section" ? t.editor.ownSection : t.editor.feedsPlaceholders}
               </label>
             ))}
           </fieldset>
@@ -482,7 +485,7 @@ function FieldEditor({ field: f, onChange, depth, path, taken, choices }: FieldP
       )}
       {(f.type === "text" || f.type === "longtext") && depth === 0 && (
         <div class="field">
-          <label for={`${path}-prefix`}>Prefix from choice</label>
+          <label for={`${path}-prefix`}>{t.editor.prefixFrom}</label>
           <select
             id={`${path}-prefix`}
             value={(f as TextField).prefixFrom ?? ""}
@@ -491,7 +494,7 @@ function FieldEditor({ field: f, onChange, depth, path, taken, choices }: FieldP
               onChange(e.currentTarget.value ? { ...rest, prefixFrom: e.currentTarget.value } : rest);
             }}
           >
-            <option value="">None</option>
+            <option value="">{t.editor.modesNone}</option>
             {choices.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.label}
@@ -504,19 +507,19 @@ function FieldEditor({ field: f, onChange, depth, path, taken, choices }: FieldP
       {f.type === "list" && (
         <div class="grid2">
           <div class="field">
-            <label for={`${path}-item`}>Row label</label>
+            <label for={`${path}-item`}>{t.editor.rowLabel}</label>
             <input id={`${path}-item`} type="text" value={f.itemLabel} onInput={(e) => set({ itemLabel: e.currentTarget.value })} />
           </div>
           <div class="field">
-            <label for={`${path}-note`}>Note label</label>
+            <label for={`${path}-note`}>{t.editor.noteLabel}</label>
             <input id={`${path}-note`} type="text" value={f.noteLabel} onInput={(e) => set({ noteLabel: e.currentTarget.value })} />
           </div>
           <fieldset>
-            <legend>Row format</legend>
+            <legend>{t.editor.rowFormat}</legend>
             {(["plain", "code"] as const).map((v) => (
               <label class="radio" key={v}>
                 <input type="radio" name={`${path}-format`} checked={f.format === v} onChange={() => set({ format: v })} />{" "}
-                {v === "code" ? "Code (paths)" : "Plain"}
+                {v === "code" ? t.editor.formatCode : t.editor.formatPlain}
               </label>
             ))}
           </fieldset>
@@ -525,12 +528,12 @@ function FieldEditor({ field: f, onChange, depth, path, taken, choices }: FieldP
       {f.type === "group" && (
         <>
           <div class="field">
-            <label for={`${path}-item`}>Item label</label>
+            <label for={`${path}-item`}>{t.editor.itemLabel}</label>
             <input id={`${path}-item`} type="text" value={f.itemLabel} onInput={(e) => set({ itemLabel: e.currentTarget.value })} />
           </div>
           {depth === 0 && (
             <div class="field">
-              <label for={`${path}-defaults`}>Default items (one name per line)</label>
+              <label for={`${path}-defaults`}>{t.editor.defaultItems}</label>
               <textarea
                 id={`${path}-defaults`}
                 rows={3}
@@ -544,7 +547,7 @@ function FieldEditor({ field: f, onChange, depth, path, taken, choices }: FieldP
             </div>
           )}
           <fieldset>
-            <legend>Child fields of {f.label}</legend>
+            <legend>{t.editor.children(f.label)}</legend>
             <FieldsEditor
               fields={f.children}
               onChange={(children) => set({ children })}
@@ -561,25 +564,26 @@ function FieldEditor({ field: f, onChange, depth, path, taken, choices }: FieldP
 }
 
 function ChoiceOptions({ f, onChange, path }: { f: ChoiceField; onChange(f: Field): void; path: string }) {
+  const { t } = useApp();
   const setOpt = (i: number, p: Partial<{ value: string; label: string }>) =>
     onChange({ ...f, options: f.options.map((o, j) => (j === i ? { ...o, ...p } : o)) });
   return (
     <>
       <fieldset>
-        <legend>Options</legend>
+        <legend>{t.editor.options}</legend>
         <ol class="rows">
           {f.options.map((o, i) => (
             <li key={i} class="row">
               <div class="field">
-                <label for={`${path}-o${i}-label`}>Option {i + 1} label</label>
+                <label for={`${path}-o${i}-label`}>{t.editor.optionLabel(i + 1)}</label>
                 <input id={`${path}-o${i}-label`} type="text" value={o.label} onInput={(e) => setOpt(i, { label: e.currentTarget.value })} />
               </div>
               <div class="field">
-                <label for={`${path}-o${i}-value`}>Option {i + 1} value</label>
+                <label for={`${path}-o${i}-value`}>{t.editor.optionValue(i + 1)}</label>
                 <input id={`${path}-o${i}-value`} type="text" value={o.value} onInput={(e) => setOpt(i, { value: e.currentTarget.value })} />
               </div>
               <div class="field">
-                <label for={`${path}-o${i}-instr`}>Option {i + 1} instruction (replaces the label in the prompt; optional)</label>
+                <label for={`${path}-o${i}-instr`}>{t.editor.optionInstruction(i + 1)}</label>
                 <textarea
                   id={`${path}-o${i}-instr`}
                   rows={3}
@@ -592,14 +596,14 @@ function ChoiceOptions({ f, onChange, path }: { f: ChoiceField; onChange(f: Fiel
               <div class="item-actions">
                 <button
                   type="button"
-                  aria-label={`Remove option: ${o.label}`}
+                  aria-label={t.editor.removeOption(o.label)}
                   disabled={f.options.length === 1}
                   onClick={() => {
                     onChange({ ...f, options: f.options.filter((_, j) => j !== i) });
                     focusLater(`${path}-addopt`);
                   }}
                 >
-                  Remove
+                  {t.common.remove}
                 </button>
               </div>
             </li>
@@ -613,12 +617,12 @@ function ChoiceOptions({ f, onChange, path }: { f: ChoiceField; onChange(f: Fiel
             focusLater(`${path}-o${f.options.length}-label`);
           }}
         >
-          Add option
+          {t.editor.addOption}
         </button>
       </fieldset>
       <div class="grid2">
         <div class="field">
-          <label for={`${path}-default`}>Default option</label>
+          <label for={`${path}-default`}>{t.editor.defaultOption}</label>
           <select
             id={`${path}-default`}
             value={f.default ?? ""}
@@ -627,7 +631,7 @@ function ChoiceOptions({ f, onChange, path }: { f: ChoiceField; onChange(f: Fiel
               onChange(e.currentTarget.value ? { ...rest, default: e.currentTarget.value } : rest);
             }}
           >
-            <option value="">None</option>
+            <option value="">{t.editor.modesNone}</option>
             {f.options.map((o) => (
               <option key={o.value} value={o.value}>
                 {o.label}
@@ -636,11 +640,11 @@ function ChoiceOptions({ f, onChange, path }: { f: ChoiceField; onChange(f: Fiel
           </select>
         </div>
         <fieldset>
-          <legend>In the prompt</legend>
+          <legend>{t.editor.inPrompt}</legend>
           {(["section", "none"] as const).map((v) => (
             <label class="radio" key={v}>
               <input type="radio" name={`${path}-output`} checked={(f.output ?? "section") === v} onChange={() => onChange({ ...f, output: v })} />{" "}
-              {v === "section" ? "Own section" : "Not shown (feeds wording and prefixes only)"}
+              {v === "section" ? t.editor.ownSection : t.editor.feedsWording}
             </label>
           ))}
         </fieldset>
@@ -650,13 +654,14 @@ function ChoiceOptions({ f, onChange, path }: { f: ChoiceField; onChange(f: Fiel
 }
 
 function ShowWhenEditor({ f, onChange, path, choices }: { f: Field; onChange(f: Field): void; path: string; choices: ChoiceField[] }) {
+  const { t } = useApp();
   const others = choices.filter((c) => c.id !== f.id);
   const sw = f.showWhen;
   const choice = others.find((c) => c.id === sw?.field);
   return (
     <div class="grid2">
       <div class="field">
-        <label for={`${path}-sw-field`}>Show only when</label>
+        <label for={`${path}-sw-field`}>{t.editor.showWhen}</label>
         <select
           id={`${path}-sw-field`}
           value={sw?.field ?? ""}
@@ -665,17 +670,17 @@ function ShowWhenEditor({ f, onChange, path, choices }: { f: Field; onChange(f: 
             onChange(withOptional(f, "showWhen", c ? { field: c.id, value: c.options[0]?.value ?? "" } : null));
           }}
         >
-          <option value="">Always shown</option>
+          <option value="">{t.editor.alwaysShown}</option>
           {others.map((c) => (
             <option key={c.id} value={c.id}>
-              {c.label} is…
+              {t.editor.choiceIs(c.label)}
             </option>
           ))}
         </select>
       </div>
       {choice && sw && (
         <div class="field">
-          <label for={`${path}-sw-value`}>Option</label>
+          <label for={`${path}-sw-value`}>{t.editor.option}</label>
           <select id={`${path}-sw-value`} value={sw.value} onChange={(e) => onChange({ ...f, showWhen: { field: sw.field, value: e.currentTarget.value } })}>
             {choice.options.map((o) => (
               <option key={o.value} value={o.value}>

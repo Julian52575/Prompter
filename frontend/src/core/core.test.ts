@@ -4,11 +4,10 @@ import { checkTemplate, lintTemplateText } from "./lint";
 import {
   addHistoryEntry,
   exportData,
-  formatMeter,
+  formatSize,
   importData,
   KEYS,
   memoryBackend,
-  MSG,
   repo,
   Store,
   STORAGE_VERSION,
@@ -111,7 +110,7 @@ describe("wrapper and links", () => {
 
   test("provider lint", () => {
     expect(lintProvider({ label: "A", link: "", home: "https://a" })).toEqual([]);
-    expect(lintProvider({ label: "A", link: "http://a?{prompt}", home: "http://a" })).toHaveLength(2);
+    expect(lintProvider({ label: "A", link: "http://a?{prompt}", home: "http://a" })).toEqual(["home", "linkHttps"]);
     expect(lintProvider({ label: "A", link: "https://a?{prompt}{prompt}", home: "https://a" })).toHaveLength(1);
   });
 });
@@ -145,7 +144,7 @@ describe("storage", () => {
   test("unavailable storage runs in memory with a banner", () => {
     const s = new Store(null);
     expect(s.mode).toBe("memory");
-    expect(s.getNotices()[0].text).toBe(MSG.unavailable);
+    expect(s.getNotices()[0].code).toBe("unavailable");
     s.setJson(KEYS.settings, { theme: "dark" });
     expect(repo(s).settings().theme).toBe("dark");
   });
@@ -155,7 +154,7 @@ describe("storage", () => {
     const s = new Store(b);
     expect(b.get("pb.drafts")).toBeNull();
     expect(s.corruptCopies()).toEqual([{ key: expect.stringMatching(/^pb\.corrupt\.pb\.drafts\.\d+$/), value: "{oops" }]);
-    expect(s.getNotices().some((n) => n.kind === "alert" && n.text.includes("drafts"))).toBe(true);
+    expect(s.getNotices().some((n) => n.kind === "alert" && n.code === "corruptCopied" && n.record === "pb.drafts")).toBe(true);
   });
 
   test("a corrupt record with no room is left untouched and kept in memory", () => {
@@ -192,7 +191,7 @@ describe("storage", () => {
     const s = new Store(b);
     expect(s.setJson(KEYS.drafts, { x: "y".repeat(300) })).toBe(false);
     expect(repo(s).drafts()).toEqual({ x: "y".repeat(300) });
-    expect(s.getNotices().find((n) => n.id === "full")?.text).toBe(MSG.full);
+    expect(s.getNotices().find((n) => n.id === "full")?.code).toBe("full");
     s.setJson(KEYS.drafts, {});
     expect(s.getNotices().find((n) => n.id === "full")).toBeUndefined();
   });
@@ -239,6 +238,7 @@ describe("storage", () => {
   });
 
   test("meter text", () => {
-    expect(formatMeter(1.2 * 1024 * 1024)).toBe("Storage used: about 1.2 MB of 5 MB");
+    expect(formatSize(1.2 * 1024 * 1024)).toBe("1.2 MB");
+    expect(formatSize(1.2 * 1024 * 1024, "fr")).toBe("1,2 Mo");
   });
 });

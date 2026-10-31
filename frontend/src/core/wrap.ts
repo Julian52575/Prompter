@@ -3,11 +3,13 @@ import type { Provider } from "./types";
 
 export const LINK_CAP = 8000;
 
-export function lintWrapper(text: string): string[] {
+export type WrapperIssue = "promptCount" | "promptOwnLine";
+export type ProviderIssue = "label" | "home" | "linkHttps" | "linkPlaceholder";
+
+export function lintWrapper(text: string): WrapperIssue[] {
   const count = text.split("{{prompt}}").length - 1;
-  if (count !== 1) return ["The wrapper must contain {{prompt}} exactly once."];
-  if (!text.split(/\r?\n/).some((l) => l.trim() === "{{prompt}}"))
-    return ["{{prompt}} must be on a line of its own."];
+  if (count !== 1) return ["promptCount"];
+  if (!text.split(/\r?\n/).some((l) => l.trim() === "{{prompt}}")) return ["promptOwnLine"];
   return [];
 }
 
@@ -17,13 +19,13 @@ export function wrapPrompt(wrapper: string, prompt: string): string {
   return out.endsWith("\n") ? out : `${out}\n`;
 }
 
-export function lintProvider(p: Pick<Provider, "label" | "link" | "home">): string[] {
-  const errs: string[] = [];
-  if (!p.label.trim()) errs.push("The label must not be empty.");
-  if (!p.home.startsWith("https://")) errs.push("The home URL must start with https://.");
+export function lintProvider(p: Pick<Provider, "label" | "link" | "home">): ProviderIssue[] {
+  const errs: ProviderIssue[] = [];
+  if (!p.label.trim()) errs.push("label");
+  if (!p.home.startsWith("https://")) errs.push("home");
   if (p.link !== "") {
-    if (!p.link.startsWith("https://")) errs.push("The link template must start with https://.");
-    if (p.link.split("{prompt}").length !== 2) errs.push("The link template must contain {prompt} exactly once, or be empty.");
+    if (!p.link.startsWith("https://")) errs.push("linkHttps");
+    if (p.link.split("{prompt}").length !== 2) errs.push("linkPlaceholder");
   }
   return errs;
 }

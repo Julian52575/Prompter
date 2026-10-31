@@ -1,6 +1,6 @@
 import { ACTION_PRECEDENCE, CASE_CLOSED, REVIEW, TASK_LIST } from "./builtins";
 import { initValues } from "./catalog";
-import { clean, codeFence, headingName, inlineCode, render, SCOPE_TEXT, summarize } from "./render";
+import { clean, codeFence, headingName, inlineCode, languageLine, render, SCOPE_TEXT, summarize } from "./render";
 import type { ChoiceField, GroupItem, Inputs, Scope } from "./types";
 import { NOTHING_TO_GENERATE, RESTRICTED_NEEDS_SOURCES, validateInputs } from "./validate";
 
@@ -34,8 +34,10 @@ describe("Task list", () => {
         block("Documenting", []),
       ],
     };
-    expect(render({ template: TASK_LIST, inputs, mode: null, scope: "open" })).toBe(
-      `${TASK_LIST.preamble}
+    expect(render({ template: TASK_LIST, inputs, mode: null, scope: "open", language: "en" })).toBe(
+      `${languageLine("en")}
+
+${TASK_LIST.preamble}
 
 ## Work
 
@@ -111,7 +113,7 @@ describe("Review", () => {
       for (const m of modes)
         for (const [scope, sources] of scopes)
           test(`${g} / ${a} / ${m?.id ?? "standard"} / ${scope} with ${sources.length} sources`, () => {
-            const out = render({ template: REVIEW, inputs: base(g, sources, a), mode: m, scope });
+            const out = render({ template: REVIEW, inputs: base(g, sources, a), mode: m, scope, language: "en" });
             expect(out).toMatchSnapshot();
             expect(out.endsWith("\n") && !out.endsWith("\n\n")).toBe(true);
             expect(out).toContain(`## Action required\n${ACTION_PRECEDENCE}\n\n`);
@@ -120,10 +122,12 @@ describe("Review", () => {
           });
 
   test("full structure for one combination", () => {
-    const out = render({ template: REVIEW, inputs: base("fix", ["src/a.ts"]), mode: CASE_CLOSED, scope: "open" });
+    const out = render({ template: REVIEW, inputs: base("fix", ["src/a.ts"]), mode: CASE_CLOSED, scope: "open", language: "en" });
     const pre = (REVIEW.preamble as { variants: Record<string, string> }).variants.fix;
     const close = (REVIEW.closing as { variants: Record<string, string> }).variants.fix;
-    expect(out).toBe(`${pre}
+    expect(out).toBe(`${languageLine("en")}
+
+${pre}
 
 ## Goal
 **Fix a bug:** Make it stop.
@@ -148,10 +152,10 @@ ${CASE_CLOSED.instruction}
   });
 
   test("Write a report inserts the destination; other actions ignore it", () => {
-    const report = render({ template: REVIEW, inputs: { ...base("learn", [], "report"), reportLocation: "GitHub PR comment" }, mode: null, scope: "open" });
+    const report = render({ template: REVIEW, inputs: { ...base("learn", [], "report"), reportLocation: "GitHub PR comment" }, mode: null, scope: "open", language: "en" });
     expect(report).toContain("then write a report to GitHub PR comment. Do not change code");
     expect(report).not.toContain("## Report destination");
-    const update = render({ template: REVIEW, inputs: { ...base("learn", [], "update"), reportLocation: "" }, mode: null, scope: "open" });
+    const update = render({ template: REVIEW, inputs: { ...base("learn", [], "update"), reportLocation: "" }, mode: null, scope: "open", language: "en" });
     expect(update).not.toContain("GitHub");
   });
 
@@ -163,8 +167,8 @@ ${CASE_CLOSED.instruction}
   });
 
   test("the fallback wording is used with no goal type", () => {
-    const out = render({ template: REVIEW, inputs: base(null, []), mode: null, scope: "open" });
-    expect(out.startsWith("Review the goal, situation, and sources.\n\n")).toBe(true);
+    const out = render({ template: REVIEW, inputs: base(null, []), mode: null, scope: "open", language: "en" });
+    expect(out.startsWith(`${languageLine("en")}\n\nReview the goal, situation, and sources.\n\n`)).toBe(true);
     expect(out).toContain("## Goal\nMake it stop.");
   });
 
@@ -186,8 +190,18 @@ ${CASE_CLOSED.instruction}
 
   test("user text is never scanned for placeholders", () => {
     const t = { ...REVIEW, preamble: "Goal: {{goal}} / {{goalType}}" };
-    const out = render({ template: t, inputs: { ...base("fix", []), goal: "{{situation}}" }, mode: null, scope: "open" });
-    expect(out.startsWith("Goal: {{situation}} / Fix a bug\n")).toBe(true);
+    const out = render({ template: t, inputs: { ...base("fix", []), goal: "{{situation}}" }, mode: null, scope: "open", language: "en" });
+    expect(out).toContain("\nGoal: {{situation}} / Fix a bug\n");
+  });
+});
+
+describe("language", () => {
+  test("the prompt stays English and opens with the reply language", () => {
+    const inputs = { blocks: [block("Work", [sub("A", "Écrire le parseur.")])] };
+    const fr = render({ template: TASK_LIST, inputs, mode: null, scope: "open", language: "fr" });
+    expect(fr.startsWith("Write all of your replies to me in French. Keep code, identifiers and file contents in their original language.\n\n")).toBe(true);
+    expect(fr).toContain(TASK_LIST.preamble as string);
+    expect(fr.replace(languageLine("fr"), languageLine("en"))).toBe(render({ template: TASK_LIST, inputs, mode: null, scope: "open", language: "en" }));
   });
 });
 
@@ -198,6 +212,6 @@ describe("summary", () => {
   test("falls back to group items, then the prompt after the preamble", () => {
     const inputs = { blocks: [block("Work", [sub("A", "x".repeat(100))])] };
     expect(summarize(TASK_LIST, inputs, "")).toBe(`${"x".repeat(79)}…`);
-    expect(summarize(TASK_LIST, { blocks: [] }, `${TASK_LIST.preamble}\n\n## Work\n`)).toBe("## Work");
+    expect(summarize(TASK_LIST, { blocks: [] }, `${languageLine("fr")}\n\n${TASK_LIST.preamble}\n\n## Work\n`)).toBe("## Work");
   });
 });

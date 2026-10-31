@@ -2,6 +2,7 @@ import { createContext } from "preact";
 import { useContext, useEffect, useReducer } from "preact/hooks";
 import type { Store } from "../core/storage";
 import type { DialogApi } from "./Dialogs";
+import type { Dict, Language } from "./i18n";
 
 export type View = "builder" | "history" | "settings";
 
@@ -16,6 +17,9 @@ export interface DirtySource {
 
 export interface AppApi {
   store: Store;
+  /** UI strings in the chosen language; prompts are always English. */
+  t: Dict;
+  lang: Language;
   dialogs: DialogApi;
   announce(msg: string): void;
   navigate(view: View): void;

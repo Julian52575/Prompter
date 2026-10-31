@@ -10,13 +10,15 @@ Prompt Builder is a private, local web app that turns a filled-in template into 
 - **Lightweight:** one self-contained HTML file built with Vite, TypeScript and Preact. Size target: under 150 KB.
 - **Accessible:** conforms to WCAG 2.2 level AA.
 - **Persistent:** drafts, history and custom templates survive restarts, stored as JSON in the browser's localStorage. A manual Export/Import file protects against data loss.
-- **Language:** English only.
+- **Language:** the interface is in English or French; generated prompts are always in English (see Languages).
 
-**Non-goals (v1):** calling AI APIs, writing to chosen disk paths, running a server, automatic or scheduled backup, auto-deleting history, multi-user use, translation.
+**Non-goals (v1):** calling AI APIs, writing to chosen disk paths, running a server, automatic or scheduled backup, auto-deleting history, multi-user use, translating prompts or template wording.
 
 **Primary flow:** pick a template, fill the form on the left, choose a reply mode and (where offered) a source scope, press Generate, edit the prompt on the right, choose the output type (Bare prompt or Review request), then press Copy, Open in ChatGPT or Open in Mistral.
 
 ### Changes from v1
+
+- English and French interface, defaulting to the browser's language; prompts stay English and open with a line naming the user's language.
 
 - The template schema now defines how every field renders, so built-in and custom templates use one generic renderer.
 - Wording variants name their choice field and carry a fallback. Placeholder substitution is one pass and never touches user text.
@@ -94,12 +96,13 @@ A `list` row is empty when its text is empty. A note on a row with no text is a 
 
 ### Rendering rules
 
-The renderer is a pure function of (template, inputs, mode, scope). It outputs, in order, each separated by one blank line:
+The renderer is a pure function of (template, inputs, mode, scope, language). It outputs, in order, each separated by one blank line:
 
-1. The preamble, resolved and substituted.
-2. Each top-level field in order, as below. Empty fields are omitted.
-3. The closing, resolved and substituted.
-4. The Reply mode section, only when the selected mode has a non-empty instruction (see Reply modes).
+1. The language line: "Write all of your replies to me in <English|French>. Keep code, identifiers and file contents in their original language."
+2. The preamble, resolved and substituted.
+3. Each top-level field in order, as below. Empty fields are omitted.
+4. The closing, resolved and substituted.
+5. The Reply mode section, only when the selected mode has a non-empty instruction (see Reply modes).
 
 **Top-level fields**
 
@@ -487,10 +490,18 @@ The app has three views, Builder, History and Settings, switched by a navigation
 **Appearance**
 
 - Theme: System (default), Light or Dark.
+- Language: Browser default (default), English or Français (each language named in itself). See Languages.
 
 **Data**
 
 - Export all, Import, the storage meter, and the list of corrupt-data copies (see Storage).
+
+## Languages
+
+- **Interface:** English or French. With no choice saved, the app uses the first of the browser's languages (`navigator.languages`) that it supports, else English. The choice is stored in `pb.settings` and can be changed in Settings, Appearance. `<html lang>`, page titles, dates and the storage meter follow it.
+- **Prompts are always English,** so templates, modes and the review wrapper are maintained in one language. The only language-dependent part is the language line that opens every prompt, asking the AI to reply in the interface language.
+- **Built-in templates and modes** show translated labels in the form (names, field labels, options, hints, item labels). The prompt is rendered from the English template, so its headings and prefixes stay English. Default group items (Work, Testing, Documenting) are user content and start in the interface language.
+- **Not translated:** user-written text and custom templates, the template editor's view of a template's own labels, JSON linter messages and import file problems.
 
 ## Storage and persistence
 
@@ -499,7 +510,7 @@ All user data lives in the browser's localStorage as JSON. There is no server an
 | Key | Holds |
 | --- | --- |
 | `pb.version` | Storage schema version |
-| `pb.settings` | UI settings: theme, last template id, dismissed notices, providers confirmed with "Don't ask again" |
+| `pb.settings` | UI settings: theme, language (`null` follows the browser), last template id, dismissed notices, providers confirmed with "Don't ask again" |
 | `pb.templates` | User defaults and custom templates, keyed by id |
 | `pb.modes` | User default and custom reply modes, keyed by id |
 | `pb.wrapper` | User default of the review wrapper, with `basedOn` |

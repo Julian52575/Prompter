@@ -1,5 +1,6 @@
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { useApp } from "./context";
 
 export interface ConfirmOptions {
   title: string;
@@ -80,6 +81,7 @@ function Modal({ d, close }: { d: Open; close: (r: ConfirmResult) => void }) {
 }
 
 function ConfirmBody({ o, close }: { o: ConfirmOptions; close: (r: ConfirmResult) => void }) {
+  const { t } = useApp();
   const [checked, setChecked] = useState(false);
   return (
     <>
@@ -93,7 +95,7 @@ function ConfirmBody({ o, close }: { o: ConfirmOptions; close: (r: ConfirmResult
       )}
       <div class="actions">
         <button type="button" data-initial onClick={() => close({ choice: "cancel", checked })}>
-          {o.cancel ?? "Cancel"}
+          {o.cancel ?? t.common.cancel}
         </button>
         {o.extra?.map((x) => (
           <button type="button" key={x.value} onClick={() => close({ choice: x.value, checked })}>
