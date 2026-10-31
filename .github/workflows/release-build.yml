@@ -1,0 +1,59 @@
+name: release-build
+
+# Builds the app (one self-contained HTML file) and uploads it to the release
+# as prompt-builder.html.
+#
+#   release published   -> uploads to that release's tag
+#   workflow_dispatch   -> uploads to an existing release tag (re-run or fix)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to upload to"
+        required: true
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # upload the release asset
+    env:
+      TAG_NAME: ${{ github.event.release.tag_name || inputs.tag }}
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ env.TAG_NAME }}
+          persist-credentials: false
+
+      # No npm cache: a poisoned cache must never reach a release asset.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Build
+        working-directory: frontend
+        run: |
+          npm ci
+          npm test
+          npm run build
+          cp dist/index.html ../prompt-builder.html
+
+      - name: Upload prompt-builder.html to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG_NAME" prompt-builder.html --clobber --repo "$GITHUB_REPOSITORY"

@@ -14,7 +14,7 @@ name: release-please
 #
 # Secret RELEASE_PLEASE_GITHUB_TOKEN (PAT or GitHub App token, Contents +
 # Pull requests: write) is REQUIRED: releases created with the built-in
-# GITHUB_TOKEN do not trigger other workflows, so release-to-ghcr.yml would
+# GITHUB_TOKEN do not trigger other workflows, so release-build.yml would
 # never run.
 
 on:
@@ -63,7 +63,7 @@ jobs:
             echo "2. Add it as the Actions secret \`RELEASE_PLEASE_GITHUB_TOKEN\`: [repository secrets]($SETTINGS_URL), or \`./adapt.py --gh-vars\`."
             echo "3. Re-run this workflow."
             echo
-            echo "The built-in \`GITHUB_TOKEN\` is not used on purpose: releases it creates do not trigger \`release-to-ghcr.yml\`."
+            echo "The built-in \`GITHUB_TOKEN\` is not used on purpose: releases it creates do not trigger \`release-build.yml\`."
           } >> "$GITHUB_STEP_SUMMARY"
           exit 1
 
@@ -92,11 +92,3 @@ jobs:
             echo
             echo "Replace it in the [repository secrets]($SETTINGS_URL) or with \`./adapt.py --gh-vars\`, then re-run this workflow."
           } >> "$GITHUB_STEP_SUMMARY"
-
-      # Runs only on the push that merged the Release PR: hook publish steps
-      # here, gated on the same condition.
-      - name: Released
-        if: ${{ steps.release-please.outputs.release_created }}
-        env:
-          TAG_NAME: ${{ steps.release-please.outputs.tag_name }}
-        run: echo "Published ${TAG_NAME}"

@@ -34,7 +34,7 @@ rm *args:
         --filter "reference={{project}}*" --filter "reference=localhost/{{project}}*" \
       | sort -u | xargs -r {{tool}} rmi -f || true
 
-# Rebuild one service from scratch and recreate it, leaving the rest running: `just rebuild backend`
+# Rebuild one service from scratch and recreate it, leaving the rest running: `just rebuild frontend`
 rebuild service:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -46,7 +46,7 @@ rebuild service:
     {{tool}} volume rm -f "{{project}}_{{service}}-node-modules" >/dev/null 2>&1 || true
     {{compose}} up -d --no-deps {{service}}
 
-# Like `just rm`, but also delete named volumes -- wipes db data etc.
+# Like `just rm`, but also delete named volumes (the dev image's node_modules)
 nuke *args:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -60,16 +60,11 @@ nuke *args:
     fi
     read -rp "⚠️  Delete containers, images AND volumes for this project? type 'yes': " c
     [[ "$c" == "yes" ]] || { echo "aborted"; exit 1; }
-    just _pre-nuke
     {{compose}} down --volumes --remove-orphans {{args}}
     just rm
     # catches volumes left by services no longer in the compose file
     {{tool}} volume prune --force --filter "label=com.docker.compose.project={{project}}"
     echo "done"
-
-# (internal) hook run by `nuke` before anything is deleted
-_pre-nuke:
-    just database-dump
 
 # Show container status
 ps:
@@ -111,9 +106,24 @@ attach service:
 _cid service:
     @{{tool}} ps -q --filter "label=com.docker.compose.project.working_dir={{justfile_directory()}}" --filter "label=com.docker.compose.service={{service}}" | head -n1
 
-# Diagnose the stack: prints what looks wrong; full report in .compose-diagnostic-<time>.md to share
-compose-diagnostic:
-    @python3 scripts/compose_diagnostic.py --tool {{tool}}
+#### App
+# One-off containers from the dev image, so the host needs no Node.js.
+
+# Build the single-file app into frontend/dist/index.html
+build:
+    {{compose}} run --rm --no-deps -T frontend npm run build
+
+# Unit tests (Vitest); extra arguments go to vitest
+test *args:
+    {{compose}} run --rm --no-deps -T frontend npx vitest run "$@"
+
+# Lint and typecheck the app
+lint:
+    {{compose}} run --rm --no-deps -T frontend sh -c "npm run lint && npm run typecheck"
+
+# Browser tests (Playwright, Chromium + Firefox) against the build; needs Node.js on the host
+e2e *args:
+    cd frontend && npm run build && npm run e2e -- "$@"
 
 #### Lint
 
@@ -122,49 +132,3 @@ lint-workflows:
     actionlint
     zizmor .github/
     check-jsonschema --builtin-schema vendor.github-workflows .github/workflows/*.yml
-
-#### Database
-# Postgres backup/restore in pg_dump's custom format (compressed, restorable
-# with pg_restore) for the `db` service, using POSTGRES_USER / POSTGRES_DB
-# from .env. `nuke` dumps first through `_pre-nuke`.
-
-# Dump the database to db_backup_<timestamp>.dump
-database-dump:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    source <(just _ensure-db)
-    # computed once, so the file written and the name printed always match
-    out="db_backup_$(date +%Y%m%d_%H%M%S).dump"
-    # via a temp file: a failed pg_dump must not leave an empty "backup"
-    {{tool}} exec "$cid" pg_dump -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -Fc > "$out.part" \
-        || { rm -f "$out.part"; exit 1; }
-    mv "$out.part" "$out"
-    echo "Dumped database into $out"
-
-# Restore a dump, replacing what it contains: `just database-pipe db_backup_x.dump`
-database-pipe file:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    [[ -f "{{file}}" ]] || { echo "{{file}} not found" >&2; exit 1; }
-    source <(just _ensure-db)
-    {{tool}} exec -i "$cid" pg_restore -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" --clean --if-exists < "{{file}}"
-    echo "Restored {{file}} into the database"
-
-# (internal) start `db` if it is down, wait for it, and print `cid=<id>`.
-# A db started here is stopped again when the calling recipe exits.
-_ensure-db:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    cid="$(just _cid db)"
-    if [[ -z "$cid" ]]; then
-        echo "db is down -- starting it" >&2
-        {{compose}} up -d db >&2
-        for _ in $(seq 1 30); do
-            cid="$(just _cid db)"
-            [[ -n "$cid" ]] && {{tool}} exec "$cid" pg_isready -U "${POSTGRES_USER}" >/dev/null 2>&1 && break
-            sleep 1
-        done
-        echo "trap '{{tool}} stop $cid >/dev/null || true' EXIT"
-    fi
-    [[ -n "$cid" ]] || { echo "could not find the db container" >&2; exit 1; }
-    echo "cid=$cid"

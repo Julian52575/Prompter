@@ -87,14 +87,14 @@ set yet**; set ones are left alone. Blank input skips one.
 
 | Name | Kind | Needed for | Scope | If unset |
 | ---- | ---- | ---------- | ----- | -------- |
-| `RELEASE_PLEASE_GITHUB_TOKEN` | secret, **required** | `release-please.yml` | fine-grained PAT or GitHub App token on this repo: *Contents* and *Pull requests* read/write | release-please fails; with the built-in token instead, releases would not trigger `release-to-ghcr.yml` |
+| `RELEASE_PLEASE_GITHUB_TOKEN` | secret, **required** | `release-please.yml` | fine-grained PAT or GitHub App token on this repo: *Contents* and *Pull requests* read/write | release-please fails; with the built-in token instead, releases would not trigger `release-build.yml` |
 | `SONARQUBE_TOKEN` | secret | `ci-sast.yml` SonarQube job | SonarQube Cloud analysis token | SonarQube is skipped; CodeQL still runs |
 | `SAST_REPORT_TOKEN` | secret | `ci-sast.yml` report commits on `main` | fine-grained PAT: *Contents* read/write; needs a ruleset bypass if `main` is protected | reports stay in the run summary only |
 | `DISCORD_WEBHOOK_URL` | secret | `notify-discord-review-requested.yml` | a Discord channel webhook URL (*Channel settings → Integrations → Webhooks*, [docs](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)) | no Discord notification; the job runs and skips its steps |
 | `MAKE_PR_DRAFT` | variable | `make-pr-draft.yml` | `true` | new PRs are not turned into drafts |
 
-`GITHUB_TOKEN` is provided by Actions; image pushes to GHCR and the Scorecard
-workflow use it.
+`GITHUB_TOKEN` is provided by Actions; `release-build.yml` (asset upload) and the
+Scorecard workflow use it.
 
 `--governance` runs `scripts/apply-governance.sh`: the branch ruleset from
 `.github/rulesets/main.json`, squash-only merges, read-only default
@@ -130,9 +130,6 @@ Edit the lines marked `CUSTOMISE`:
 
 | File | What to change |
 | ---- | -------------- |
-| `.github/workflows/release-to-ghcr.yml` | the `matrix.include` list: one `image` / `context` per image you publish. Images land at `ghcr.io/<owner>/<repo>-<image>`; set each package's visibility in *Packages* after the first push. |
-| `.github/workflows/ci.yml` → `node` | the `service` matrix: one entry per Node.js folder |
-| `.github/workflows/ci.yml` → `stack` | the URLs `Call every service through the proxy` checks, once you replace the example services |
 | `.github/workflows/ci-sast.yml` → `codeql` | `languages:` (ships with `actions, javascript-typescript`); compiled languages may need another `build-mode` |
 | `.github/workflows/ci-sast.yml` → `sonarqube` | steps that generate coverage reports |
 | `.sast/codeql-config.yml` | `paths:` to your sources |
@@ -149,30 +146,20 @@ rules in `AGENTS.md` and run `just lint-workflows`.
 
 ## 6. Your application
 
-- Build on the `frontend/` and `backend/` placeholders, or replace them. Give each a `Dockerfile`
-  (release image, code copied in) and a `Dev.Dockerfile` (dependencies only;
-  `docker-compose.yml` bind-mounts the source for live reload).
-- In `docker-compose.yml`, keep the 1-second healthchecks and the `traefik.*`
-  labels, or publish `ports:` directly and drop the `proxy` service. Always
-  publish with an address (`"127.0.0.1:5432:5432"`); a bare `"5432:5432"`
-  listens on every interface. `PROXY_BIND=0.0.0.0` in `.env` shares the app
-  on the network.
+The app lives in `frontend/` (see [README.md](README.md)); its specification
+is [`docs/spec.md`](docs/spec.md).
+
+- `docker-compose.yml` runs only the Vite dev server, published on
+  `127.0.0.1`. Always publish with an address; a bare `"5173:5173"` listens
+  on every interface. `APP_BIND=0.0.0.0` in `.env` shares it on the network.
 - Put new environment variables in `.env.example`; secrets get a
   `change-me-…` value so the dev shell generates them.
 - Add a tool as its own `nix/<tool>.nix` and list it in `nix/tools.nix`
   (see the existing files for the pattern and how to bump them).
-- The `db` service is Postgres; change its schema in
-  `backend/prisma/schema.prisma`. Without a database, drop `db`, Prisma and
-  the `database-*` recipes, and set `_pre-nuke` back to `@true`.
 
 ## 7. Check it works
 
 1. Open a PR. `ci-required` must go green and blocks the merge until it does.
-2. Merge it. release-please opens a Release PR; merging that creates a tag,
-   and `release-to-ghcr.yml` pushes signed images. Verify one (cosign v3+):
-   ```bash
-   cosign verify ghcr.io/<owner>/<repo>-backend:<tag> \
-     --certificate-identity-regexp 'https://github.com/<owner>/<repo>/' \
-     --certificate-oidc-issuer https://token.actions.githubusercontent.com
-   ```
+2. Merge it. release-please opens a Release PR; merging that creates a tag
+   and a GitHub Release, and `release-build.yml` uploads `prompt-builder.html` to it.
 3. Run `openssf-scorecard.yml` once by hand so the README badge has data.

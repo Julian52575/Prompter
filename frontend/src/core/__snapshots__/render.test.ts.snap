@@ -1,0 +1,589 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Review > answer / case-closed / open with 0 sources 1`] = `
+"Review the situation, files, goal, and sources. Find and combine the evidence needed to answer the question.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > answer / case-closed / open with 1 sources 1`] = `
+"Review the situation, files, goal, and sources. Find and combine the evidence needed to answer the question.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- MDN: docs
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > answer / case-closed / restricted with 2 sources 1`] = `
+"Review the situation, files, goal, and sources. Find and combine the evidence needed to answer the question.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- MDN: docs
+- RFC 9110
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > answer / standard / open with 0 sources 1`] = `
+"Review the situation, files, goal, and sources. Find and combine the evidence needed to answer the question.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+"
+`;
+
+exports[`Review > answer / standard / open with 1 sources 1`] = `
+"Review the situation, files, goal, and sources. Find and combine the evidence needed to answer the question.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- MDN: docs
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+"
+`;
+
+exports[`Review > answer / standard / restricted with 2 sources 1`] = `
+"Review the situation, files, goal, and sources. Find and combine the evidence needed to answer the question.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Answer a question:** Make it stop.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- MDN: docs
+- RFC 9110
+
+Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
+"
+`;
+
+exports[`Review > fix / case-closed / open with 0 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > fix / case-closed / open with 1 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- MDN: docs
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > fix / case-closed / restricted with 2 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- MDN: docs
+- RFC 9110
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > fix / standard / open with 0 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+"
+`;
+
+exports[`Review > fix / standard / open with 1 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- MDN: docs
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+"
+`;
+
+exports[`Review > fix / standard / restricted with 2 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Fix a bug:** Make it stop.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- MDN: docs
+- RFC 9110
+
+Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources.
+"
+`;
+
+exports[`Review > learn / case-closed / open with 0 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the relevant stack and explain how its parts work together.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Learn the stack:** Make it stop.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > learn / case-closed / open with 1 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the relevant stack and explain how its parts work together.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Learn the stack:** Make it stop.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- MDN: docs
+
+Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > learn / case-closed / restricted with 2 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the relevant stack and explain how its parts work together.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Learn the stack:** Make it stop.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- MDN: docs
+- RFC 9110
+
+Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > learn / standard / open with 0 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the relevant stack and explain how its parts work together.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Learn the stack:** Make it stop.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+"
+`;
+
+exports[`Review > learn / standard / open with 1 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the relevant stack and explain how its parts work together.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Learn the stack:** Make it stop.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- MDN: docs
+
+Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+"
+`;
+
+exports[`Review > learn / standard / restricted with 2 sources 1`] = `
+"Review the situation, files, goal, and sources. Trace the relevant stack and explain how its parts work together.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Learn the stack:** Make it stop.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- MDN: docs
+- RFC 9110
+
+Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference.
+"
+`;
+
+exports[`Review > prevent / case-closed / open with 0 sources 1`] = `
+"Review the situation, files, goal, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > prevent / case-closed / open with 1 sources 1`] = `
+"Review the situation, files, goal, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- MDN: docs
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > prevent / case-closed / restricted with 2 sources 1`] = `
+"Review the situation, files, goal, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- MDN: docs
+- RFC 9110
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a stack to learn, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > prevent / standard / open with 0 sources 1`] = `
+"Review the situation, files, goal, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+"
+`;
+
+exports[`Review > prevent / standard / open with 1 sources 1`] = `
+"Review the situation, files, goal, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- MDN: docs
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+"
+`;
+
+exports[`Review > prevent / standard / restricted with 2 sources 1`] = `
+"Review the situation, files, goal, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.
+
+## Situation
+The app crashes.
+
+## Files
+- \`src/a.ts\`: entry
+- \`b.ts\`
+
+## Goal
+**Prevent a bug:** Make it stop.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- MDN: docs
+- RFC 9110
+
+Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
+"
+`;

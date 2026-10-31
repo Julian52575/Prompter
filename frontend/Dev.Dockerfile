@@ -5,5 +5,5 @@ FROM docker.io/library/node:24-slim
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
-EXPOSE 3000
+EXPOSE 5173
 CMD ["npx", "vite"]

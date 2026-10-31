@@ -7,7 +7,6 @@ name: "CodeQL"
 # CUSTOMISE: limit analysis to your sources (honoured for interpreted
 # languages); keep in step with sonar.sources in sonar-project.properties.
 # paths:
-#   - backend
 #   - frontend
 
 paths-ignore:

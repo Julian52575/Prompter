@@ -1,5 +1,5 @@
 {
-  description = "Dev environment template: Nix + Just + rootless Podman + Traefik";
+  description = "Prompt Builder dev environment: Nix + Just + rootless Podman";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
   # Newest prebuilt packages, for the tools with no official binary release
@@ -76,7 +76,7 @@
             if [ "$(uname -s)" = "Darwin" ]; then
               # --- macOS: host Podman inside `podman machine` ---------------
               # Nothing to configure locally; only expose the machine's API
-              # socket for Docker-compatible tools (and Traefik's bind mount).
+              # socket for Docker-compatible tools.
               if ! command -v podman >/dev/null 2>&1; then
                 echo "podman: not found -- install Podman Desktop, or 'brew install podman'" >&2
               elif ! podman info >/dev/null 2>&1; then
@@ -173,7 +173,7 @@
                 podman_sock="$(podman info --format '{{.Host.RemoteSocket.Path}}' 2>/dev/null || true)"
                 : "''${podman_sock:=''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/podman/podman.sock}"
                 export DOCKER_HOST="unix://$podman_sock"
-                export DOCKER_SOCK="$podman_sock" # bare path, for bind-mounting into containers (see docker-compose.yml)
+                export DOCKER_SOCK="$podman_sock" # bare path, for bind-mounting into containers
                 mkdir -p "$(dirname "$podman_sock")"
 
                 _ping() { curl -fsS --max-time 2 --unix-socket "$podman_sock" http://d/_ping >/dev/null 2>&1; }

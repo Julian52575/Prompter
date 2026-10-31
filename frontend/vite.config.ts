@@ -1,25 +1,19 @@
 /// <reference types="vitest/config" />
-import react from "@vitejs/plugin-react";
+import preact from "@preact/preset-vite";
 import { defineConfig } from "vite";
+import { viteSingleFile } from "vite-plugin-singlefile";
+import { cspHash } from "./csp-hash.ts";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    host: "0.0.0.0",
-    port: 3000,
-    // Behind Traefik in compose; this proxy is for `npm run dev` on the host.
-    proxy: {
-      "/api": {
-        target: process.env.VITE_BACKEND_URL || "http://localhost:3000",
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
-    },
-  },
+  plugins: [preact(), viteSingleFile({ removeViteModuleLoader: true }), cspHash()],
+  // Relative paths: the build opens from file://.
+  base: "./",
+  build: { modulePreload: { polyfill: false }, reportCompressedSize: false },
+  server: { host: "0.0.0.0", port: 5173, strictPort: true },
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: "./src/setupTests.ts",
+    include: ["src/**/*.test.{ts,tsx}"],
     coverage: { provider: "v8", reporter: ["text", "lcov"], include: ["src/**/*.{ts,tsx}"] },
   },
 });

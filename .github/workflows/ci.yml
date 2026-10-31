@@ -245,18 +245,14 @@ jobs:
           path: dependency-audit
           if-no-files-found: ignore
 
-  # Lint, test and build each Node.js service in its own folder.
-  node:
-    name: node (${{ matrix.service }})
+  # Lint, typecheck, unit-test and build the app; the build must stay one
+  # self-contained HTML file under the spec's 150 KB budget.
+  app:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        service: [backend, frontend] # CUSTOMISE: one entry per Node.js service
     defaults:
       run:
-        working-directory: ${{ matrix.service }}
+        working-directory: frontend
     steps:
       - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
         with:
@@ -270,27 +266,70 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: ${{ matrix.service }}/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
       - run: npm ci
       - run: npm run lint
-      - name: Generate the Prisma client
-        if: hashFiles(format('{0}/prisma/schema.prisma', matrix.service)) != ''
-        run: npx prisma generate
+      - run: npm run typecheck
       - run: npm test
-      - name: Build
-        if: matrix.service == 'frontend'
-        run: npm run build
+      - run: npm run build
 
-  # How the services work together: boots the whole compose stack and calls
-  # every route through the proxy. CUSTOMISE the checks when you replace the
-  # example services.
+      - name: Check the build is one file under 150 KB
+        run: |
+          set -euo pipefail
+          files=$(find dist -type f | wc -l)
+          size=$(stat -c %s dist/index.html)
+          echo "dist/index.html: $size bytes ($files file(s) in dist)"
+          [ "$files" -eq 1 ] || { echo "::error::dist must hold only index.html"; exit 1; }
+          [ "$size" -lt 153600 ] || { echo "::error::dist/index.html is $size bytes; the budget is 150 KB"; exit 1; }
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: prompt-builder
+          path: frontend/dist/index.html
+          if-no-files-found: error
+
+  # Playwright against the built file from file://: zero requests, CSP,
+  # keyboard flows, multi-tab, export/import, chatbot links (intercepted)
+  # and axe-core, in Chromium and Firefox.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run e2e:install
+      - run: npm run e2e
+
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-traces
+          path: frontend/test-results
+          if-no-files-found: ignore
+
+  # The dev stack boots and serves the app; every volume is named.
   stack:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      PROXY: http://127.0.0.1:8000
-      DASHBOARD: http://127.0.0.1:8080
     steps:
       - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
         with:
@@ -306,27 +345,10 @@ jobs:
       - name: Build and start the stack, waiting for healthchecks
         run: docker compose up -d --build --wait --wait-timeout 300
 
-      - name: Call every service through the proxy
-        run: |
-          set -euo pipefail
-          # Traefik picks up routes asynchronously; retry before failing. $2 must
-          # appear in the body, or an unrouted /api would pass on the
-          # frontend's catch-all HTML.
-          check() {
-            for _ in $(seq 1 30); do
-              curl -fsS "$1" | grep -qF -- "$2" && { echo "ok    $1"; return 0; }
-              sleep 1
-            done
-            echo "::error::$1 did not answer with '$2'"
-            return 1
-          }
-          check "$PROXY/" '<div id="root">'
-          check "$PROXY/api/health" '"status":"ok"'
-          check "$PROXY/api/items" '[' # reaches Postgres through Prisma
-          check "$DASHBOARD/api/rawdata" '"routers"'
+      - name: The dev server answers
+        run: curl -fsS http://127.0.0.1:5173/ | grep -qF '<div id="root">'
 
-      # Every volume must be named: anonymous ones escape compose-diagnostic
-      # and cleanup. A VOLUME declared by an image needs a named mount too.
+      # Anonymous volumes escape cleanup. A VOLUME declared by an image needs a named mount too.
       - name: No anonymous volumes
         run: |
           set -euo pipefail
@@ -363,7 +385,8 @@ jobs:
       - compose-lint
       - workflow-lint
       - zizmor
-      - node
+      - app
+      - e2e
       - dependencies-audit
       - stack
     runs-on: ubuntu-latest

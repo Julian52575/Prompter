@@ -71,12 +71,13 @@ lives in both `.githooks/check-conventional-commit-msg` and
 | ----- | -------- | ----------------- |
 | `conventional-title` (advisory) | PR title (and a lone commit) is a Conventional Commit | — edit the title, it re-runs |
 | `ci-required` ← `devshell` | the flake evaluates | `nix flake check --no-build` |
-| `ci-required` ← `node` | each Node.js service lints, tests and builds | `npm run lint && npm test` in its folder |
+| `ci-required` ← `app` | the app lints, typechecks, passes unit tests and builds to one file under 150 KB | `just lint && just test && just build` |
+| `ci-required` ← `e2e` | Playwright + axe-core in Chromium and Firefox against the built file | `just e2e` |
 | `ci-required` ← `dockerfile-lint` | hadolint on every Dockerfile | `hadolint <file>` |
 | `ci-required` ← `compose-lint` | compose file resolves | `podman-compose config` |
 | `ci-required` ← `workflow-lint`, `zizmor` | workflows lint clean and pass the security audit | `just lint-workflows` |
 | `ci-required` ← `dependencies-audit` | no Critical/High and fewer than 5 Moderate+Low advisories | bump the dependency |
-| `ci-required` ← `stack` | the stack boots and every route answers | `just up -d && just logs` |
+| `ci-required` ← `stack` | the dev container boots and serves the app | `just up -d && just logs` |
 | `ci-sast-required` (opt-in) | no CodeQL error; SonarQube gate passes | see [`.sast/README.md`](.sast/README.md) |
 
 Before opening: issue linked, PR title a Conventional Commit, branch rebased, `just lint-workflows` run if you
@@ -87,7 +88,7 @@ by line.
 
 Never by hand. release-please keeps a Release PR open with the next version
 and changelog; merging it tags the release (no `v` prefix), and
-`release-to-ghcr.yml` publishes signed images.
+`release-build.yml` uploads the built `prompt-builder.html` to it.
 
 ## Tools in the dev shell
 
@@ -97,13 +98,8 @@ commit SHAs) and `jq`.
 
 ## Troubleshooting
 
-**Stack not working?** Run `just compose-diagnostic` first. It checks the
-container tool, `.env`, the compose file, each container's state, health and
-logs, the host ports, Traefik's routes and the disk, then lists what looks
-wrong in plain words. The full report (logs and state) is saved as
-`.compose-diagnostic-<time>.md` (git-ignored) with `.env` values and other
-credentials masked: skim it, then attach it to your bug issue or send it to
-the DevOps team.
+**Dev container not working?** Check `just ps` and `just logs frontend`;
+`just rebuild frontend` resets its image and `node_modules` volume.
 
 Record every incident under [`docs/troubleshooting/`](docs/troubleshooting/),
 in a subfolder per area, one Markdown file per incident:
@@ -112,7 +108,7 @@ in a subfolder per area, one Markdown file per incident:
 docs/troubleshooting/
 ├── podman/not-a-directory-on-wsl.md
 ├── ci/stack-job-timeout.md
-└── backend/prisma-openssl-missing.md
+└── app/csp-blocks-export.md
 ```
 
 Each file names the **Error** (what was observed), its **Occurrences**

@@ -1,44 +1,77 @@
 <!-- `./adapt.py --rename` points the badge at your repository. -->
 [![OpenSSF Scorecard](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FJulian52575%2FBig-3-Governed-Template%2Fmain%2F.readme-badges%2Fscorecard-badge.json)](.readme-badges/scorecard-results.json)
 
-# Nix + Just + Rootless Podman — The Big 3, governed
+# Prompt Builder
 
-<img width="653" height="758" alt="Big3NixPodJust" src="https://github.com/user-attachments/assets/0044d938-f98a-44a2-9057-2fa8246e9a1a" />
+A private, local web app that turns a filled-in template into a Markdown
+prompt for an AI agent, which you can edit, copy, or open in ChatGPT or
+Mistral. The full specification is [`docs/spec.md`](docs/spec.md).
 
-A GitHub **template repository**: install Nix, clone, and you get a
-multi-service dev environment that is identical on every Linux or macOS
-machine — plus hardened CI and repository governance out of the box.
+- **One file:** the build is a single self-contained `index.html` (about
+  115 KB, Preact + TypeScript) that opens straight from disk, no server.
+- **Private:** a Content Security Policy blocks every network request from
+  the page. A prompt leaves the app only when you press *Open in ChatGPT* or
+  *Open in Mistral*, after a first-use confirmation.
+- **Persistent:** drafts, history, custom templates and reply modes live in
+  the browser's localStorage. *Settings → Data → Export all* writes a JSON
+  backup; *Import* restores it (merge or replace).
+- **Accessible:** targets WCAG 2.2 AA (keyboard-only flows, labelled forms,
+  error summaries, live announcements, light/dark/high-contrast themes).
 
-## Quick start
+## Use it
+
+Download `prompt-builder.html` from the latest
+[release](../../releases) (or run `just build` and take
+`frontend/dist/index.html`) and open it in a browser.
+
+1. Pick a template (*Task list* or *Review*, or your own from *Settings*).
+2. Fill the form, choose a reply mode and source scope where offered.
+3. Press **Generate**, edit the prompt on the right if needed.
+4. Choose **Bare prompt** or **Review request** (wraps the prompt and asks a
+   chatbot to review it), then **Copy**, **Open in ChatGPT** or **Open in
+   Mistral**.
+
+Everything stays in this browser. Clearing site data deletes it, and some
+browsers key `file://` storage by path, so export before moving or renaming
+the file.
+
+## Develop
 
 ```bash
 nix develop        # enter the dev shell (first run downloads the tools)
-just up -d         # start the stack in the background
+just up -d         # Vite dev server with hot reload on http://localhost:5173/
+just test          # unit tests (Vitest)
+just lint          # oxlint + TypeScript
+just build         # frontend/dist/index.html
+just e2e           # Playwright + axe-core in Chromium and Firefox (needs Node.js on the host)
 just               # list every command
 ```
 
-| URL | goes to |
-| --- | ------- |
-| <http://localhost:8000/> | `frontend` — [React](https://react.dev/) + [Vite](https://vite.dev/) dev server (hot reload) |
-| <http://localhost:8000/api/health> | `backend` — [Express](https://expressjs.com/) + [Prisma](https://www.prisma.io/docs) on Node.js 24 |
-| — | `db` — PostgreSQL 18, used by the backend through Prisma |
-| <http://localhost:8080/> | Traefik dashboard (local only) |
+`just test`, `lint` and `build` run in a one-off container from the dev
+image, so they need no Node.js on the host. Without containers,
+`cd frontend && npm ci` and use the `npm run` scripts in
+`frontend/package.json`.
 
-Making your own repo from it? Click **Use this template**, then run
-`./adapt.py` and follow **[README-ADAPT.md](README-ADAPT.md)**.
+| Path | Holds |
+| ---- | ----- |
+| `frontend/src/core/` | pure logic: renderer, wording, validation, JSON linter, storage, layers, review wrapper and chatbot links (unit-tested) |
+| `frontend/src/ui/` | Preact views: Builder, History, Settings (visual template builder + JSON view), dialogs |
+| `frontend/csp-hash.ts` | Vite plugin writing the inlined bundle's SHA-256 into the CSP |
+| `frontend/e2e/` | Playwright tests against the built file from `file://` |
+| `frontend/src/assets/` | Pixelify Sans Latin subset (SIL OFL 1.1, licence alongside) |
 
-## The stack
+## The dev environment
+
+This repository was created from a Nix + Just + rootless Podman template;
+the governance and CI below come from it.
 
 - **[Nix](https://nixos.org/)** — `flake.nix` lists the tools, `flake.lock`
   pins them by hash. Everyone (and CI) gets the same binaries; nothing is
   installed globally. See [Nix flakes](https://nixos.wiki/wiki/Flakes).
 - **[Just](https://just.systems/man/en/)** — the project's commands, named and
   documented in the `justfile`.
-- **Rootless [Podman](https://docs.podman.io/)** + compose — the whole stack
-  from `docker-compose.yml`, no daemon, no `sudo`.
-- **[Traefik](https://doc.traefik.io/traefik/)** — one entrypoint on
-  `:8000`, routing by `traefik.*` labels on each service (`/` → web, `/api` →
-  backend). Add a service + two labels and it is routed.
+- **Rootless [Podman](https://docs.podman.io/)** + compose — the dev
+  container from `docker-compose.yml`, no daemon, no `sudo`.
 
 ### Requirements
 
@@ -56,8 +89,8 @@ Making your own repo from it? Click **Use this template**, then run
     `justfile` and git hooks), [just](https://just.systems/man/en/packages.html),
     and [Podman Desktop](https://podman-desktop.io/) or
     [Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/).
-    [Node.js 24](https://nodejs.org/) is optional: the services run their own
-    Node in their containers; install it only to run `npm` outside them.
+    [Node.js 24](https://nodejs.org/) is optional: the dev container runs its
+    own Node; install it only to run `npm` (or `just e2e`) outside it.
     Then run the commands in [What the shell does](#what-the-shell-does)
     yourself. `just` uses Podman, or Docker when Podman is missing.
 
@@ -142,7 +175,7 @@ Windows).
    ```
 
 6. **Exposes a Docker-compatible API socket** as `DOCKER_HOST` /
-   `DOCKER_SOCK`, which Traefik reads to discover services. Skip it with
+   `DOCKER_SOCK`, for tools that expect one. Skip it with
    `PODMAN_NO_SOCKET=1`. Without Nix, Docker already provides one; with
    Podman, enable its socket the way your system documents
    ([Podman socket](https://docs.podman.io/en/latest/markdown/podman-system-service.1.html)).
@@ -158,16 +191,16 @@ Windows).
 
 | command | purpose |
 | ------- | ------- |
-| `just up [-d]` | start the stack (`-d` recommended: Ctrl-C on an attached `podman-compose up` can leave processes behind) |
+| `just up [-d]` | start the dev server (`-d` recommended: Ctrl-C on an attached `podman-compose up` can leave processes behind) |
+| `just build` / `just test` / `just lint` | build the single file / unit tests / oxlint + TypeScript, in a one-off container |
+| `just e2e` | build, then Playwright + axe-core in Chromium and Firefox (host Node.js; `npm run e2e:install` once) |
 | `just down` | stop the stack, keep volumes |
 | `just ps` / `just logs [svc]` | status / follow logs |
 | `just exec <svc> <cmd…>` / `just sh <svc>` / `just attach <svc>` | run a command / shell / attach to a running service |
 | `just rebuild <svc>` | rebuild one service from scratch, the rest keep running |
 | `just rm` | stop the stack and delete its images (next `up` rebuilds) |
 | `just nuke` | also delete volumes (asks first; refuses on `main` or a release tag unless `NUKE_ANYWAY=1`) |
-| `just compose-diagnostic` | diagnose a broken stack: prints what looks wrong in plain words; the full report (logs, state) goes to `.compose-diagnostic-<time>.md` to share, credentials masked |
 | `just lint-workflows` | actionlint + zizmor + schema check, as CI does |
-| `just database-dump` / `database-pipe <file>` | Postgres backup/restore in `pg_dump -Fc` format (`db_backup_<timestamp>.dump`, gitignored) |
 
 ## Governance
 
@@ -207,12 +240,12 @@ All workflows follow the same hardening: actions pinned to a commit SHA
 
 | Workflow | Does |
 | -------- | ---- |
-| `ci.yml` | flake evaluation, lint + test + build of each Node.js service, hadolint, compose check, actionlint, zizmor, [osv-scanner](https://google.github.io/osv-scanner/) dependency audit, boots the stack and calls every route; all gated by the single `ci-required` job |
+| `ci.yml` | flake evaluation; app lint, typecheck, unit tests and build (one file under 150 KB, uploaded as an artifact); Playwright + axe-core in Chromium and Firefox; hadolint, compose check, actionlint, zizmor, [osv-scanner](https://google.github.io/osv-scanner/) dependency audit; boots the dev container; all gated by the single `ci-required` job |
 | `ci-sast.yml` | [CodeQL](https://codeql.github.com/docs/) always, [SonarQube Cloud](https://docs.sonarsource.com/sonarqube-cloud/) when its token is set; see [`.sast/README.md`](.sast/README.md) |
 | `check-conventional-commit-pr-title.yml` | PR title is a Conventional Commit (advisory, not required) |
 | `openssf-scorecard.yml` | weekly [OpenSSF Scorecard](https://scorecard.dev/); results go to the `openssf-update` branch and an issue with a one-click PR link. The README badge reads the merged result from `main`. |
 | `release-please.yml` | keeps a [release-please](https://github.com/googleapis/release-please) Release PR open; merging it tags and publishes the release |
-| `release-to-ghcr.yml` | on release: builds each image, pushes to GHCR with SBOM + provenance, signs keyless with [cosign](https://docs.sigstore.dev/cosign/signing/overview/) |
+| `release-build.yml` | on a published release (or by hand for an existing tag): tests and builds the app, uploads `prompt-builder.html` to the release |
 | `make-pr-draft.yml` | opt-in (`MAKE_PR_DRAFT=true` variable): new PRs start as drafts |
 | `notify-discord-review-requested.yml` | opt-in (`DISCORD_WEBHOOK_URL` secret): posts review requests to a Discord channel |
 
@@ -225,9 +258,9 @@ machine, swap it for [Cachix](https://docs.cachix.org/continuous-integration-set
 ```
 flake.nix, flake.lock, nix/            dev shell; one file per pinned tool
 justfile                               project commands
-docker-compose.yml                     Traefik proxy + frontend + backend + Postgres
-frontend/                              React + Vite placeholder (Vitest, oxlint)
-backend/                               Express + Prisma placeholder (Jest, supertest, oxlint)
+docker-compose.yml                     Vite dev server for frontend/
+frontend/                              the app: Preact + TypeScript + Vite (Vitest, Playwright, oxlint)
+docs/spec.md                           the Prompt Builder specification
 .config/podman/                        rootless Podman config (storage.conf is generated)
 .env.example                           template for .env
 .githooks/                             commit-msg checks
@@ -251,19 +284,9 @@ CONTRIBUTING.md, AGENTS.md
   `cache.nixos.org` build from nixpkgs-unstable (openssl, curl). Each file
   says how to bump it. The Podman stack follows nixpkgs: bump it by editing
   `nixpkgs.url`, then `nix flake update`.
-- **Services:** `frontend` and `backend` are placeholders; build on them or
-  replace them. Each has a release `Dockerfile` and a `Dev.Dockerfile` whose
-  source is bind-mounted, with `node_modules` in a named volume
-  (`<service>-node-modules`). After changing `package.json` or a
-  `Dev.Dockerfile`, run `just rebuild <svc>`; it also resets that volume.
-  Keep the 1-second healthchecks and `traefik.*` labels (or `ports:` bound to
-  `127.0.0.1`).
-- **Database schema:** edit `backend/prisma/schema.prisma`, then
-  `just exec backend npx prisma migrate dev --name <change>` and commit the
-  new migration. Migrations are applied on every backend start.
-  See [Prisma Migrate](https://www.prisma.io/docs/orm/prisma-migrate).
-- **No Traefik:** remove the `proxy` service and the labels, publish ports
-  directly.
+- **Dev container:** `frontend/Dev.Dockerfile` installs dependencies;
+  the source is bind-mounted, with `node_modules` in a named volume. After
+  changing `package.json` or the Dockerfile, run `just rebuild frontend`.
 
 ## AI usage disclosure
 
