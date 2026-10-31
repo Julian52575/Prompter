@@ -7,7 +7,7 @@ Oct 31, 2026 · @Julian
 Prompt Builder is a private, local web app that turns a filled-in template into a Markdown prompt for an AI agent, which the user can edit and copy.
 
 - **Private:** runs on the user's machine and makes no network calls of its own, enforced by a Content Security Policy (see Privacy enforcement). A prompt leaves the app only when the user presses Open in ChatGPT or Open in Mistral. No accounts, no telemetry.
-- **Lightweight:** one self-contained HTML file built with Vite, TypeScript and Preact. Size target: under 150 KB.
+- **Lightweight:** one self-contained HTML file built with Vite, TypeScript and Preact. The file is at most 250 KB, and no page uses more than 5 MB of JavaScript memory, so the app leaves room for the user's other processes (see Resource budgets).
 - **Accessible:** conforms to WCAG 2.2 level AA.
 - **Persistent:** drafts, history and custom templates survive restarts, stored as JSON in the browser's localStorage. A manual Export/Import file protects against data loss.
 - **Language:** the interface is in English or French; generated prompts are always in English (see Languages).
@@ -489,7 +489,7 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 **Appearance**
 
-- Theme: System (default), Light or Dark.
+- Theme: System (default), Light, Dark or Retro platformer.
 - Language: Browser default (default), English or Français (each language named in itself). See Languages.
 
 **Data**
@@ -614,7 +614,11 @@ The target is WCAG 2.2 level AA, and the pixel style must never cost legibility.
 - **Blocky look from CSS:** square corners, 3 to 4 px solid borders, hard offset shadows with no blur, a limited palette. No raster images for decoration.
 - **Font:** Pixelify Sans (SIL Open Font License 1.1) for headings only, at 24 px or larger, subset to Latin, embedded as WOFF2 in the file. Body text and the prompt textarea use a readable monospace stack at 16 px or larger, line height 1.5, never all caps.
 - **Icons:** inline SVG with crisp edges, always with a text label or accessible name.
-- **Themes:** light and dark, with the palette below.
+- **Themes:** light and dark, with the palette below, plus **Retro platformer**, a light theme inspired by 8-bit platform-game levels:
+  - peach sky, pastel blocks with corner bolts and a hard black shadow (pink form pane, blue prompt pane), a black status-bar header with light-blue navigation boxes, and a ground footer with orange and black stripes;
+  - outlined clouds in a band under the header and green hills tiled with two-tone triangles in a band above the footer. These bands hold no text, so text only ever sits on the sky, inputs or blocks;
+  - all scenery is drawn with CSS gradients, so the CSP needs no `img-src`. It is hidden from assistive technology (`aria-hidden`) and under `forced-colors`;
+  - headings use the embedded "Super Mario Bros. 3" fan font by David Fens (FontStruct Non-Commercial License; attribution in `assets/PlatformerLettering-LICENSE.txt`). Characters it lacks (punctuation, accents) fall back to Pixelify Sans. Because of this licence, builds must not be used commercially.
 
 ### Palette and measured contrast
 
@@ -676,9 +680,16 @@ Ratios use the WCAG 2.2 relative-luminance formula, measured against the backgro
 | Pixel style harming legibility | Pixel font for headings only; contrast tested in both themes against background and surface |
 | Models ignoring or faking citations despite the wording | Cannot be solved in the app; the dismissal rule and the citation requirement reduce it |
 
+### Resource budgets
+
+Both are enforced in CI on every pull request.
+
+- **Memory:** at most 5 MB of JavaScript heap on any single page, measured in Chromium after a forced garbage collection (Chrome DevTools protocol). The measured pages are: Builder with Task list; Builder with a generated Review and the review request selected; Builder in the Retro platformer theme; History with 200 entries; Settings; and Settings with the template editor and JSON view open. The CI job summary shows a table per page (heap, share of the budget, DOM nodes, result) and statistics (highest, lowest, mean, headroom).
+- **File size:** `dist/index.html` is at most 250 KB (256,000 bytes) and is the only file in `dist`. File size only loosely tracks memory, so this is a guard against accidental bloat, not the memory measure.
+
 ### Acceptance criteria
 
-1. The app opens from a local HTML file with no console errors and no CSP violations, and Playwright records zero requests from the app page other than the file itself. External pages open only in a new tab after the user presses a chatbot button.
+1. The app opens from a local HTML file of at most 250 KB, using at most 5 MB of JavaScript memory per page, with no console errors and no CSP violations, and Playwright records zero requests from the app page other than the file itself. External pages open only in a new tab after the user presses a chatbot button.
 2. Both built-in templates, rendered by the generic renderer, produce exactly the Markdown structures in this spec, with empty items omitted.
 3. Every combination of Review goal type, reply mode (Standard, Case-closed) and scope (Restricted, Open with and without sources) produces the specified output, covered by snapshot tests.
 4. Task list blocks and sub-blocks can be added, renamed, removed and reordered by keyboard, with the specified focus moves and announcements.

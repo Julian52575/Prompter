@@ -7,8 +7,10 @@ A private, local web app that turns a filled-in template into a Markdown
 prompt for an AI agent, which you can edit, copy, or open in ChatGPT or
 Mistral. The full specification is [`docs/spec.md`](docs/spec.md).
 
-- **One file:** the build is a single self-contained `index.html` (about
-  115 KB, Preact + TypeScript) that opens straight from disk, no server.
+- **One file:** the build is a single self-contained `index.html` (at most
+  250 KB, Preact + TypeScript) that opens straight from disk, no server.
+- **Light on memory:** no page uses more than 5 MB of JavaScript memory; CI
+  measures every page and reports it in the job summary.
 - **Private:** a Content Security Policy blocks every network request from
   the page. A prompt leaves the app only when you press *Open in ChatGPT* or
   *Open in Mistral*, after a first-use confirmation.
@@ -17,6 +19,8 @@ Mistral. The full specification is [`docs/spec.md`](docs/spec.md).
   backup; *Import* restores it (merge or replace).
 - **Accessible:** targets WCAG 2.2 AA (keyboard-only flows, labelled forms,
   error summaries, live announcements, light/dark/high-contrast themes).
+- **English or French** interface; prompts are always English. A Retro
+  platformer theme sits next to Light and Dark.
 
 ## Use it
 
@@ -240,7 +244,7 @@ All workflows follow the same hardening: actions pinned to a commit SHA
 
 | Workflow | Does |
 | -------- | ---- |
-| `ci.yml` | flake evaluation; app lint, typecheck, unit tests and build (one file under 150 KB, uploaded as an artifact); Playwright + axe-core in Chromium and Firefox; hadolint, compose check, actionlint, zizmor, [osv-scanner](https://google.github.io/osv-scanner/) dependency audit; boots the dev container; all gated by the single `ci-required` job |
+| `ci.yml` | flake evaluation; app lint, typecheck, unit tests and build (one file of at most 250 KB, uploaded as an artifact); Playwright + axe-core in Chromium and Firefox; a 5 MB per-page memory budget reported in the job summary; hadolint, compose check, actionlint, zizmor, [osv-scanner](https://google.github.io/osv-scanner/) dependency audit; boots the dev container; all gated by the single `ci-required` job |
 | `ci-sast.yml` | [CodeQL](https://codeql.github.com/docs/) always, [SonarQube Cloud](https://docs.sonarsource.com/sonarqube-cloud/) when its token is set; see [`.sast/README.md`](.sast/README.md) |
 | `check-conventional-commit-pr-title.yml` | PR title is a Conventional Commit (advisory, not required) |
 | `openssf-scorecard.yml` | weekly [OpenSSF Scorecard](https://scorecard.dev/); results go to the `openssf-update` branch and an issue with a one-click PR link. The README badge reads the merged result from `main`. |

@@ -71,8 +71,8 @@ lives in both `.githooks/check-conventional-commit-msg` and
 | ----- | -------- | ----------------- |
 | `conventional-title` (advisory) | PR title (and a lone commit) is a Conventional Commit | — edit the title, it re-runs |
 | `ci-required` ← `devshell` | the flake evaluates | `nix flake check --no-build` |
-| `ci-required` ← `app` | the app lints, typechecks, passes unit tests and builds to one file under 150 KB | `just lint && just test && just build` |
-| `ci-required` ← `e2e` | Playwright + axe-core in Chromium and Firefox against the built file | `just e2e` |
+| `ci-required` ← `app` | the app lints, typechecks, passes unit tests and builds to one file of at most 250 KB | `just lint && just test && just build` |
+| `ci-required` ← `e2e` | Playwright + axe-core in Chromium and Firefox against the built file, and every page within 5 MB of JavaScript memory | `just e2e` |
 | `ci-required` ← `dockerfile-lint` | hadolint on every Dockerfile | `hadolint <file>` |
 | `ci-required` ← `compose-lint` | compose file resolves | `podman-compose config` |
 | `ci-required` ← `workflow-lint`, `zizmor` | workflows lint clean and pass the security audit | `just lint-workflows` |
