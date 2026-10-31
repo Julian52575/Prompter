@@ -139,7 +139,8 @@ export function App({ store }: { store: Store }) {
           </ul>
         </nav>
       </header>
-      <Sky />
+      <Scenery place="map" />
+      <Scenery place="top" />
       <StoreNotices />
       {conflict && (
         <Notice>
@@ -172,7 +173,7 @@ export function App({ store }: { store: Store }) {
         {view === "history" && <History />}
         {view === "settings" && <Settings />}
       </main>
-      <Hills />
+      <Scenery place="bottom" />
       <footer>
         <p class="hint">{t.app.footer}</p>
       </footer>
@@ -198,26 +199,45 @@ function StoreNotices() {
   );
 }
 
-/**
- * Decoration for the Retro platformer theme, drawn by CSS and hidden in other
- * themes. It sits in bands of its own, so no text ever lies on top of it.
- */
-function Sky() {
-  return (
-    <div class="scenery sky" aria-hidden="true">
-      <div class="cloud cloud-1" />
-      <div class="cloud cloud-2" />
-      <div class="cloud cloud-3" />
-    </div>
-  );
-}
+/** Pieces of each theme's scenery bands; CSS draws them. Themes not listed have none. */
+const SCENERY: Partial<Record<string, { map?: string[]; top?: string[]; bottom?: string[] }>> = {
+  platformer: {
+    top: ["cloud cloud-1", "cloud cloud-2", "cloud cloud-3"],
+    bottom: ["hill hill-1", "hill hill-2", "hill hill-3"],
+  },
+  dragon: {
+    map: [
+      "ow-river",
+      "ow-forest ow-forest-1",
+      "ow-forest ow-forest-2",
+      "ow-forest ow-forest-3",
+      "ow-mountain ow-mountain-1",
+      "ow-mountain ow-mountain-2",
+      "ow-mountain ow-mountain-3",
+      "ow-mountain ow-mountain-4",
+    ],
+  },
+  adventure: {
+    top: ["puff puff-1", "puff puff-2", "puff puff-3"],
+    bottom: ["kb-sea", "kb-hill", "kb-grass"],
+  },
+};
 
-function Hills() {
+/**
+ * Decoration drawn by CSS: bands above and below the content, or a map behind
+ * the whole page. Themes keep text off it (bands hold none; on a map, text
+ * sits in opaque windows).
+ */
+function Scenery({ place }: { place: "map" | "top" | "bottom" }) {
+  useStoreVersion();
+  const { store } = useApp();
+  const pieces = SCENERY[repo(store).settings().theme]?.[place];
+  if (!pieces) return null;
   return (
-    <div class="scenery hills" aria-hidden="true">
-      <div class="hill hill-1" />
-      <div class="hill hill-2" />
-      <div class="hill hill-3" />
+    <div class={`scenery band-${place}`} aria-hidden="true">
+      {pieces.map((c) => (
+        <div key={c} class={c} />
+      ))}
     </div>
   );
 }

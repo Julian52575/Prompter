@@ -28,6 +28,8 @@
   /* Pane fills; themes may colour the form and prompt panes differently. */
   --pane-form: var(--sf);
   --pane-out: var(--sf);
+  /* Unselected tabs. */
+  --tab-idle: var(--bg);
   --border: 3px;
   --ring: 3px;
   color-scheme: light;
@@ -182,6 +184,17 @@ nav a[aria-current="page"] {
   background: var(--accent);
   color: var(--on-accent);
   border-color: var(--accent);
+}
+
+/* A full-height column, so the footer sits at the bottom of short pages. */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex: 1;
+  width: 100%;
 }
 
 main,
@@ -536,7 +549,7 @@ code {
   display: flex;
   border: var(--border) solid var(--fg);
   border-bottom: none;
-  background: var(--bg);
+  background: var(--tab-idle);
 }
 .tablist {
   display: flex;
@@ -550,7 +563,7 @@ code {
   border: none;
   border-right: var(--border) solid var(--fg);
   box-shadow: none;
-  background: var(--bg);
+  background: var(--tab-idle);
   color: var(--fg);
 }
 .tabs .tab-add {
@@ -588,8 +601,23 @@ code {
    tiled green hills and a striped ground, all drawn with CSS gradients (no
    images, so the CSP needs no img-src). The scenery is decoration only.
    --------------------------------------------------------------------------- */
+/* Scenery bands (rendered only by themes that have them). They hold no text. */
 .scenery {
-  display: none;
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+}
+.band-top {
+  height: 6.5rem;
+}
+.band-bottom {
+  height: 11rem;
+  margin-top: 1rem;
+}
+@media (forced-colors: active) {
+  .scenery {
+    display: none;
+  }
 }
 
 :root[data-theme="platformer"] {
@@ -641,9 +669,6 @@ code {
 [data-theme="platformer"] .editor {
   background-color: var(--pane-out);
 }
-[data-theme="platformer"] .tabs {
-  background: var(--bg);
-}
 
 /* The header as the status bar under the level. */
 [data-theme="platformer"] header {
@@ -688,19 +713,6 @@ code {
   margin: 0 auto;
 }
 
-[data-theme="platformer"] .scenery {
-  display: block;
-  position: relative;
-  overflow: hidden;
-  pointer-events: none;
-}
-[data-theme="platformer"] .sky {
-  height: 6.5rem;
-}
-[data-theme="platformer"] .hills {
-  height: 11rem;
-  margin-top: 1rem;
-}
 
 /* A cloud: the puff first, then the body drawn over it, hiding the puff's lower outline. */
 .cloud {
@@ -769,8 +781,333 @@ code {
   height: 75%;
 }
 
-@media (forced-colors: active) {
-  [data-theme="platformer"] .scenery {
-    display: none;
-  }
+
+/* ---------------------------------------------------------------------------
+   Dragon I theme: an 8-bit role-playing game. Black message windows with thick
+   white rounded borders, white text, and an overworld strip (dotted grass,
+   forest, snow-capped mountains, a river) above the footer.
+   --------------------------------------------------------------------------- */
+:root[data-theme="dragon"] {
+  --bg: #000000;
+  --sf: #000000;
+  --fg: #ffffff;
+  --muted: #c8c8c8;
+  --accent: #fcd848;
+  --on-accent: #000000;
+  --error: #ff8a7a;
+  --success: #88e888;
+  --focus: #58b8f8;
+  --tab-idle: #2c2c2c;
+  --border: 4px;
+  --grass: #00a800;
+  --grass-dot: #88d818;
+  --forest: #005800;
+  --rock: #a8a8a8;
+  --rock-dark: #686868;
+  --water: #2878f8;
+  color-scheme: dark;
+}
+
+/* Windows: rounded white frames, no drop shadow. */
+[data-theme="dragon"] .pane,
+[data-theme="dragon"] .editor,
+[data-theme="dragon"] dialog,
+[data-theme="dragon"] .list-row,
+[data-theme="dragon"] .history-row,
+[data-theme="dragon"] .notice,
+[data-theme="dragon"] .error-summary {
+  border-radius: 12px;
+  box-shadow: none;
+}
+[data-theme="dragon"] fieldset,
+[data-theme="dragon"] input[type="text"],
+[data-theme="dragon"] textarea,
+[data-theme="dragon"] select,
+[data-theme="dragon"] .row,
+[data-theme="dragon"] .item {
+  border-radius: 8px;
+}
+[data-theme="dragon"] button,
+[data-theme="dragon"] .button,
+[data-theme="dragon"] nav a {
+  border-radius: 8px;
+  box-shadow: none;
+}
+/* The tab strip keeps square inner corners so the selected tab still opens into the window. */
+[data-theme="dragon"] .tabs {
+  border-radius: 12px 12px 0 0;
+}
+[data-theme="dragon"] .tabs button {
+  border-radius: 0;
+}
+[data-theme="dragon"] .tabs .tab-add {
+  border-top-left-radius: 8px;
+}
+[data-theme="dragon"] .tab-panel {
+  border-radius: 0 0 12px 12px;
+}
+/* The command cursor marks the current page. */
+[data-theme="dragon"] nav a[aria-current="page"]::before {
+  content: "▶ ";
+}
+[data-theme="dragon"] header {
+  border-bottom-color: var(--fg);
+}
+
+/* The overworld map behind the whole page; every text sits in an opaque window. */
+.band-map {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle, var(--grass-dot) 0 1.5px, transparent 2px) 0 0 / 12px 12px,
+    radial-gradient(circle, var(--grass-dot) 0 1.5px, transparent 2px) 6px 6px / 12px 12px,
+    var(--grass);
+}
+[data-theme="dragon"] main > section,
+[data-theme="dragon"] header,
+[data-theme="dragon"] footer {
+  background: #000000;
+}
+[data-theme="dragon"] main > section {
+  border: var(--border) solid var(--fg);
+  border-radius: 12px;
+  padding: 1rem;
+}
+[data-theme="dragon"] main {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+[data-theme="dragon"] footer {
+  max-width: none;
+  border-top-color: var(--fg);
+}
+[data-theme="dragon"] footer .hint {
+  max-width: 100rem;
+  margin: 0 auto;
+}
+.ow-forest {
+  position: absolute;
+  border-radius: 40%;
+  /* Round tree tops on a dark canopy. */
+  background:
+    radial-gradient(circle at 50% 40%, #30b030 0 5px, var(--forest) 6px 9px, transparent 10px) 0 0 / 20px 20px,
+    var(--forest);
+}
+.ow-forest-1 {
+  left: 3%;
+  top: 18%;
+  width: 22vw;
+  height: 22vh;
+}
+.ow-forest-2 {
+  right: 5%;
+  top: 58%;
+  width: 18vw;
+  height: 18vh;
+}
+.ow-forest-3 {
+  left: 40%;
+  top: 80%;
+  width: 16vw;
+  height: 14vh;
+}
+.ow-mountain {
+  position: absolute;
+  width: 130px;
+  height: 100px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  /* Snowcap, then rock with a darker right face. */
+  background:
+    linear-gradient(#ffffff 0 30%, transparent 30%),
+    linear-gradient(90deg, var(--rock) 0 50%, var(--rock-dark) 50%);
+}
+.ow-mountain-1 {
+  left: 30%;
+  top: 14%;
+}
+.ow-mountain-2 {
+  left: calc(30% + 85px);
+  top: 18%;
+  transform: scale(0.8);
+}
+.ow-mountain-3 {
+  right: 10%;
+  top: 22%;
+  transform: scale(1.2);
+}
+.ow-mountain-4 {
+  left: 8%;
+  top: 66%;
+}
+/* A river crossing the map diagonally, with light banks and wave marks. */
+.ow-river {
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  top: 46%;
+  height: 72px;
+  transform: rotate(-12deg);
+  border-block: var(--border) solid #a8e8f8;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 18px, #c8f0ff 18px 26px, transparent 26px 44px) 0 40% / 100% 3px no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 30px, #c8f0ff 30px 38px, transparent 38px 60px) 0 75% / 100% 3px no-repeat,
+    var(--water);
+}
+
+/* ---------------------------------------------------------------------------
+   Adventure theme: a bright 8-bit action game. Sky blue, cream and pink panels
+   framed in rounded orange-brown like the status bar, puffy clouds under the
+   header, and a checkered hill, bushy grass and the sea above the footer.
+   --------------------------------------------------------------------------- */
+:root[data-theme="adventure"] {
+  --bg: #b8e8f8;
+  --sf: #fffaf0;
+  --fg: #2a1408;
+  --muted: #5a3418;
+  --accent: #a0104c;
+  --on-accent: #ffffff;
+  --error: #a01414;
+  --success: #175014;
+  --focus: #6a1aa0;
+  --pane-form: #fce4b0;
+  --pane-out: #fcd4dc;
+  --tab-idle: #eea060;
+  --frame: #a85818;
+  --hud: #f8b878;
+  --check-a: #58c838;
+  --check-b: #e8a048;
+  --leaf: #109818;
+  --sea: #3890f8;
+  color-scheme: light;
+}
+
+[data-theme="adventure"] h1,
+[data-theme="adventure"] h2 {
+  color: var(--accent);
+}
+[data-theme="adventure"] .pane,
+[data-theme="adventure"] .editor,
+[data-theme="adventure"] dialog,
+[data-theme="adventure"] .list-row,
+[data-theme="adventure"] .history-row,
+[data-theme="adventure"] .notice,
+[data-theme="adventure"] .error-summary {
+  border: 4px solid var(--frame);
+  border-radius: 14px;
+  box-shadow: 0 5px 0 var(--frame);
+}
+[data-theme="adventure"] .list-row,
+[data-theme="adventure"] .history-row,
+[data-theme="adventure"] .editor {
+  background-color: var(--pane-out);
+}
+[data-theme="adventure"] fieldset,
+[data-theme="adventure"] input[type="text"],
+[data-theme="adventure"] textarea,
+[data-theme="adventure"] select,
+[data-theme="adventure"] .row,
+[data-theme="adventure"] .item {
+  border-radius: 10px;
+}
+[data-theme="adventure"] button,
+[data-theme="adventure"] .button,
+[data-theme="adventure"] nav a {
+  border-radius: 12px;
+  border-color: var(--frame);
+  box-shadow: 0 4px 0 var(--frame);
+}
+[data-theme="adventure"] .tabs {
+  border: 4px solid var(--frame);
+  border-bottom: none;
+  border-radius: 14px 14px 0 0;
+  overflow: hidden;
+}
+[data-theme="adventure"] .tabs button {
+  border-radius: 0;
+  border-color: var(--frame);
+  box-shadow: none;
+}
+[data-theme="adventure"] .tab-panel {
+  border-radius: 0 0 14px 14px;
+}
+[data-theme="adventure"] .tabs [role="tab"][aria-selected="true"] {
+  border-bottom-color: var(--pane-form);
+}
+/* Header and footer as the status bar. */
+[data-theme="adventure"] header,
+[data-theme="adventure"] footer {
+  background: var(--hud);
+  border-color: var(--frame);
+  border-width: 4px;
+}
+[data-theme="adventure"] footer {
+  max-width: none;
+}
+[data-theme="adventure"] footer .hint {
+  color: var(--fg);
+  max-width: 100rem;
+  margin: 0 auto;
+}
+
+/* Puffy clouds: overlapping white circles over a flat base, pale-blue shading underneath. */
+.puff {
+  position: absolute;
+  width: 170px;
+  height: 64px;
+  /* White puffs first (on top), then the same puffs a little lower in pale blue as shading. */
+  background:
+    radial-gradient(circle at 22% 62%, #ffffff 0 26px, transparent 27px),
+    radial-gradient(circle at 46% 40%, #ffffff 0 34px, transparent 35px),
+    radial-gradient(circle at 72% 56%, #ffffff 0 28px, transparent 29px),
+    radial-gradient(circle at 22% 70%, #c8e8fc 0 26px, transparent 27px),
+    radial-gradient(circle at 46% 48%, #c8e8fc 0 34px, transparent 35px),
+    radial-gradient(circle at 72% 64%, #c8e8fc 0 28px, transparent 29px);
+}
+.puff-1 {
+  top: 1.5rem;
+  left: 6%;
+}
+.puff-2 {
+  top: 2.5rem;
+  left: 42%;
+  transform: scale(0.75);
+}
+.puff-3 {
+  top: 1rem;
+  right: 6%;
+  transform: scale(1.15);
+}
+
+/* Checkered hill on bushy grass, with the sea in front. */
+.kb-hill {
+  position: absolute;
+  right: 6%;
+  bottom: 40%;
+  width: clamp(160px, 30vw, 420px);
+  height: 52%;
+  clip-path: polygon(0 100%, 30% 0, 100% 0, 100% 100%);
+  background: conic-gradient(var(--check-a) 25%, var(--check-b) 0 50%, var(--check-a) 0 75%, var(--check-b) 0) 0 0 / 32px 32px;
+}
+.kb-grass {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22%;
+  height: 22%;
+  /* A row of bush tops over a solid strip. */
+  background:
+    radial-gradient(circle at 50% 60%, var(--leaf) 0 14px, transparent 15px) 0 0 / 28px 100% repeat-x,
+    linear-gradient(transparent 60%, var(--leaf) 60%);
+}
+.kb-sea {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 24%;
+  background:
+    repeating-linear-gradient(90deg, #ffffff 0 14px, transparent 14px 40px) 0 30% / 100% 3px no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 20px, #ffffff 20px 30px, transparent 30px 56px) 0 70% / 100% 3px no-repeat,
+    var(--sea);
 }

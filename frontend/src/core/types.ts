@@ -149,7 +149,7 @@ export type HistoryIndexRow = Pick<
 >;
 
 export interface Settings {
-  theme: "system" | "light" | "dark" | "platformer";
+  theme: "system" | "light" | "dark" | "platformer" | "dragon" | "adventure";
   /** null: follow the browser. */
   language: "en" | "fr" | null;
   lastTemplate: string | null;

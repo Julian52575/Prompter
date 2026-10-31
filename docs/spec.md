@@ -489,7 +489,7 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 **Appearance**
 
-- Theme: System (default), Light, Dark or Retro platformer.
+- Theme: System (default), Light, Dark, Retro platformer, Dragon I or Adventure.
 - Language: Browser default (default), English or Français (each language named in itself). See Languages.
 
 **Data**
@@ -619,6 +619,9 @@ The target is WCAG 2.2 level AA, and the pixel style must never cost legibility.
   - outlined clouds in a band under the header and green hills tiled with two-tone triangles in a band above the footer. These bands hold no text, so text only ever sits on the sky, inputs or blocks;
   - all scenery is drawn with CSS gradients, so the CSP needs no `img-src`. It is hidden from assistive technology (`aria-hidden`) and under `forced-colors`;
   - headings use the embedded "Super Mario Bros. 3" fan font by David Fens (FontStruct Non-Commercial License; attribution in `assets/PlatformerLettering-LICENSE.txt`). Characters it lacks (punctuation, accents) fall back to Pixelify Sans. Because of this licence, builds must not be used commercially.
+- **Dragon I**, a dark theme inspired by 8-bit role-playing games: black message windows with thick white rounded borders, white text, a gold accent and a ▶ cursor on the current page. An overworld map (dotted grass, forests, snow-capped mountains, a diagonal river) fills the page behind the windows; every text sits in an opaque black window (the views, the panes, the header and the footer), so none lies on the map.
+- **Adventure**, a light theme inspired by bright 8-bit action games: a sky-blue page, cream and pink panes framed in rounded orange-brown like a status bar, a peach status-bar header and footer, puffy clouds in a band under the header, and an orange-and-green checkered hill on bushy grass with the sea in a band above the footer.
+- Both use Pixelify Sans for headings and draw their scenery with CSS gradients only. Their contrast is tested like the other themes, and axe runs on every view in each game theme.
 
 ### Palette and measured contrast
 

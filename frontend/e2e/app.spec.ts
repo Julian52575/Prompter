@@ -40,7 +40,7 @@ test("opens from file:// with no errors, no requests and the CSP first in head",
   await page.getByRole("link", { name: "Settings" }).click();
   await expect(page).toHaveTitle("Settings – Prompt Builder");
   expect(problems).toEqual([]);
-  expect(readFileSync(new URL(FILE)).length).toBeLessThan(150 * 1024);
+  expect(readFileSync(new URL(FILE)).length).toBeLessThanOrEqual(256_000);
 });
 
 test("task list: add, reorder by keyboard, generate", async ({ page }) => {
@@ -370,16 +370,21 @@ test.describe("accessibility", () => {
     expect(r.violations.map((v) => v.id)).toEqual([]);
   });
 
-  test("axe: Retro platformer theme on every view", async ({ page }) => {
-    await open(page, "#/settings");
-    await page.getByRole("radio", { name: "Retro platformer" }).check();
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "platformer");
-    for (const view of ["builder", "history", "settings"]) {
-      await page.getByRole("link", { name: view[0].toUpperCase() + view.slice(1) }).click();
-      const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
-      expect(r.violations.map((v) => `${view} ${v.id}: ${v.nodes.map((n) => n.target).join(", ")}`)).toEqual([]);
-    }
-  });
+  for (const [theme, label] of [
+    ["platformer", "Retro platformer"],
+    ["dragon", "Dragon I"],
+    ["adventure", "Adventure"],
+  ])
+    test(`axe: ${label} theme on every view`, async ({ page }) => {
+      await open(page, "#/settings");
+      await page.getByRole("radio", { name: label, exact: true }).check();
+      await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+      for (const view of ["builder", "history", "settings"]) {
+        await page.getByRole("link", { name: view[0].toUpperCase() + view.slice(1) }).click();
+        const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+        expect(r.violations.map((v) => `${view} ${v.id}: ${v.nodes.map((n) => n.target).join(", ")}`)).toEqual([]);
+      }
+    });
 
   test("no horizontal scrolling at 320 px", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 640 });

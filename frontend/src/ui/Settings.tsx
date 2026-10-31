@@ -494,7 +494,7 @@ function Appearance() {
       <h3 id="appearance-heading">{t.settings.appearance}</h3>
       <fieldset>
         <legend>{t.settings.theme}</legend>
-        {(["system", "light", "dark", "platformer"] as const).map((v) => (
+        {(["system", "light", "dark", "platformer", "dragon", "adventure"] as const).map((v) => (
           <label class="radio" key={v}>
             <input type="radio" name="theme" checked={theme === v} onChange={() => setSettings(store, { theme: v })} /> {t.settings.themes[v]}
           </label>

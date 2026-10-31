@@ -53,3 +53,20 @@ describe("platformer palette (WCAG 2.2)", () => {
     expect(ratio(p["hud-focus"], "#000000")).toBeGreaterThanOrEqual(3);
   });
 });
+
+describe.each([
+  ["dragon", ["bg", "sf"]],
+  ["adventure", ["bg", "sf", "pane-form", "pane-out", "hud"]],
+])("%s palette (WCAG 2.2)", (theme, surfaces) => {
+  const p = block(`:root[data-theme="${theme}"]`);
+  test.each(["fg", "muted", "accent", "error", "success"])("%s text is at least 4.5:1 on every surface", (k) => {
+    for (const s of surfaces) expect(ratio(p[k], p[s]), `${k} on ${s}`).toBeGreaterThanOrEqual(4.5);
+  });
+  test("text on accent and on idle tabs is at least 4.5:1", () => {
+    expect(ratio(p["on-accent"], p.accent)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(p.fg, p["tab-idle"] ?? p.bg)).toBeGreaterThanOrEqual(4.5);
+  });
+  test("focus ring is at least 3:1 on every surface", () => {
+    for (const s of surfaces) expect(ratio(p.focus, p[s]), s).toBeGreaterThanOrEqual(3);
+  });
+});
