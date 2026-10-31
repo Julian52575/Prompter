@@ -24,6 +24,8 @@ export interface AppApi {
   registerDirty(src: DirtySource): () => void;
   /** One-off message the Builder shows on its next render (Restore). */
   builderNotice: { current: string | null };
+  /** Set before navigating to Settings to open the new-template editor there. */
+  openNewTemplate: { current: boolean };
 }
 
 export const AppContext = createContext<AppApi>(null as never);

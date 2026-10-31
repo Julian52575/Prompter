@@ -17,7 +17,7 @@ async function open(page: Page, hash = "#/builder") {
 }
 
 async function chooseTemplate(page: Page, name: string) {
-  await page.getByLabel("Template", { exact: true }).selectOption({ label: name });
+  await page.getByRole("tablist", { name: "Template" }).getByRole("tab", { name, exact: true }).click();
 }
 
 async function fillReview(page: Page) {
@@ -119,7 +119,7 @@ test("drafts survive a reload; restore brings an entry back", async ({ page }) =
   await page.getByRole("button", { name: "Generate" }).click();
   await page.waitForTimeout(700);
   await page.reload();
-  await expect(page.getByLabel("Template", { exact: true })).toHaveValue("review");
+  await expect(page.getByRole("tab", { name: "Review", exact: true })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByLabel("Goal (required)")).toHaveValue("Stop the crash.");
 
   await page.getByLabel("Goal (required)").fill("Something else");
@@ -263,6 +263,48 @@ test("review: form order, and the report destination appears only for Write a re
   await expect(output(page)).toHaveValue(/## Action required\n[^\n]+\n\n[^\n]*write a report to GitHub PR comment\./);
 });
 
+test("clear form resets fields, radios and the prompt after confirming", async ({ page }) => {
+  await open(page);
+  await fillReview(page);
+  await page.getByRole("radio", { name: "Case-closed" }).check();
+  await page.getByRole("button", { name: "Generate" }).click();
+  await page.getByRole("button", { name: "Clear form" }).click();
+  const dialog = page.getByRole("dialog", { name: "Clear the form?" });
+  await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.getByLabel("Goal (required)")).toHaveValue("Stop the crash.");
+
+  await page.getByRole("button", { name: "Clear form" }).click();
+  await dialog.getByRole("button", { name: "Clear" }).click();
+  await expect(page.getByLabel("Goal (required)")).toHaveValue("");
+  await expect(page.getByLabel("Situation")).toHaveValue("");
+  await expect(page.getByRole("radio", { name: "Fix a bug" })).not.toBeChecked();
+  await expect(page.getByRole("radio", { name: "Standard" })).toBeChecked();
+  await expect(page.getByRole("radio", { name: /^Open/ })).toBeChecked();
+  await expect(output(page)).toHaveValue("");
+  await expect(page.locator("[aria-live=polite]")).toHaveText("Form cleared");
+  await page.getByRole("link", { name: "History" }).click();
+  await expect(page.locator(".history-row")).toHaveCount(1);
+});
+
+test("template tabs switch with the keyboard", async ({ page }) => {
+  await open(page);
+  const tabs = page.getByRole("tablist", { name: "Template" });
+  await tabs.getByRole("tab", { name: "Task list" }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(tabs.getByRole("tab", { name: "Review" })).toBeFocused();
+  await expect(tabs.getByRole("tab", { name: "Review" })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("tabpanel", { name: "Review" })).toBeVisible();
+  await expect(page.getByLabel("Goal (required)")).toBeVisible();
+  await page.keyboard.press("Home");
+  await expect(tabs.getByRole("tab", { name: "Task list" })).toHaveAttribute("aria-selected", "true");
+
+  await page.getByRole("button", { name: "New template" }).click();
+  await expect(page).toHaveTitle("Settings – Prompt Builder");
+  await expect(page.getByRole("heading", { name: "New template" })).toBeVisible();
+  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("New template");
+});
+
 test("JSON view: lint errors are listed and block Apply", async ({ page }) => {
   await open(page, "#/settings");
   await page.getByRole("button", { name: "Edit: Review" }).click();
@@ -278,7 +320,7 @@ test("JSON view: lint errors are listed and block Apply", async ({ page }) => {
   await expect(page.getByLabel("Name", { exact: true })).toHaveValue("My review");
   await page.getByRole("button", { name: "Save" }).first().click();
   await page.getByRole("link", { name: "Builder" }).click();
-  await expect(page.getByLabel("Template", { exact: true }).locator("option")).toHaveText(["Task list", "My review"]);
+  await expect(page.getByRole("tab")).toHaveText(["Task list", "My review"]);
 });
 
 test.describe("accessibility", () => {

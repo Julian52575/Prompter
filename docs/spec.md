@@ -382,7 +382,7 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 ### Builder (main view)
 
-- **Left pane:** template selector (a labelled `select`), the template's form, then the Generate button. The source scope radio (when offered) sits directly above its list field. The reply mode radio (when offered) follows the `replyModesAfter` field, or the whole form when that is not set.
+- **Left pane:** a strip as wide as the pane sits directly above it: a **+** button (accessible name "New template", opens Settings with the new-template editor), then one tab per template with no gap between them (ARIA tabs pattern: arrow keys, Home and End switch template), then empty space. A line separates every item from the pane except the selected tab, which shares the pane's surface and opens into it. The pane holds the template's form, then the Generate button. The source scope radio (when offered) sits directly above its list field. The reply mode radio (when offered) follows the `replyModesAfter` field, or the whole form when that is not set.
 - **Right pane:** an editable textarea labelled "Generated prompt" (always the bare prompt), the Output type radio, the Review request preview when that type is selected, the Copy, Open in ChatGPT and Open in Mistral buttons, and a status line. Below 60em of width the panes stack, form first.
 - **Defaults:** reply mode starts on Standard. Source scope starts on Open. Output type starts on Bare prompt. All three are then remembered in the draft.
 
@@ -400,6 +400,12 @@ The app has three views, Builder, History and Settings, switched by a navigation
 3. If the textarea differs from the draft's `baseline`, open the dialog "Replace your edits?" with **Keep editing** (focused by default, also the Esc action) and **Replace**. Keep editing leaves everything untouched. Focus returns to Generate when the dialog closes.
 4. Render the Markdown, fill the textarea, set `baseline` to the new text, move focus to the textarea and announce "Prompt generated".
 5. Add a history entry and set the draft's `entryId` to it. Exception: if the new text equals the newest entry's `generated` text for the same template and that entry is not edited, no entry is added. The status line then reads "Prompt generated. Identical to the last history entry, so none was added", and `entryId` points to that entry.
+
+**Clear form**
+
+- A **Clear form** button sits next to Generate. It returns the current template's draft to its starting state: field defaults (empty text, default choices, default group items), reply mode Standard, source scope Open, an empty Generated prompt, no `entryId`. The Output type is kept.
+- When the form or the prompt has content, it first asks "Clear the form?" with **Cancel** (default focus, Esc action) and **Clear**. History entries are kept.
+- Afterwards focus moves to the first field, inline errors are removed, and the live region announces "Form cleared".
 
 **Hand edits**
 

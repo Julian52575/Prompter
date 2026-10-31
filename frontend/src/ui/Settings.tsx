@@ -57,7 +57,13 @@ function Templates() {
   const stored = r.templates();
   const templates = effectiveTemplates(stored);
   const modes = effectiveModes(r.modes());
-  const [editing, setEditing] = useState<{ t: Template; title: string } | null>(null);
+  const app = useApp();
+  const [editing, setEditing] = useState<{ t: Template; title: string } | null>(() => {
+    if (!app.openNewTemplate.current) return null;
+    app.openNewTemplate.current = false;
+    focusLater("tpl-name");
+    return { t: blankTemplate(), title: "New template" };
+  });
 
   const save = (t: Template) => {
     const b = builtinTemplate(t.id);

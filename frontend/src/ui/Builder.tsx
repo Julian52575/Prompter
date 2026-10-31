@@ -15,7 +15,7 @@ import {
 import { render, summarize } from "../core/render";
 import { addHistoryEntry, KEYS, providerList, repo, saveHistoryEntry, updateRecord } from "../core/storage";
 import type { Draft, OutputType, Provider, Scope, Settings, Template } from "../core/types";
-import { type InputError, validateInputs } from "../core/validate";
+import { domId, type InputError, validateInputs } from "../core/validate";
 import { buildLink, wrapPrompt } from "../core/wrap";
 import { COPY_MANUAL, copyText } from "./clipboard";
 import { focusLater, focusNow, useApp, useStoreVersion } from "./context";
@@ -23,6 +23,8 @@ import { Form } from "./Form";
 import { Notice } from "./Notice";
 
 const DEBOUNCE = 500;
+/** Row and item keys are random, so they are left out when comparing values. */
+const noKeys = (k: string, v: unknown) => (k === "k" ? undefined : v);
 export const MISSING_MODE = "The saved reply mode no longer exists. Standard is selected.";
 export const UPDATED_BUILTIN = "The built-in version of this template was updated after you customised it.";
 
@@ -201,6 +203,28 @@ export function Builder() {
     announce("Prompt generated");
   };
 
+  const clearForm = async () => {
+    const d = draftRef.current;
+    const fresh = newDraft(template);
+    const unchanged = d.output === "" && JSON.stringify(d.values, noKeys) === JSON.stringify(fresh.values, noKeys);
+    if (!unchanged) {
+      const res = await dialogs.confirm({
+        title: "Clear the form?",
+        body: "Every field and the generated prompt return to their starting state. History entries are kept.",
+        confirm: "Clear",
+        danger: true,
+      });
+      if (res.choice !== "confirm") return;
+    }
+    clearTimeout(entryTimer.current);
+    patch({ ...fresh, outputType: d.outputType });
+    setErrors([]);
+    setStatus("Form cleared");
+    announce("Form cleared");
+    const first = template.fields[0];
+    if (first) focusLater(domId.field(first.id), `tab-${template.id}`);
+  };
+
   const onOutput = (v: string) => {
     patch({ output: v });
     const id = draftRef.current.entryId;
@@ -268,7 +292,48 @@ export function Builder() {
 
   return (
     <div class="builder">
-      <section class="pane" aria-labelledby="form-heading">
+      <div class="tabbed">
+      <div class="tabs">
+        <button
+          type="button"
+          class="tab-add"
+          aria-label="New template"
+          title="New template"
+          onClick={() => {
+            app.openNewTemplate.current = true;
+            app.navigate("settings");
+          }}
+        >
+          +
+        </button>
+        <div class="tablist" role="tablist" aria-label="Template">
+        {templates.map((t, i) => (
+          <button
+            type="button"
+            role="tab"
+            key={t.id}
+            id={`tab-${t.id}`}
+            aria-selected={t.id === template.id}
+            aria-controls="form-panel"
+            tabIndex={t.id === template.id ? 0 : -1}
+            onClick={() => t.id !== template.id && switchTemplate(t.id)}
+            onKeyDown={(e) => {
+              // Automatic activation: arrows, Home and End select the tab they move to.
+              const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: templates.length - 1 }[e.key];
+              if (to === undefined) return;
+              e.preventDefault();
+              const next = templates[(to + templates.length) % templates.length];
+              switchTemplate(next.id);
+              focusLater(`tab-${next.id}`);
+            }}
+          >
+            {t.name}
+          </button>
+        ))}
+        </div>
+        <div class="tab-fill" aria-hidden="true" />
+      </div>
+      <section class="pane tab-panel" id="form-panel" role="tabpanel" aria-labelledby={`tab-${template.id}`}>
         <h2 id="form-heading">Form</h2>
         {showUpdate && (
           <Notice>
@@ -330,16 +395,6 @@ export function Builder() {
             </ul>
           </div>
         )}
-        <div class="field">
-          <label for="template-select">Template</label>
-          <select id="template-select" value={template.id} onChange={(e) => switchTemplate(e.currentTarget.value)}>
-            {templates.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
-        </div>
         {(() => {
           const modeNode = offered.length > 0 && (
             <fieldset>
@@ -384,8 +439,12 @@ export function Builder() {
         })()}
         <button type="button" id="generate" class="primary big" onClick={generate}>
           Generate
+        </button>{" "}
+        <button type="button" id="clear-form" onClick={clearForm}>
+          Clear form
         </button>
       </section>
+      </div>
 
       <section class="pane" aria-labelledby="output-heading">
         <h2 id="output-heading">Prompt</h2>

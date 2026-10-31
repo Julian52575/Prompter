@@ -26,6 +26,7 @@ export function App({ store }: { store: Store }) {
   const guard = useRef<(() => Promise<boolean>) | null>(null);
   const dirty = useRef(new Set<DirtySource>());
   const builderNotice = useRef<string | null>(null);
+  const openNewTemplate = useRef(false);
   const viewRef = useRef(view);
   viewRef.current = view;
 
@@ -57,6 +58,7 @@ export function App({ store }: { store: Store }) {
       return () => dirty.current.delete(src);
     },
     builderNotice,
+    openNewTemplate,
   };
 
   useEffect(() => {
