@@ -13,6 +13,14 @@ const TYPE_LABELS: Record<FieldType, string> = {
 
 const stringify = (t: Template) => JSON.stringify(t, null, 2);
 
+/** Sets an optional key, removing it when empty so the JSON never holds `"key": ""`. */
+function withOptional<T extends object>(obj: T, key: string, value: unknown): T {
+  const out = { ...obj } as Record<string, unknown>;
+  if (value === "" || value === undefined || value === null) delete out[key];
+  else out[key] = value;
+  return out as T;
+}
+
 function allIds(fields: Field[]): string[] {
   return fields.flatMap((f) => [f.id, ...(f.type === "group" ? allIds(f.children) : [])]);
 }
@@ -140,6 +148,24 @@ export function TemplateEditor({ initial, modes, title, onSave, onClose }: Props
           </fieldset>
         )}
       </fieldset>
+
+      {tpl.replyModes !== "none" && (
+        <div class="field">
+          <label for="tpl-modes-after">Reply mode radio position in the form</label>
+          <select
+            id="tpl-modes-after"
+            value={tpl.replyModesAfter ?? ""}
+            onChange={(e) => setTpl(withOptional(tpl, "replyModesAfter", e.currentTarget.value))}
+          >
+            <option value="">After all fields</option>
+            {top.map((f) => (
+              <option key={f.id} value={f.id}>
+                After {f.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div class="field">
         <label for="tpl-scope">Source scope</label>
@@ -430,6 +456,30 @@ function FieldEditor({ field: f, onChange, depth, path, taken, choices }: FieldP
       <label class="check">
         <input type="checkbox" checked={f.required} onChange={(e) => set({ required: e.currentTarget.checked })} /> Required
       </label>
+      {depth === 0 && <ShowWhenEditor f={f} onChange={onChange} path={path} choices={choices} />}
+      {(f.type === "text" || f.type === "longtext") && (
+        <>
+          <div class="grid2">
+            <div class="field">
+              <label for={`${path}-default`}>Default value</label>
+              <input id={`${path}-default`} type="text" value={f.default ?? ""} onInput={(e) => onChange(withOptional(f, "default", e.currentTarget.value))} />
+            </div>
+            <div class="field">
+              <label for={`${path}-hint`}>Hint shown under the label</label>
+              <input id={`${path}-hint`} type="text" value={f.hint ?? ""} onInput={(e) => onChange(withOptional(f, "hint", e.currentTarget.value))} />
+            </div>
+          </div>
+          <fieldset>
+            <legend>In the prompt</legend>
+            {(["section", "none"] as const).map((v) => (
+              <label class="radio" key={v}>
+                <input type="radio" name={`${path}-toutput`} checked={(f.output ?? "section") === v} onChange={() => onChange({ ...f, output: v })} />{" "}
+                {v === "section" ? "Own section" : "Not shown (feeds placeholders only)"}
+              </label>
+            ))}
+          </fieldset>
+        </>
+      )}
       {(f.type === "text" || f.type === "longtext") && depth === 0 && (
         <div class="field">
           <label for={`${path}-prefix`}>Prefix from choice</label>
@@ -528,6 +578,17 @@ function ChoiceOptions({ f, onChange, path }: { f: ChoiceField; onChange(f: Fiel
                 <label for={`${path}-o${i}-value`}>Option {i + 1} value</label>
                 <input id={`${path}-o${i}-value`} type="text" value={o.value} onInput={(e) => setOpt(i, { value: e.currentTarget.value })} />
               </div>
+              <div class="field">
+                <label for={`${path}-o${i}-instr`}>Option {i + 1} instruction (replaces the label in the prompt; optional)</label>
+                <textarea
+                  id={`${path}-o${i}-instr`}
+                  rows={3}
+                  value={o.instruction ?? ""}
+                  onInput={(e) =>
+                    onChange({ ...f, options: f.options.map((x, j) => (j === i ? withOptional(x, "instruction", e.currentTarget.value) : x)) })
+                  }
+                />
+              </div>
               <div class="item-actions">
                 <button
                   type="button"
@@ -585,5 +646,45 @@ function ChoiceOptions({ f, onChange, path }: { f: ChoiceField; onChange(f: Fiel
         </fieldset>
       </div>
     </>
+  );
+}
+
+function ShowWhenEditor({ f, onChange, path, choices }: { f: Field; onChange(f: Field): void; path: string; choices: ChoiceField[] }) {
+  const others = choices.filter((c) => c.id !== f.id);
+  const sw = f.showWhen;
+  const choice = others.find((c) => c.id === sw?.field);
+  return (
+    <div class="grid2">
+      <div class="field">
+        <label for={`${path}-sw-field`}>Show only when</label>
+        <select
+          id={`${path}-sw-field`}
+          value={sw?.field ?? ""}
+          onChange={(e) => {
+            const c = others.find((x) => x.id === e.currentTarget.value);
+            onChange(withOptional(f, "showWhen", c ? { field: c.id, value: c.options[0]?.value ?? "" } : null));
+          }}
+        >
+          <option value="">Always shown</option>
+          {others.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.label} is…
+            </option>
+          ))}
+        </select>
+      </div>
+      {choice && sw && (
+        <div class="field">
+          <label for={`${path}-sw-value`}>Option</label>
+          <select id={`${path}-sw-value`} value={sw.value} onChange={(e) => onChange({ ...f, showWhen: { field: sw.field, value: e.currentTarget.value } })}>
+            {choice.options.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+    </div>
   );
 }

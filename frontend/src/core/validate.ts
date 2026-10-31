@@ -1,4 +1,4 @@
-import { filledRows, isEmpty, itemHasContent } from "./render";
+import { filledRows, isEmpty, isShown, itemHasContent } from "./render";
 import type { Field, GroupField, GroupItem, Inputs, ListRow, Scope, Template } from "./types";
 
 export interface InputError {
@@ -47,7 +47,7 @@ function checkField(f: Field, v: Inputs[string], path: string, out: InputError[]
       out.push({ target, message: `${f.label} is required.` });
       break;
     case "choice":
-      out.push({ target, message: `Choose a ${f.label.toLowerCase()}.` });
+      out.push({ target, message: `Choose ${/^[aeiou]/i.test(f.label) ? "an" : "a"} ${f.label.toLowerCase()}.` });
       break;
     case "list":
       out.push({ target, message: `Add at least one ${f.itemLabel.toLowerCase()}.` });
@@ -60,11 +60,12 @@ function checkField(f: Field, v: Inputs[string], path: string, out: InputError[]
 
 export function validateInputs(template: Template, inputs: Inputs, scope: Scope): InputError[] {
   const out: InputError[] = [];
-  if (template.fields.every((f) => isEmpty(f, inputs[f.id]))) {
+  const shown = template.fields.filter((f) => isShown(f, inputs));
+  if (shown.every((f) => isEmpty(f, inputs[f.id]))) {
     const first = template.fields[0];
     return [{ target: first ? domId.field(first.id) : "generate", message: NOTHING_TO_GENERATE }];
   }
-  for (const f of template.fields) checkField(f, inputs[f.id], f.id, out);
+  for (const f of shown) checkField(f, inputs[f.id], f.id, out);
   const sf = template.sourceScope?.field;
   if (sf && scope === "restricted" && filledRows(inputs[sf]).length === 0)
     out.push({ target: domId.field(sf), message: RESTRICTED_NEEDS_SOURCES });

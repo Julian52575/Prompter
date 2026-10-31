@@ -65,7 +65,7 @@ function initValue(f: Field, top: boolean): Value {
   switch (f.type) {
     case "text":
     case "longtext":
-      return "";
+      return f.default ?? "";
     case "choice":
       return f.default ?? null;
     case "list":

@@ -22,10 +22,11 @@ async function chooseTemplate(page: Page, name: string) {
 
 async function fillReview(page: Page) {
   await chooseTemplate(page, "Review");
-  await page.getByLabel("Situation").fill("The app crashes on save.");
-  await page.getByLabel("File 1", { exact: true }).fill("src/save.ts");
   await page.getByRole("radio", { name: "Fix a bug" }).check();
   await page.getByLabel("Goal (required)").fill("Stop the crash.");
+  await page.getByRole("radio", { name: "Update codebase" }).check();
+  await page.getByLabel("Situation").fill("The app crashes on save.");
+  await page.getByLabel("Source (path, name or link) 1", { exact: true }).fill("src/save.ts");
 }
 
 const output = (page: Page) => page.getByLabel("Generated prompt");
@@ -78,6 +79,7 @@ test("review: required fields and Restricted scope block Generate", async ({ pag
   await expect(summary.getByRole("link")).toHaveText([
     "Choose a goal type.",
     "Goal is required.",
+    "Choose an action required.",
     "Restricted scope needs at least one source. Add a source or choose Open.",
   ]);
   await summary.getByRole("link", { name: "Goal is required." }).click();
@@ -172,7 +174,7 @@ test("open in ChatGPT asks first, Cancel opens nothing, long prompts fall back",
   const popup = context.waitForEvent("page");
   await dialog.getByRole("button", { name: "Open ChatGPT" }).click();
   await popup;
-  await expect.poll(() => urls.at(-1)).toMatch(/^https:\/\/chatgpt\.com\/\?q=Review%20the%20situation/);
+  await expect.poll(() => urls.at(-1)).toMatch(/^https:\/\/chatgpt\.com\/\?q=Review%20the%20goal/);
 
   // The popup takes focus in Firefox; input events only reach the page in front.
   await page.bringToFront();
@@ -238,6 +240,27 @@ test("export, then import with Replace all into a clean profile", async ({ page,
   await p2.locator("#import-file").setInputFiles({ name: "bad.json", mimeType: "application/json", buffer: Buffer.from('{"app":"x"}') });
   await expect(p2.getByRole("alert").filter({ hasText: "not imported" })).toBeVisible();
   await fresh.close();
+});
+
+test("review: form order, and the report destination appears only for Write a report", async ({ page }) => {
+  await open(page);
+  await chooseTemplate(page, "Review");
+  const order = await page.locator("#form-heading ~ div legend, #form-heading ~ div .field > label").allTextContents();
+  const idx = (t: string) => order.findIndex((x) => x.startsWith(t));
+  expect(idx("Goal type")).toBeLessThan(idx("Action required"));
+  expect(idx("Action required")).toBeLessThan(idx("Reply mode"));
+  expect(idx("Reply mode")).toBeLessThan(idx("Situation"));
+  expect(idx("Situation")).toBeLessThan(idx("Source scope"));
+  expect(idx("Source scope")).toBeLessThan(idx("Sources"));
+  const dest = page.getByLabel("Report destination (required)");
+  await expect(dest).toHaveCount(0);
+  await page.getByRole("radio", { name: "Write a report" }).check();
+  await expect(dest).toHaveValue("Markdown document");
+  await dest.fill("GitHub PR comment");
+  await page.getByRole("radio", { name: "Fix a bug" }).check();
+  await page.getByLabel("Goal (required)").fill("Stop the crash.");
+  await page.getByRole("button", { name: "Generate" }).click();
+  await expect(output(page)).toHaveValue(/## Action required\n[^\n]+\n\n[^\n]*write a report to GitHub PR comment\./);
 });
 
 test("JSON view: lint errors are listed and block Apply", async ({ page }) => {

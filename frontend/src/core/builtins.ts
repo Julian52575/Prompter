@@ -35,14 +35,19 @@ export const TASK_LIST: Template = {
   sourceScope: null,
 };
 
-const REVIEW_INTRO = "Review the situation, files, goal, and sources.";
+
+const REVIEW_INTRO = "Review the goal, situation, and sources.";
+const ACTION_SCOPE = "Investigate the goal, situation, and sources";
+
+export const ACTION_PRECEDENCE =
+  "This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.";
 
 export const REVIEW: Template = {
   id: "review",
   name: "Review",
   schema: 1,
-  // 2: Goal type and Goal moved first.
-  version: 2,
+  // 2: Goal type and Goal first. 3: Action required added, Files merged into Sources.
+  version: 3,
   fields: [
     {
       id: "goalType",
@@ -58,14 +63,46 @@ export const REVIEW: Template = {
       ],
     },
     { id: "goal", label: "Goal", type: "longtext", required: true, prefixFrom: "goalType" },
+    {
+      id: "action",
+      label: "Action required",
+      type: "choice",
+      required: true,
+      options: [
+        {
+          value: "context",
+          label: "Prepare context",
+          instruction: `${ACTION_PRECEDENCE}\n\n${ACTION_SCOPE} to build a clear understanding. Read code and run tests or read-only commands as needed. Do not edit files, commit, push, or open a pull request. Reply briefly with what you understand and any open questions or gaps, then wait for the next task.`,
+        },
+        {
+          value: "report",
+          label: "Write a report",
+          instruction: `${ACTION_PRECEDENCE}\n\n${ACTION_SCOPE}, then write a report to {{reportLocation}}. Do not change code or post anywhere else; writing the report itself is allowed. Do not commit, push, or open a pull request.`,
+        },
+        {
+          value: "update",
+          label: "Update codebase",
+          instruction: `${ACTION_PRECEDENCE}\n\n${ACTION_SCOPE}, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request.`,
+        },
+      ],
+    },
+    {
+      id: "reportLocation",
+      label: "Report destination",
+      type: "text",
+      required: true,
+      output: "none",
+      default: "Markdown document",
+      hint: "Where should the report go? For example: Markdown document, GitHub PR comment, issue comment, or Confluence page.",
+      showWhen: { field: "action", value: "report" },
+    },
     { id: "situation", label: "Situation", type: "longtext", required: false },
-    { id: "files", label: "Files", type: "list", required: false, itemLabel: "File", noteLabel: "Note", format: "code" },
     {
       id: "sources",
       label: "Sources",
       type: "list",
       required: false,
-      itemLabel: "Source (name or link)",
+      itemLabel: "Source (path, name or link)",
       noteLabel: "Note",
       format: "plain",
     },
@@ -94,6 +131,7 @@ export const REVIEW: Template = {
     fallback: "Report your findings. Cite supporting files and sources.",
   },
   replyModes: ["case-closed"],
+  replyModesAfter: "reportLocation",
   sourceScope: { field: "sources" },
 };
 

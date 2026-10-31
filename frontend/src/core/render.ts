@@ -62,6 +62,11 @@ export function filledRows(v: Value | undefined): ListRow[] {
   return rows(v).filter((r) => r.text.trim() !== "");
 }
 
+/** False when the field's showWhen choice does not match: it is then hidden, unvalidated and not rendered. */
+export function isShown(field: Field, inputs: Inputs): boolean {
+  return !field.showWhen || inputs[field.showWhen.field] === field.showWhen.value;
+}
+
 export function isEmpty(field: Field, v: Value | undefined): boolean {
   switch (field.type) {
     case "text":
@@ -91,7 +96,7 @@ export function resolveWording(w: Wording, template: Template, inputs: Inputs): 
   // One pass over the wording: substituted user text is never rescanned.
   return text.replace(/\{\{([a-zA-Z0-9]+)\}\}/g, (_, id: string) => {
     const f = fields.get(id);
-    if (!f) return "";
+    if (!f || !isShown(f, inputs)) return "";
     if (f.type === "choice") return choiceLabel(f, inputs[id]);
     if (f.type === "text" || f.type === "longtext") return clean(str(inputs[id]));
     return "";
@@ -164,19 +169,24 @@ export function render({ template, inputs, mode, scope }: RenderInput): string {
   const parts: string[] = [renderPreamble(template, inputs)];
   for (const f of template.fields) {
     const v = inputs[f.id];
+    if (!isShown(f, inputs)) continue;
     switch (f.type) {
       case "text":
       case "longtext": {
-        if (isEmpty(f, v)) break;
+        if (f.output === "none" || isEmpty(f, v)) break;
         const val = clean(str(v));
         const pf = f.prefixFrom && template.fields.find((x) => x.id === f.prefixFrom);
         const prefix = pf && pf.type === "choice" ? choiceLabel(pf, inputs[pf.id]) : "";
         parts.push(`## ${f.label}\n${prefix ? `**${prefix}:** ${val}` : val}`);
         break;
       }
-      case "choice":
-        if (f.output !== "none" && !isEmpty(f, v)) parts.push(`## ${f.label}\n${choiceLabel(f, v)}`);
+      case "choice": {
+        if (f.output === "none" || isEmpty(f, v)) break;
+        const opt = f.options.find((o) => o.value === v)!;
+        const body = opt.instruction ? clean(resolveWording(opt.instruction, template, inputs)) : opt.label;
+        parts.push(`## ${f.label}\n${body}`);
         break;
+      }
       case "list": {
         const isScope = template.sourceScope?.field === f.id;
         const count = filledRows(v).length;
@@ -204,7 +214,7 @@ function firstLine(s: string): string {
 
 function firstText(fields: Field[], inputs: Inputs): string {
   for (const f of fields) {
-    if (f.type === "text" || f.type === "longtext") {
+    if ((f.type === "text" || f.type === "longtext") && f.output !== "none" && isShown(f, inputs)) {
       const line = firstLine(str(inputs[f.id]));
       if (line) return line;
     }

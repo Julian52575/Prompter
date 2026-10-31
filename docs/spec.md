@@ -12,7 +12,7 @@ Prompt Builder is a private, local web app that turns a filled-in template into 
 - **Persistent:** drafts, history and custom templates survive restarts, stored as JSON in the browser's localStorage. A manual Export/Import file protects against data loss.
 - **Language:** English only.
 
-**Non-goals (v1):** calling AI APIs, writing to chosen disk paths, running a server, automatic or scheduled backup, auto-deleting history, multi-user use, translation, conditional form fields.
+**Non-goals (v1):** calling AI APIs, writing to chosen disk paths, running a server, automatic or scheduled backup, auto-deleting history, multi-user use, translation.
 
 **Primary flow:** pick a template, fill the form on the left, choose a reply mode and (where offered) a source scope, press Generate, edit the prompt on the right, choose the output type (Bare prompt or Review request), then press Copy, Open in ChatGPT or Open in Mistral.
 
@@ -23,6 +23,8 @@ Prompt Builder is a private, local web app that turns a filled-in template into 
 - Task list preamble, two Review closings, the Open scope line and the Case-closed instruction are reworded to remove mismatches.
 - Open scope renders its instruction even when no sources are listed.
 - Review lists Goal type and Goal first, so the form and the prompt start with the goal.
+- Review gains a required Action required field (Prepare context, Write a report, Update codebase) with a report destination shown only for Write a report. Files is merged into Sources.
+- Conditional form fields (`showWhen`) are supported, reversing that v1 non-goal. Choice options can carry an instruction, text fields a default, a hint and `output: "none"`, and templates can place the reply mode radio with `replyModesAfter`.
 - Standard is a fixed mode. Templates can offer all reply modes, so new custom modes need no template edit.
 - History: hand edits are saved to the entry, identical regenerations are skipped, summaries work for every template, single deletes are confirmed, and Restore handles changed or deleted templates.
 - Storage: multi-tab sync, corrected corrupt-data rule, history index repair, built-in update notices, a storage meter, and Export/Import (reverses the v1 "no export" non-goal).
@@ -47,7 +49,8 @@ Every template is declarative JSON rendered by one generic renderer. Built-in an
 | `fields` | Field\[\] | Ordered form fields (below) |
 | `preamble`, `closing` | Wording | Fixed text placed before and after the user's content |
 | `replyModes` | `"none"`, `"all"` or string\[\] | `"none"`: no reply mode radio. `"all"`: Standard plus every built-in and custom mode. A list: Standard plus the listed mode ids |
-| `sourceScope` | `null` or `{ field }` | When set, the Restricted/Open radio is shown and its instruction is placed in the named `list` field's section |
+| `replyModesAfter` | field id (optional) | Form only: the reply mode radio follows this top-level field. Omitted: after all fields |
+| `sourceScope` | `null` or `{ field }` | When set, the Restricted/Open radio is shown directly above the named `list` field, and its instruction is placed in that field's section |
 
 ### Wording
 
@@ -64,18 +67,19 @@ Wording is either a plain string or a variant map:
 
 ### Fields
 
-Every field has `id`, `label`, `type` and `required`. Field ids are unique across the whole template and match `[a-z][a-zA-Z0-9]*`.
+Every field has `id`, `label`, `type`, `required` and an optional `showWhen`. Field ids are unique across the whole template and match `[a-z][a-zA-Z0-9]*`.
 
 | Type | Renders as | Extra keys |
 | --- | --- | --- |
-| `text` | single-line input | `prefixFrom?`: id of a `choice` field whose label is prefixed to the value |
-| `longtext` | textarea | `prefixFrom?` (as above) |
-| `choice` | radio group | `options`: list of `{ value, label }`; `default?`: an option value; `output?`: `"section"` (default) or `"none"` (the field only feeds wording and prefixes) |
+| `text` | single-line input | `prefixFrom?`: id of a `choice` field whose label is prefixed to the value; `default?`: initial text; `hint?`: help text under the label; `output?`: `"section"` (default) or `"none"` (the value only feeds placeholders) |
+| `longtext` | textarea | as `text` |
+| `choice` | radio group | `options`: list of `{ value, label, instruction? }` (an `instruction` is wording, with placeholders, rendered instead of the label); `default?`: an option value; `output?`: `"section"` (default) or `"none"` (the field only feeds wording and prefixes) |
 | `list` | repeatable rows of text plus optional note | `itemLabel`, `noteLabel`, `format`: `"code"` or `"plain"` |
 | `group` | repeatable, reorderable items, each with a `name` and child fields | `itemLabel`, `defaultItems?`: list of item names, `children`: Field\[\] |
 
 - A `group` may contain one nested `group`, no deeper (two heading levels).
 - `prefixFrom` is allowed only on top-level fields.
+- `showWhen: { field, value }` is allowed only on top-level fields and names another top-level `choice` field and one of its option values. While that choice has a different value (or none), the field is hidden, not validated, not rendered, and its placeholders insert nothing. Its value is kept, so switching back restores it.
 
 **Empty and required**
 
@@ -100,7 +104,9 @@ The renderer is a pure function of (template, inputs, mode, scope). It outputs, 
 **Top-level fields**
 
 - `text`, `longtext`: `## <label>`, then the value. With `prefixFrom`, the value line is `**<choice label>:** <value>`.
-- `choice` with `output: "section"`: `## <label>`, then the selected option's label. With `output: "none"` nothing is rendered.
+- `text`, `longtext` with `output: "none"`: nothing is rendered.
+- `choice` with `output: "section"`: `## <label>`, then the selected option's instruction (resolved and substituted) or, without one, its label. With `output: "none"` nothing is rendered.
+- Fields hidden by `showWhen` are skipped.
 - `list`: `## <label>`, then the scope instruction if this is the `sourceScope` field, then one bullet per non-empty row: `- <text>: <note>`, or `- <text>` when the note is empty. With `format: "code"`, the text is inline code.
 - `group`: the group's own label is never output. Each item with content renders as `## <item name>`, followed by its children.
 
@@ -140,7 +146,7 @@ Custom templates have only a stored version and a Delete action, with no reset. 
 
 ## Built-in templates
 
-Two built-in templates ship with the app: Task list at `version: 1` and Review at `version: 2` (Goal type and Goal moved first). Both are rendered by the generic renderer, with no special-case code. All wording below becomes final once the sign-offs under Open items are given.
+Two built-in templates ship with the app: Task list at `version: 1` and Review at `version: 3` (2: Goal type and Goal moved first; 3: Action required added, Files merged into Sources). Both are rendered by the generic renderer, with no special-case code. All wording below becomes final once the sign-offs under Open items are given.
 
 ### Task list
 
@@ -192,20 +198,30 @@ Generated Markdown:
 | --- | --- | --- | --- |
 | `goalType` | choice | yes | Label "Goal type", `output: "none"`, no default. Options: `fix` Fix a bug, `prevent` Prevent a bug, `learn` Learn the stack, `answer` Answer a question |
 | `goal` | longtext | yes | Label "Goal", `prefixFrom: "goalType"`. The user's own statement of what they want |
+| `action` | choice | yes | Label "Action required", no default. Options and instructions below |
+| `reportLocation` | text | yes, while shown | Label "Report destination", default "Markdown document", `output: "none"`, `showWhen: { "field": "action", "value": "report" }`. Hint: "Where should the report go? For example: Markdown document, GitHub PR comment, issue comment, or Confluence page." |
 | `situation` | longtext | no | Label "Situation" |
-| `files` | list | no | Label "Files", item "File", note "Note", `format: "code"` |
-| `sources` | list | no | Label "Sources", item "Source (name or link)", note "Note", `format: "plain"` |
+| `sources` | list | no | Label "Sources", item "Source (path, name or link)", note "Note", `format: "plain"`. Holds repository paths too: the former Files field was merged into it |
 
-- `id: "review"`, `replyModes: ["case-closed"]` (Standard is added automatically), `sourceScope: { "field": "sources" }`.
+- `id: "review"`, `replyModes: ["case-closed"]` (Standard is added automatically), `replyModesAfter: "reportLocation"`, `sourceScope: { "field": "sources" }`.
+- Form order: Goal type, Goal, Action required, Report destination (when shown), Reply mode, Situation, Source scope, Sources.
+
+**Action required.** Each instruction starts with the precedence line "This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer." and a blank line. The action decides what the agent may do; the reply mode decides only how it formats the answer.
+
+| Option | Value | Instruction (after the precedence line) |
+| --- | --- | --- |
+| Prepare context | `context` | Investigate the goal, situation, and sources to build a clear understanding. Read code and run tests or read-only commands as needed. Do not edit files, commit, push, or open a pull request. Reply briefly with what you understand and any open questions or gaps, then wait for the next task. |
+| Write a report | `report` | Investigate the goal, situation, and sources, then write a report to {{reportLocation}}. Do not change code or post anywhere else; writing the report itself is allowed. Do not commit, push, or open a pull request. |
+| Update codebase | `update` | Investigate the goal, situation, and sources, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request. |
 - Preamble and closing are variant maps with `by: "goalType"`.
 
 | Goal type | Preamble | Closing |
 | --- | --- | --- |
-| Fix a bug | Review the situation, files, goal, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior. | Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources. |
-| Prevent a bug | Review the situation, files, goal, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior. | Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources. |
-| Learn the stack | Review the situation, files, goal, and sources. Trace the relevant stack and explain how its parts work together. | Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference. |
-| Answer a question | Review the situation, files, goal, and sources. Find and combine the evidence needed to answer the question. | Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer. |
-| Fallback | Review the situation, files, goal, and sources. | Report your findings. Cite supporting files and sources. |
+| Fix a bug | Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior. | Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources. |
+| Prevent a bug | Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior. | Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources. |
+| Learn the stack | Review the goal, situation, and sources. Trace the relevant stack and explain how its parts work together. | Address the goal with a concise explanation grounded in the files and sources. Cite supporting evidence and distinguish facts from inference. |
+| Answer a question | Review the goal, situation, and sources. Find and combine the evidence needed to answer the question. | Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer. |
+| Fallback | Review the goal, situation, and sources. | Report your findings. Cite supporting files and sources. |
 
 Generated Markdown (empty sections are skipped, except that the Sources section always appears when scope is Open):
 
@@ -215,11 +231,13 @@ Generated Markdown (empty sections are skipped, except that the Sources section 
 ## Goal
 **<goal type label>:** <goal>
 
+## Action required
+<precedence line>
+
+<action instruction>
+
 ## Situation
 <situation>
-
-## Files
-- `<path>`: <note>
 
 ## Sources
 <source scope instruction>
@@ -364,7 +382,7 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 ### Builder (main view)
 
-- **Left pane:** template selector (a labelled `select`), the template's form, then the reply mode radio (when offered) and the source scope radio (when offered), then the Generate button.
+- **Left pane:** template selector (a labelled `select`), the template's form, then the Generate button. The source scope radio (when offered) sits directly above its list field. The reply mode radio (when offered) follows the `replyModesAfter` field, or the whole form when that is not set.
 - **Right pane:** an editable textarea labelled "Generated prompt" (always the bare prompt), the Output type radio, the Review request preview when that type is selected, the Copy, Open in ChatGPT and Open in Mistral buttons, and a status line. Below 60em of width the panes stack, form first.
 - **Defaults:** reply mode starts on Standard. Source scope starts on Open. Output type starts on Bare prompt. All three are then remembered in the draft.
 
@@ -444,6 +462,9 @@ The app has three views, Builder, History and Settings, switched by a navigation
 | Group nested deeper than two levels | error |
 | `sourceScope.field` not naming a top-level list field | error |
 | `replyModes` listing an unknown mode id | warning |
+| `showWhen` not naming another top-level choice field and one of its option values, or used inside a group | error |
+| `replyModesAfter` not naming a top-level field | error |
+| Placeholder in an option `instruction` naming an unknown or non-top-level field | error |
 | `schema` newer than the app supports | error |
 
 **Reply modes**

@@ -1,7 +1,7 @@
-import { CASE_CLOSED, REVIEW, TASK_LIST } from "./builtins";
+import { ACTION_PRECEDENCE, CASE_CLOSED, REVIEW, TASK_LIST } from "./builtins";
 import { initValues } from "./catalog";
 import { clean, codeFence, headingName, inlineCode, render, SCOPE_TEXT, summarize } from "./render";
-import type { GroupItem, Inputs, Scope } from "./types";
+import type { ChoiceField, GroupItem, Inputs, Scope } from "./types";
 import { NOTHING_TO_GENERATE, RESTRICTED_NEEDS_SOURCES, validateInputs } from "./validate";
 
 const sub = (name: string, text: string): GroupItem => ({ k: name, name, values: { text } });
@@ -83,39 +83,44 @@ ${TASK_LIST.closing}
 });
 
 describe("Review", () => {
-  const base = (goalType: string | null, sources: string[]): Inputs => ({
-    situation: "The app crashes.",
-    files: [
-      { k: "1", text: "src/a.ts", note: "entry" },
-      { k: "2", text: "b.ts", note: "" },
-      { k: "3", text: "", note: "" },
-    ],
+  const base = (goalType: string | null, sources: string[], action: string | null = "update"): Inputs => ({
     goalType,
     goal: "Make it stop.",
-    sources: sources.map((s, i) => ({ k: `s${i}`, text: s, note: i === 0 ? "docs" : "" })),
+    action,
+    reportLocation: "Markdown document",
+    situation: "The app crashes.",
+    sources: [
+      ...sources.map((s, i) => ({ k: `s${i}`, text: s, note: i === 0 ? "docs" : "" })),
+      { k: "empty", text: "", note: "" },
+    ],
   });
+  const instruction = (value: string) =>
+    (REVIEW.fields.find((f) => f.id === "action") as ChoiceField).options.find((o) => o.value === value)!.instruction!;
 
   const goalTypes = ["fix", "prevent", "learn", "answer"] as const;
+  const actions = ["context", "report", "update"] as const;
   const modes = [null, CASE_CLOSED];
   const scopes: [Scope, string[]][] = [
-    ["restricted", ["MDN", "RFC 9110"]],
-    ["open", ["MDN"]],
+    ["restricted", ["src/a.ts", "RFC 9110"]],
+    ["open", ["src/a.ts"]],
     ["open", []],
   ];
 
   for (const g of goalTypes)
-    for (const m of modes)
-      for (const [scope, sources] of scopes)
-        test(`${g} / ${m?.id ?? "standard"} / ${scope} with ${sources.length} sources`, () => {
-          const out = render({ template: REVIEW, inputs: base(g, sources), mode: m, scope });
-          expect(out).toMatchSnapshot();
-          expect(out.endsWith("\n") && !out.endsWith("\n\n")).toBe(true);
-          if (scope === "open") expect(out).toContain("## Sources\n");
-          expect(out.includes("## Reply mode")).toBe(m !== null);
-        });
+    for (const a of actions)
+      for (const m of modes)
+        for (const [scope, sources] of scopes)
+          test(`${g} / ${a} / ${m?.id ?? "standard"} / ${scope} with ${sources.length} sources`, () => {
+            const out = render({ template: REVIEW, inputs: base(g, sources, a), mode: m, scope });
+            expect(out).toMatchSnapshot();
+            expect(out.endsWith("\n") && !out.endsWith("\n\n")).toBe(true);
+            expect(out).toContain(`## Action required\n${ACTION_PRECEDENCE}\n\n`);
+            if (scope === "open") expect(out).toContain("## Sources\n");
+            expect(out.includes("## Reply mode")).toBe(m !== null);
+          });
 
   test("full structure for one combination", () => {
-    const out = render({ template: REVIEW, inputs: base("fix", ["MDN"]), mode: CASE_CLOSED, scope: "open" });
+    const out = render({ template: REVIEW, inputs: base("fix", ["src/a.ts"]), mode: CASE_CLOSED, scope: "open" });
     const pre = (REVIEW.preamble as { variants: Record<string, string> }).variants.fix;
     const close = (REVIEW.closing as { variants: Record<string, string> }).variants.fix;
     expect(out).toBe(`${pre}
@@ -123,16 +128,15 @@ describe("Review", () => {
 ## Goal
 **Fix a bug:** Make it stop.
 
+## Action required
+${instruction("update")}
+
 ## Situation
 The app crashes.
 
-## Files
-- \`src/a.ts\`: entry
-- \`b.ts\`
-
 ## Sources
 ${SCOPE_TEXT.open}
-- MDN: docs
+- src/a.ts: docs
 
 ${close}
 
@@ -143,24 +147,40 @@ ${CASE_CLOSED.instruction}
 `);
   });
 
+  test("Write a report inserts the destination; other actions ignore it", () => {
+    const report = render({ template: REVIEW, inputs: { ...base("learn", [], "report"), reportLocation: "GitHub PR comment" }, mode: null, scope: "open" });
+    expect(report).toContain("then write a report to GitHub PR comment. Do not change code");
+    expect(report).not.toContain("## Report destination");
+    const update = render({ template: REVIEW, inputs: { ...base("learn", [], "update"), reportLocation: "" }, mode: null, scope: "open" });
+    expect(update).not.toContain("GitHub");
+  });
+
+  test("the report destination is required only while Write a report is chosen", () => {
+    expect(validateInputs(REVIEW, { ...base("fix", [], "report"), reportLocation: " " }, "open").map((e) => e.message)).toEqual([
+      "Report destination is required.",
+    ]);
+    expect(validateInputs(REVIEW, { ...base("fix", [], "context"), reportLocation: "" }, "open")).toEqual([]);
+  });
+
   test("the fallback wording is used with no goal type", () => {
     const out = render({ template: REVIEW, inputs: base(null, []), mode: null, scope: "open" });
-    expect(out.startsWith("Review the situation, files, goal, and sources.\n\n")).toBe(true);
+    expect(out.startsWith("Review the goal, situation, and sources.\n\n")).toBe(true);
     expect(out).toContain("## Goal\nMake it stop.");
   });
 
-  test("goalType and goal are required, and Restricted needs sources", () => {
-    const errs = validateInputs(REVIEW, { ...base(null, []), goal: "" }, "restricted");
+  test("goalType, goal and action are required, and Restricted needs sources", () => {
+    const errs = validateInputs(REVIEW, { ...base(null, [], null), goal: "" }, "restricted");
     expect(errs.map((e) => e.message)).toEqual([
       "Choose a goal type.",
       "Goal is required.",
+      "Choose an action required.",
       RESTRICTED_NEEDS_SOURCES,
     ]);
   });
 
   test("a note without text is an error", () => {
-    const v = base("fix", ["MDN"]);
-    (v.files as { text: string; note: string }[])[2].note = "orphan";
+    const v = base("fix", ["src/a.ts"]);
+    (v.sources as { text: string; note: string }[])[1].note = "orphan";
     expect(validateInputs(REVIEW, v, "open").map((e) => e.message)).toEqual(["Add a path or remove this row"]);
   });
 

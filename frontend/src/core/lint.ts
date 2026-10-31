@@ -109,13 +109,13 @@ const isObj = (v: unknown): v is Obj => typeof v === "object" && v !== null && !
 const isStr = (v: unknown): v is string => typeof v === "string";
 
 const FIELD_KEYS: Record<string, string[]> = {
-  text: ["prefixFrom"],
-  longtext: ["prefixFrom"],
+  text: ["prefixFrom", "default", "output", "hint"],
+  longtext: ["prefixFrom", "default", "output", "hint"],
   choice: ["options", "default", "output"],
   list: ["itemLabel", "noteLabel", "format"],
   group: ["itemLabel", "defaultItems", "children"],
 };
-const TEMPLATE_KEYS = ["id", "name", "schema", "version", "basedOn", "fields", "preamble", "closing", "replyModes", "sourceScope"];
+const TEMPLATE_KEYS = ["id", "name", "schema", "version", "basedOn", "fields", "preamble", "closing", "replyModes", "replyModesAfter", "sourceScope"];
 const TEMPLATE_REQUIRED = ["id", "name", "schema", "fields", "preamble", "closing", "replyModes", "sourceScope"];
 
 export function checkTemplate(t: unknown, knownModes: string[]): Issue[] {
@@ -161,7 +161,7 @@ export function checkTemplate(t: unknown, knownModes: string[]): Issue[] {
         list: ["itemLabel", "noteLabel", "format"],
         group: ["itemLabel", "children"],
       };
-      keys(f, p, ["id", "label", "type", "required", ...FIELD_KEYS[type]], ["id", "label", "type", "required", ...(extraRequired[type] ?? [])]);
+      keys(f, p, ["id", "label", "type", "required", "showWhen", ...FIELD_KEYS[type]], ["id", "label", "type", "required", ...(extraRequired[type] ?? [])]);
       if (!isStr(f.id) || !FIELD_ID.test(f.id))
         err(`${p}/id`, "A field id must start with a lower-case letter and contain only letters and digits.");
       else if (seen.has(f.id)) err(`${p}/id`, `The field id "${f.id}" is used more than once.`);
@@ -170,14 +170,26 @@ export function checkTemplate(t: unknown, knownModes: string[]): Issue[] {
       if ("label" in f && (!isStr(f.label) || !f.label.trim())) err(`${p}/label`, '"label" must be a non-empty string.');
       if ("required" in f && typeof f.required !== "boolean") err(`${p}/required`, '"required" must be true or false.');
       if ("prefixFrom" in f && depth > 0) err(`${p}/prefixFrom`, '"prefixFrom" is allowed only on top-level fields.');
+      if ("showWhen" in f && depth > 0) err(`${p}/showWhen`, '"showWhen" is allowed only on top-level fields.');
+      if (type === "text" || type === "longtext") {
+        if ("default" in f && !isStr(f.default)) err(`${p}/default`, '"default" must be text.');
+        if ("hint" in f && !isStr(f.hint)) err(`${p}/hint`, '"hint" must be text.');
+        if ("output" in f && f.output !== "section" && f.output !== "none") err(`${p}/output`, '"output" must be "section" or "none".');
+      }
       if (type === "choice") {
         const opts = f.options;
         if (!Array.isArray(opts) || opts.length === 0) err(`${p}/options`, "A choice needs at least one option.");
         else {
           const values = new Set<string>();
           opts.forEach((o, oi) => {
-            if (!isObj(o) || !isStr(o.value) || !isStr(o.label) || Object.keys(o).some((k) => k !== "value" && k !== "label"))
-              err(`${p}/options/${oi}`, 'An option must be { "value": string, "label": string }.');
+            if (
+              !isObj(o) ||
+              !isStr(o.value) ||
+              !isStr(o.label) ||
+              ("instruction" in o && !isStr(o.instruction)) ||
+              Object.keys(o).some((k) => !["value", "label", "instruction"].includes(k))
+            )
+              err(`${p}/options/${oi}`, 'An option must be { "value": string, "label": string, "instruction"?: string }.');
             else if (!o.value) err(`${p}/options/${oi}/value`, "An option value must not be empty.");
             else if (values.has(o.value)) err(`${p}/options/${oi}/value`, `The option value "${o.value}" is used more than once.`);
             else values.add(o.value);
@@ -210,6 +222,14 @@ export function checkTemplate(t: unknown, knownModes: string[]): Issue[] {
   (Array.isArray(t.fields) ? t.fields : []).forEach((f, idx) => {
     if (isObj(f) && "prefixFrom" in f && !topChoice(f.prefixFrom))
       err(`/fields/${idx}/prefixFrom`, '"prefixFrom" must name a top-level choice field.');
+    if (!isObj(f) || !("showWhen" in f)) return;
+    const sw = f.showWhen;
+    const choice = isObj(sw) ? topChoice(sw.field) : undefined;
+    if (!isObj(sw) || Object.keys(sw).some((k) => k !== "field" && k !== "value") || !isStr(sw.value))
+      err(`/fields/${idx}/showWhen`, '"showWhen" must be { "field": id, "value": option value }.');
+    else if (!choice || sw.field === f.id) err(`/fields/${idx}/showWhen/field`, '"showWhen.field" must name another top-level choice field.');
+    else if (!(Array.isArray(choice.options) && choice.options.some((o) => isObj(o) && o.value === sw.value)))
+      err(`/fields/${idx}/showWhen/value`, `"${sw.value}" is not an option value of "${sw.field}".`);
   });
 
   // wording
@@ -220,6 +240,12 @@ export function checkTemplate(t: unknown, knownModes: string[]): Issue[] {
         err(path, `The placeholder {{${m[1]}}} must name a top-level text, long text or choice field.`);
     }
   };
+  (Array.isArray(t.fields) ? t.fields : []).forEach((f, idx) => {
+    if (!isObj(f) || f.type !== "choice" || !Array.isArray(f.options)) return;
+    f.options.forEach((o, oi) => {
+      if (isObj(o) && isStr(o.instruction)) placeholders(o.instruction, `/fields/${idx}/options/${oi}/instruction`);
+    });
+  });
   for (const slot of ["preamble", "closing"] as const) {
     if (!(slot in t)) continue;
     const w = t[slot];
@@ -253,6 +279,8 @@ export function checkTemplate(t: unknown, knownModes: string[]): Issue[] {
       if (isStr(v) && !(v in w.variants)) warn(`${p}/variants`, `The option "${v}" has no variant; the fallback is used.`);
   }
 
+  if ("replyModesAfter" in t && !(isStr(t.replyModesAfter) && top.has(t.replyModesAfter)))
+    err("/replyModesAfter", '"replyModesAfter" must name a top-level field.');
   if ("replyModes" in t) {
     const r = t.replyModes;
     if (Array.isArray(r)) {

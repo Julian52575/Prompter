@@ -62,6 +62,10 @@ describe("lint", () => {
     ["prefixFrom", (t) => ({ ...t, fields: t.fields.map((f) => (f.id === "goal" ? { ...f, prefixFrom: "situation" } : f)) }), "prefixFrom"],
     ["scope", (t) => ({ ...t, sourceScope: { field: "goal" } }), "sourceScope.field"],
     ["schema", (t) => ({ ...t, schema: 99 }), "supports up to"],
+    ["showWhen field", (t) => ({ ...t, fields: t.fields.map((f) => (f.id === "situation" ? { ...f, showWhen: { field: "goal", value: "x" } } : f)) }), "showWhen.field"],
+    ["showWhen value", (t) => ({ ...t, fields: t.fields.map((f) => (f.id === "situation" ? { ...f, showWhen: { field: "action", value: "zz" } } : f)) }), '"zz" is not an option'],
+    ["replyModesAfter", (t) => ({ ...t, replyModesAfter: "nope" }), '"replyModesAfter" must name'],
+    ["option instruction placeholder", (t) => ({ ...t, fields: t.fields.map((f) => (f.type === "choice" && f.id === "action" ? { ...f, options: [{ value: "a", label: "A", instruction: "{{nope}}" }] } : f)) }), "{{nope}}"],
   ])("%s is an error", (_, mutate, msg) => {
     const issues = checkTemplate(mutate(REVIEW), ["case-closed"]);
     expect(issues.some((i) => i.level === "error" && i.message.includes(msg))).toBe(true);

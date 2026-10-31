@@ -2,20 +2,33 @@ export type Wording =
   | string
   | { by: string; variants: Record<string, string>; fallback: string };
 
+/** Top-level fields only: the field is shown, validated and rendered only while this choice has this value. */
+export interface ShowWhen {
+  field: string;
+  value: string;
+}
+
 export interface BaseField {
   id: string;
   label: string;
   required: boolean;
+  showWhen?: ShowWhen;
 }
 
 export interface TextField extends BaseField {
   type: "text" | "longtext";
   prefixFrom?: string;
+  default?: string;
+  /** "none": the value only feeds placeholders. */
+  output?: "section" | "none";
+  hint?: string;
 }
 
 export interface ChoiceOption {
   value: string;
   label: string;
+  /** Wording rendered as the section body instead of the label. */
+  instruction?: string;
 }
 
 export interface ChoiceField extends BaseField {
@@ -57,6 +70,8 @@ export interface Template {
   preamble: Wording;
   closing: Wording;
   replyModes: "none" | "all" | string[];
+  /** Field the reply mode radio follows in the form; default: after all fields. */
+  replyModesAfter?: string;
   sourceScope: null | { field: string };
 }
 

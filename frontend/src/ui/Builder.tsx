@@ -340,32 +340,48 @@ export function Builder() {
             ))}
           </select>
         </div>
-        <Form key={template.id} fields={template.fields} values={draft.values} onChange={(values) => patch({ values })} errors={errorMap} />
-        {offered.length > 0 && (
-          <fieldset>
-            <legend>Reply mode</legend>
-            {offered.map((m) => (
-              <label class="radio" key={m.id}>
-                <input type="radio" name="reply-mode" checked={draft.mode === m.id} onChange={() => patch({ mode: m.id })} /> {m.label}
-              </label>
-            ))}
-          </fieldset>
-        )}
-        {scopeField && (
-          <fieldset>
-            <legend>Source scope</legend>
-            {(
-              [
-                ["open", "Open: listed sources first, others allowed"],
-                ["restricted", "Restricted: listed sources only"],
-              ] as [Scope, string][]
-            ).map(([v, l]) => (
-              <label class="radio" key={v}>
-                <input type="radio" name="scope" checked={draft.scope === v} onChange={() => patch({ scope: v })} /> {l}
-              </label>
-            ))}
-          </fieldset>
-        )}
+        {(() => {
+          const modeNode = offered.length > 0 && (
+            <fieldset>
+              <legend>Reply mode</legend>
+              {offered.map((m) => (
+                <label class="radio" key={m.id}>
+                  <input type="radio" name="reply-mode" checked={draft.mode === m.id} onChange={() => patch({ mode: m.id })} /> {m.label}
+                </label>
+              ))}
+            </fieldset>
+          );
+          const scopeNode = scopeField && (
+            <fieldset>
+              <legend>Source scope</legend>
+              {(
+                [
+                  ["open", "Open: listed sources first, others allowed"],
+                  ["restricted", "Restricted: listed sources only"],
+                ] as [Scope, string][]
+              ).map(([v, l]) => (
+                <label class="radio" key={v}>
+                  <input type="radio" name="scope" checked={draft.scope === v} onChange={() => patch({ scope: v })} /> {l}
+                </label>
+              ))}
+            </fieldset>
+          );
+          const modeAfter = template.fields.some((f) => f.id === template.replyModesAfter) ? template.replyModesAfter! : null;
+          return (
+            <>
+              <Form
+                key={template.id}
+                fields={template.fields}
+                values={draft.values}
+                onChange={(values) => patch({ values })}
+                errors={errorMap}
+                before={scopeField ? { [scopeField]: scopeNode } : undefined}
+                after={modeAfter ? { [modeAfter]: modeNode } : undefined}
+              />
+              {!modeAfter && modeNode}
+            </>
+          );
+        })()}
         <button type="button" id="generate" class="primary big" onClick={generate}>
           Generate
         </button>

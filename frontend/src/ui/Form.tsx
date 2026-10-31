@@ -1,6 +1,6 @@
 import type { ComponentChildren } from "preact";
 import { newItem, newRow } from "../core/catalog";
-import { itemHasContent } from "../core/render";
+import { isShown, itemHasContent } from "../core/render";
 import type { ChoiceField, Field, GroupField, GroupItem, Inputs, ListField, ListRow, TextField, Value } from "../core/types";
 import { domId } from "../core/validate";
 import { focusLater, focusNow, useApp } from "./context";
@@ -14,8 +14,9 @@ interface FormProps {
   errors: Errors;
   /** Path prefix for DOM ids; "" at the top level. */
   path?: string;
-  /** Rendered after the field with this id (the source scope radio). */
-  after?: { field: string; node: ComponentChildren };
+  /** Extra controls placed before or after a field, keyed by field id (the reply mode and source scope radios). */
+  before?: Record<string, ComponentChildren>;
+  after?: Record<string, ComponentChildren>;
 }
 
 const pathOf = (prefix: string, id: string) => (prefix ? `${prefix}-${id}` : id);
@@ -38,14 +39,17 @@ function Req({ on }: { on: boolean }) {
   return on ? <span class="req"> (required)</span> : null;
 }
 
-export function Form({ fields, values, onChange, errors, path = "", after }: FormProps) {
+export function Form({ fields, values, onChange, errors, path = "", before, after }: FormProps) {
   const set = (id: string, v: Value) => onChange({ ...values, [id]: v });
   return (
     <>
       {fields.map((f) => (
         <div key={f.id}>
-          <FieldInput field={f} value={values[f.id]} set={(v) => set(f.id, v)} errors={errors} path={pathOf(path, f.id)} />
-          {after?.field === f.id && after.node}
+          {before?.[f.id]}
+          {isShown(f, values) && (
+            <FieldInput field={f} value={values[f.id]} set={(v) => set(f.id, v)} errors={errors} path={pathOf(path, f.id)} />
+          )}
+          {after?.[f.id]}
         </div>
       ))}
     </>
@@ -78,12 +82,16 @@ function FieldInput(p: FieldProps<Field>) {
 
 function TextInput({ field, value, set, errors, path, label }: FieldProps<TextField>) {
   const id = domId.field(path);
+  const hintId = field.hint ? `${id}-hint` : undefined;
+  const inv = invalid(id, errors);
+  const describedBy = [inv["aria-describedby"], hintId].filter(Boolean).join(" ") || undefined;
   const common = {
     id,
     value: typeof value === "string" ? value : "",
     onInput: (e: Event) => set((e.currentTarget as HTMLInputElement).value),
     "aria-required": field.required || undefined,
-    ...invalid(id, errors),
+    ...inv,
+    "aria-describedby": describedBy,
   };
   return (
     <div class="field">
@@ -91,6 +99,11 @@ function TextInput({ field, value, set, errors, path, label }: FieldProps<TextFi
         {label ?? field.label}
         <Req on={field.required} />
       </label>
+      {field.hint && (
+        <p class="hint" id={hintId}>
+          {field.hint}
+        </p>
+      )}
       <ErrorText id={id} errors={errors} />
       {field.type === "longtext" ? <textarea rows={4} {...common} /> : <input type="text" {...common} />}
     </div>
