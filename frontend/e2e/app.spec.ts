@@ -370,6 +370,17 @@ test.describe("accessibility", () => {
     expect(r.violations.map((v) => v.id)).toEqual([]);
   });
 
+  test("axe: Retro platformer theme on every view", async ({ page }) => {
+    await open(page, "#/settings");
+    await page.getByRole("radio", { name: "Retro platformer" }).check();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "platformer");
+    for (const view of ["builder", "history", "settings"]) {
+      await page.getByRole("link", { name: view[0].toUpperCase() + view.slice(1) }).click();
+      const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+      expect(r.violations.map((v) => `${view} ${v.id}: ${v.nodes.map((n) => n.target).join(", ")}`)).toEqual([]);
+    }
+  });
+
   test("no horizontal scrolling at 320 px", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 640 });
     for (const view of ["builder", "history", "settings"]) {

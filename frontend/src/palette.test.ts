@@ -35,3 +35,21 @@ describe.each([
     expect(ratio(p.focus, p.sf)).toBeGreaterThanOrEqual(3);
   });
 });
+
+describe("platformer palette (WCAG 2.2)", () => {
+  const p = block(':root[data-theme="platformer"]');
+  // Text sits on the sky, inputs and both block colours; the scenery bands hold no text.
+  const surfaces = ["bg", "sf", "pane-form", "pane-out"];
+  test.each(["fg", "muted", "accent", "error", "success"])("%s text is at least 4.5:1 on every surface", (k) => {
+    for (const s of surfaces) expect(ratio(p[k], p[s]), `${k} on ${s}`).toBeGreaterThanOrEqual(4.5);
+  });
+  test("text on accent is at least 4.5:1", () => expect(ratio(p["on-accent"], p.accent)).toBeGreaterThanOrEqual(4.5));
+  test("focus ring is at least 3:1 on the sky, inputs and blocks", () => {
+    for (const s of ["bg", "sf", "pane-form", "pane-out"]) expect(ratio(p.focus, p[s]), s).toBeGreaterThanOrEqual(3);
+  });
+  test("status bar: title, links and focus ring are legible on black", () => {
+    expect(ratio("#8cc8ff", "#000000")).toBeGreaterThanOrEqual(4.5);
+    expect(ratio("#000000", p["pane-out"])).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(p["hud-focus"], "#000000")).toBeGreaterThanOrEqual(3);
+  });
+});

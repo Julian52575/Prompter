@@ -139,6 +139,7 @@ export function App({ store }: { store: Store }) {
           </ul>
         </nav>
       </header>
+      <Sky />
       <StoreNotices />
       {conflict && (
         <Notice>
@@ -171,6 +172,7 @@ export function App({ store }: { store: Store }) {
         {view === "history" && <History />}
         {view === "settings" && <Settings />}
       </main>
+      <Hills />
       <footer>
         <p class="hint">{t.app.footer}</p>
       </footer>
@@ -193,6 +195,30 @@ function StoreNotices() {
         </Notice>
       ))}
     </>
+  );
+}
+
+/**
+ * Decoration for the Retro platformer theme, drawn by CSS and hidden in other
+ * themes. It sits in bands of its own, so no text ever lies on top of it.
+ */
+function Sky() {
+  return (
+    <div class="scenery sky" aria-hidden="true">
+      <div class="cloud cloud-1" />
+      <div class="cloud cloud-2" />
+      <div class="cloud cloud-3" />
+    </div>
+  );
+}
+
+function Hills() {
+  return (
+    <div class="scenery hills" aria-hidden="true">
+      <div class="hill hill-1" />
+      <div class="hill hill-2" />
+      <div class="hill hill-3" />
+    </div>
   );
 }
 

@@ -6,6 +6,14 @@
   font-display: swap;
 }
 
+/* Lettering of the Retro platformer theme. Copyright David Fens 2013, FontStruct
+   Non-Commercial License (see assets/PlatformerLettering-LICENSE.txt). */
+@font-face {
+  font-family: "Platformer Lettering";
+  src: url("./assets/platformer-lettering.woff2") format("woff2");
+  font-display: swap;
+}
+
 /* The palette tokens are also read by palette.test.ts to re-measure contrast. */
 :root {
   --bg: #f4efe1;
@@ -17,13 +25,16 @@
   --error: #a3151a;
   --success: #1b6b38;
   --focus: #c2410c;
+  /* Pane fills; themes may colour the form and prompt panes differently. */
+  --pane-form: var(--sf);
+  --pane-out: var(--sf);
   --border: 3px;
   --ring: 3px;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme]) {
     --bg: #14141f;
     --sf: #1f2033;
     --fg: #f2efe6;
@@ -550,10 +561,16 @@ code {
 }
 .tabs [role="tab"][aria-selected="true"] {
   z-index: 1;
-  background: var(--sf);
+  background: var(--pane-form);
   /* Covers the pane's top border under this tab only. */
   margin-bottom: calc(-1 * var(--border));
-  border-bottom: var(--border) solid var(--sf);
+  border-bottom: var(--border) solid var(--pane-form);
+}
+.tab-panel {
+  background: var(--pane-form);
+}
+.builder > .pane {
+  background: var(--pane-out);
 }
 .tabs button:focus-visible {
   z-index: 2;
@@ -563,5 +580,197 @@ code {
 @media (forced-colors: active) {
   .tabs [role="tab"][aria-selected="true"] {
     text-decoration: underline;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Retro platformer theme: a peach sky, bolted pastel blocks, outlined clouds,
+   tiled green hills and a striped ground, all drawn with CSS gradients (no
+   images, so the CSP needs no img-src). The scenery is decoration only.
+   --------------------------------------------------------------------------- */
+.scenery {
+  display: none;
+}
+
+:root[data-theme="platformer"] {
+  --bg: #fcd8a8;
+  --sf: #fffbf0;
+  --fg: #000000;
+  --muted: #3a3a3a;
+  --accent: #1838b8;
+  --on-accent: #ffffff;
+  --error: #a01000;
+  --success: #0b5e1c;
+  --focus: #b01000;
+  --pane-form: #f8c0b0;
+  --pane-out: #b0d8f8;
+  --hud-focus: #fcd8a8;
+  --grass-light: #80e070;
+  --grass-dark: #00a800;
+  --ground: #f8bca8;
+  --stripe: #d88c2c;
+  --cloud-shade: #b8e0f8;
+  color-scheme: light;
+}
+
+[data-theme="platformer"] h1,
+[data-theme="platformer"] h2 {
+  font-family: "Platformer Lettering", "Pixelify Sans", ui-monospace, monospace;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+/* Screws in the four corners of a block. */
+[data-theme="platformer"] .pane,
+[data-theme="platformer"] .editor,
+[data-theme="platformer"] .list-row,
+[data-theme="platformer"] .history-row {
+  --bolt: radial-gradient(circle, #ffffff 0 3px, var(--fg) 3.5px 6px, transparent 6.5px);
+  background-image: var(--bolt), var(--bolt), var(--bolt), var(--bolt);
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  background-position:
+    5px 5px,
+    calc(100% - 5px) 5px,
+    5px calc(100% - 5px),
+    calc(100% - 5px) calc(100% - 5px);
+  box-shadow: 10px 10px 0 var(--fg);
+}
+[data-theme="platformer"] .list-row,
+[data-theme="platformer"] .history-row,
+[data-theme="platformer"] .editor {
+  background-color: var(--pane-out);
+}
+[data-theme="platformer"] .tabs {
+  background: var(--bg);
+}
+
+/* The header as the status bar under the level. */
+[data-theme="platformer"] header {
+  background: #000000;
+  color: #ffffff;
+  border-bottom: none;
+}
+[data-theme="platformer"] header h1 {
+  color: #8cc8ff;
+  text-shadow: 3px 3px 0 var(--accent);
+}
+[data-theme="platformer"] nav a {
+  background: var(--pane-out);
+  color: #000000;
+  border-color: #ffffff;
+  box-shadow: none;
+}
+[data-theme="platformer"] nav a[aria-current="page"] {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+}
+[data-theme="platformer"] header :focus-visible {
+  outline-color: var(--hud-focus);
+}
+
+/* The footer as the ground: a pink top layer over orange and black stripes. */
+[data-theme="platformer"] footer {
+  max-width: none;
+  border-top: var(--border) solid var(--fg);
+  padding-bottom: 3.5rem;
+  background:
+    linear-gradient(var(--fg), var(--fg)) left calc(100% - 2rem) / 100% var(--border) no-repeat,
+    repeating-linear-gradient(-45deg, var(--stripe) 0 12px, var(--fg) 12px 20px) left bottom / 100% 2rem no-repeat,
+    var(--ground);
+}
+[data-theme="platformer"] footer .hint {
+  color: var(--fg);
+  max-width: 100rem;
+  margin: 0 auto;
+}
+
+[data-theme="platformer"] .scenery {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+}
+[data-theme="platformer"] .sky {
+  height: 6.5rem;
+}
+[data-theme="platformer"] .hills {
+  height: 11rem;
+  margin-top: 1rem;
+}
+
+/* A cloud: the puff first, then the body drawn over it, hiding the puff's lower outline. */
+.cloud {
+  position: absolute;
+  width: 128px;
+  height: 64px;
+}
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  background: #ffffff;
+  border: 4px solid #000000;
+}
+.cloud::before {
+  left: 30px;
+  top: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+.cloud::after {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  border-radius: 20px;
+  box-shadow: inset 0 -8px 0 var(--cloud-shade);
+}
+.cloud-1 {
+  top: 1.5rem;
+  left: 8%;
+}
+.cloud-2 {
+  top: 2rem;
+  left: 46%;
+  transform: scale(0.8);
+}
+.cloud-3 {
+  top: 1.25rem;
+  right: 8%;
+  transform: scale(1.1);
+}
+
+/* Hills: rounded tops, tiled with squares split into light and dark triangles. */
+.hill {
+  position: absolute;
+  bottom: calc(-1 * var(--border));
+  border: 4px solid #000000;
+  border-radius: 50% 50% 0 0 / 40% 40% 0 0;
+  background: linear-gradient(135deg, var(--grass-light) 0 50%, var(--grass-dark) 50%) 0 0 / 24px 24px;
+}
+.hill-1 {
+  right: 2%;
+  width: clamp(120px, 18vw, 260px);
+  height: 100%;
+}
+.hill-2 {
+  right: calc(2% + clamp(90px, 14vw, 200px));
+  width: clamp(90px, 13vw, 190px);
+  height: 62%;
+}
+.hill-3 {
+  left: 3%;
+  width: clamp(110px, 16vw, 230px);
+  height: 75%;
+}
+
+@media (forced-colors: active) {
+  [data-theme="platformer"] .scenery {
+    display: none;
   }
 }

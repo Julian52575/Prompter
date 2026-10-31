@@ -1,0 +1,10 @@
+"Super Mario Bros. 3" font (embedded as platformer-lettering.woff2, converted
+to WOFF2 without other changes), used by the Retro platformer theme.
+
+Copyright David Fens 2013. Built with FontStruct.
+Source: http://fontstruct.com/fontstructions/show/876059
+Licence: FontStruct Non-Commercial License, as stated in the font's own
+metadata (attribution required, no commercial use, adaptations shared alike).
+
+Because this font is embedded, builds of Prompt Builder that include it must
+not be used commercially.
