@@ -114,7 +114,25 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
         "Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.",
       answer:
         "Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.",
-      spec: `If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. ${NO_PUBLISH}`,
+      spec: `Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. ${NO_PUBLISH}`,
     },
     fallback: "Report your findings. Cite supporting files and sources.",
   },

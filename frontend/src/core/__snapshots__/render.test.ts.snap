@@ -705,7 +705,25 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
@@ -740,7 +758,25 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
@@ -776,7 +812,25 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
@@ -810,7 +864,25 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
@@ -836,7 +908,25 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
@@ -863,7 +953,25 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
@@ -884,7 +992,25 @@ No sources are listed. You may search for sources; cite each one you use.
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
@@ -915,7 +1041,25 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
@@ -947,7 +1091,25 @@ Use only the listed sources. Treat anything else as off-limits.
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
@@ -977,7 +1139,25 @@ No sources are listed. You may search for sources; cite each one you use.
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
@@ -999,7 +1179,25 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
@@ -1022,7 +1220,25 @@ Use only the listed sources. Treat anything else as off-limits.
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask.
+Write or update an implementation specification for the stated goal. Do not implement the specification or make code changes.
+
+If a specification already exists, update it: retain what is still correct, correct or remove what is outdated, fill gaps, and summarize the changes. If no specification exists, write a new one.
+
+Use exactly these six top-level sections, in this order, and explain each section's purpose through its contents:
+1. Context: what the feature or system is and why it exists.
+2. Requirements: what the implementation MUST do, stated as outcomes rather than implementation instructions.
+3. Constraints: technologies, architectural decisions, compatibility requirements, and other limits.
+4. Acceptance criteria: how to verify that the implementation is correct.
+5. Out of scope: what must NOT be implemented.
+6. References: relevant documentation, existing implementations, diagrams, and other sources.
+
+Organize the work within these sections into ordered Phases. Each Phase must be independently implementable and verifiable, with its own requirements and acceptance criteria. Keep phase-specific requirements and criteria within the Requirements and Acceptance criteria sections, respectively; identify their Phase there.
+
+Keep requirements separate from implementation suggestions. Put any suggested approach in a clearly labeled note outside Requirements, Constraints, and Acceptance criteria. Do not present a suggestion as a requirement or constraint.
+
+Check the specification against the current code and available sources. Remove or correct outdated, duplicated, or contradictory text; ensure retained statements are consistent with those sources. Cite supporting files and sources for substantive claims, and clearly mark assumptions. Be precise enough that another implementer can proceed without further input. If essential information is unavailable, identify it rather than inventing details.
+
+When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
