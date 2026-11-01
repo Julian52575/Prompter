@@ -2639,3 +2639,663 @@ Use only the listed sources. Treat anything else as off-limits.
 Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources.
 "
 `;
+
+exports[`Review > spec / chat / case-closed / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / chat / case-closed / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / chat / case-closed / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / chat / standard / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / chat / standard / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / chat / standard / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / context / case-closed / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources to build a clear understanding. Read code and run tests or read-only commands as needed. Do not edit files, commit, push, or open a pull request. Reply briefly with what you understand and any open questions or gaps, then wait for the next task.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / context / case-closed / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources to build a clear understanding. Read code and run tests or read-only commands as needed. Do not edit files, commit, push, or open a pull request. Reply briefly with what you understand and any open questions or gaps, then wait for the next task.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / context / case-closed / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources to build a clear understanding. Read code and run tests or read-only commands as needed. Do not edit files, commit, push, or open a pull request. Reply briefly with what you understand and any open questions or gaps, then wait for the next task.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / context / standard / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources to build a clear understanding. Read code and run tests or read-only commands as needed. Do not edit files, commit, push, or open a pull request. Reply briefly with what you understand and any open questions or gaps, then wait for the next task.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / context / standard / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources to build a clear understanding. Read code and run tests or read-only commands as needed. Do not edit files, commit, push, or open a pull request. Reply briefly with what you understand and any open questions or gaps, then wait for the next task.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / context / standard / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources to build a clear understanding. Read code and run tests or read-only commands as needed. Do not edit files, commit, push, or open a pull request. Reply briefly with what you understand and any open questions or gaps, then wait for the next task.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / report / case-closed / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then write a report to Markdown document. Do not change code or post anywhere else; writing the report itself is allowed. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / report / case-closed / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then write a report to Markdown document. Do not change code or post anywhere else; writing the report itself is allowed. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / report / case-closed / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then write a report to Markdown document. Do not change code or post anywhere else; writing the report itself is allowed. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / report / standard / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then write a report to Markdown document. Do not change code or post anywhere else; writing the report itself is allowed. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / report / standard / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then write a report to Markdown document. Do not change code or post anywhere else; writing the report itself is allowed. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / report / standard / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then write a report to Markdown document. Do not change code or post anywhere else; writing the report itself is allowed. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / update / case-closed / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / update / case-closed / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / update / case-closed / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+
+## Reply mode
+This overrides any conflicting reporting instructions above.
+
+Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+"
+`;
+
+exports[`Review > spec / update / standard / open with 0 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+No sources are listed. You may search for sources; cite each one you use.
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / update / standard / open with 1 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use the listed sources first. You may search elsewhere; label each cited source "listed" or "external."
+- src/a.ts: docs
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;
+
+exports[`Review > spec / update / standard / restricted with 2 sources 1`] = `
+"Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
+
+Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.
+
+## Goal
+**Create a specification:** Make it stop.
+
+## Action required
+This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer.
+
+Investigate the goal, situation, and sources, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request.
+
+## Situation
+The app crashes.
+
+## Sources
+Use only the listed sources. Treat anything else as off-limits.
+- src/a.ts: docs
+- RFC 9110
+
+Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.
+"
+`;

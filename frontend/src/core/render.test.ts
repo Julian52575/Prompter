@@ -99,7 +99,7 @@ describe("Review", () => {
   const instruction = (value: string) =>
     (REVIEW.fields.find((f) => f.id === "action") as ChoiceField).options.find((o) => o.value === value)!.instruction!;
 
-  const goalTypes = ["fix", "prevent", "learn", "answer"] as const;
+  const goalTypes = ["fix", "prevent", "learn", "answer", "spec"] as const;
   const actions = ["context", "report", "update", "chat"] as const;
   const modes = [null, CASE_CLOSED];
   const scopes: [Scope, string[]][] = [

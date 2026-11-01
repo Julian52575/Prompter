@@ -641,6 +641,7 @@ const fr: Dict = {
     "Prevent a bug": "Prévenir un bug",
     "Teaches the user about": "M'apprendre",
     "Answer a question": "Répondre à une question",
+    "Create a specification": "Créer une spécification",
     Goal: "Objectif",
     "Action required": "Action attendue",
     "Prepare context": "Préparer le contexte",

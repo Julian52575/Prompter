@@ -47,8 +47,8 @@ export const REVIEW: Template = {
   name: "Review",
   schema: 1,
   // 2: Goal type and Goal first. 3: Action required added, Files merged into Sources.
-  // 4: Learn the stack became Teaches the user about. 5: Chat action added.
-  version: 5,
+  // 4: Learn the stack became Teaches the user about. 5: Chat action added. 6: Create a specification goal type.
+  version: 6,
   fields: [
     {
       id: "goalType",
@@ -61,6 +61,7 @@ export const REVIEW: Template = {
         { value: "prevent", label: "Prevent a bug" },
         { value: "learn", label: "Teaches the user about" },
         { value: "answer", label: "Answer a question" },
+        { value: "spec", label: "Create a specification" },
       ],
     },
     { id: "goal", label: "Goal", type: "longtext", required: true, prefixFrom: "goalType" },
@@ -120,6 +121,7 @@ export const REVIEW: Template = {
       prevent: `${REVIEW_INTRO} Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior.`,
       learn: `${REVIEW_INTRO} Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.`,
       answer: `${REVIEW_INTRO} Find and combine the evidence needed to answer the question.`,
+      spec: `${REVIEW_INTRO} Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions.`,
     },
     fallback: REVIEW_INTRO,
   },
@@ -133,6 +135,8 @@ export const REVIEW: Template = {
         "Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.",
       answer:
         "Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.",
+      spec:
+        "Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions.",
     },
     fallback: "Report your findings. Cite supporting files and sources.",
   },
