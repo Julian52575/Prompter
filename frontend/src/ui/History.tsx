@@ -48,7 +48,7 @@ export function History() {
       ...newDraft(tpl),
       outputType: current?.outputType ?? "bare",
       values: m.values,
-      mode: e.mode,
+      modes: e.modes,
       scope: e.scope,
       output: e.prompt,
       baseline: e.prompt,

@@ -1,4 +1,4 @@
-import { BUILTIN_MODES, BUILTIN_TEMPLATES, BUILTIN_WRAPPER, STANDARD_MODE } from "./builtins";
+import { BUILTIN_MODES, BUILTIN_TEMPLATES, BUILTIN_WRAPPER } from "./builtins";
 import type { Draft, Field, GroupItem, Inputs, ListRow, ReplyMode, Template, Value, Wrapper } from "./types";
 
 export const randomId = (prefix = "") =>
@@ -22,7 +22,7 @@ export function effectiveTemplates(stored: Record<string, Template>): Template[]
 
 export function effectiveModes(stored: Record<string, ReplyMode>): ReplyMode[] {
   const builtins = BUILTIN_MODES.map((b) => stored[b.id] ?? b);
-  const custom = Object.values(stored).filter((m) => !builtinMode(m.id) && m.id !== STANDARD_MODE.id);
+  const custom = Object.values(stored).filter((m) => !builtinMode(m.id));
   return [...builtins, ...custom];
 }
 
@@ -42,10 +42,9 @@ export function hasUpdate(rec: Layered | null | undefined, builtin: { version?: 
 
 export function offeredModes(t: Template, modes: ReplyMode[]): ReplyMode[] {
   if (t.replyModes === "none") return [];
-  if (t.replyModes === "all") return [STANDARD_MODE, ...modes];
+  if (t.replyModes === "all") return modes;
   const byId = new Map(modes.map((m) => [m.id, m]));
-  const listed = t.replyModes.filter((id) => id !== STANDARD_MODE.id && byId.has(id)).map((id) => byId.get(id)!);
-  return [STANDARD_MODE, ...listed];
+  return t.replyModes.filter((id) => byId.has(id)).map((id) => byId.get(id)!);
 }
 
 export function templatesListingMode(templates: Template[], modeId: string): Template[] {
@@ -69,7 +68,7 @@ function initValue(f: Field, top: boolean): Value {
     case "choice":
       return f.default ?? null;
     case "list":
-      return [newRow()];
+      return [];
     case "group":
       return (top ? (f.defaultItems ?? []) : []).map((n) => newItem(f.children, n));
   }
@@ -120,7 +119,7 @@ function hasAny(v: Value | undefined): boolean {
 export function newDraft(t: Template): Draft {
   return {
     values: initValues(t.fields),
-    mode: STANDARD_MODE.id,
+    modes: [],
     scope: "open",
     output: "",
     baseline: "",

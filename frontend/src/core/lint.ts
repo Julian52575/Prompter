@@ -111,9 +111,9 @@ const isStr = (v: unknown): v is string => typeof v === "string";
 const FIELD_KEYS: Record<string, string[]> = {
   text: ["prefixFrom", "default", "output", "hint"],
   longtext: ["prefixFrom", "default", "output", "hint"],
-  choice: ["options", "default", "output"],
+  choice: ["options", "from", "default", "output"],
   list: ["itemLabel", "noteLabel", "format"],
-  group: ["itemLabel", "defaultItems", "children"],
+  group: ["itemLabel", "nameLabel", "numbered", "defaultItems", "children"],
 };
 const TEMPLATE_KEYS = ["id", "name", "schema", "version", "basedOn", "fields", "preamble", "closing", "replyModes", "replyModesAfter", "sourceScope"];
 const TEMPLATE_REQUIRED = ["id", "name", "schema", "fields", "preamble", "closing", "replyModes", "sourceScope"];
@@ -178,7 +178,11 @@ export function checkTemplate(t: unknown, knownModes: string[]): Issue[] {
       }
       if (type === "choice") {
         const opts = f.options;
-        if (!Array.isArray(opts) || opts.length === 0) err(`${p}/options`, "A choice needs at least one option.");
+        if ("from" in f) {
+          if (f.from !== "earlierItems" || depth === 0)
+            err(`${p}/from`, '"from" must be "earlierItems" and is allowed only inside a group.');
+          if (Array.isArray(opts) && opts.length) err(`${p}/options`, "A choice built from earlier items has no options.");
+        } else if (!Array.isArray(opts) || opts.length === 0) err(`${p}/options`, "A choice needs at least one option.");
         else {
           const values = new Set<string>();
           opts.forEach((o, oi) => {
@@ -206,6 +210,8 @@ export function checkTemplate(t: unknown, knownModes: string[]): Issue[] {
       }
       if (type === "group") {
         if ("itemLabel" in f && !isStr(f.itemLabel)) err(`${p}/itemLabel`, '"itemLabel" must be a string.');
+        if ("nameLabel" in f && !isStr(f.nameLabel)) err(`${p}/nameLabel`, '"nameLabel" must be a string.');
+        if ("numbered" in f && typeof f.numbered !== "boolean") err(`${p}/numbered`, '"numbered" must be true or false.');
         if ("defaultItems" in f && !(Array.isArray(f.defaultItems) && f.defaultItems.every(isStr)))
           err(`${p}/defaultItems`, '"defaultItems" must be a list of names.');
         if (depth >= 2) err(p, "Groups can be nested only one level deep.");
@@ -286,7 +292,7 @@ export function checkTemplate(t: unknown, knownModes: string[]): Issue[] {
     if (Array.isArray(r)) {
       r.forEach((id, idx) => {
         if (!isStr(id)) err(`/replyModes/${idx}`, "A reply mode id must be text.");
-        else if (id !== "standard" && !knownModes.includes(id)) warn(`/replyModes/${idx}`, `No reply mode has the id "${id}"; it is skipped.`);
+        else if (!knownModes.includes(id)) warn(`/replyModes/${idx}`, `No reply mode has the id "${id}"; it is skipped.`);
       });
     } else if (r !== "none" && r !== "all") err("/replyModes", '"replyModes" must be "none", "all" or a list of mode ids.');
   }

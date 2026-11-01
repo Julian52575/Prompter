@@ -34,6 +34,8 @@ export interface ChoiceOption {
 export interface ChoiceField extends BaseField {
   type: "choice";
   options: ChoiceOption[];
+  /** Inside a group: the options are the group's earlier items (value = item key), and `options` is empty. */
+  from?: "earlierItems";
   default?: string;
   output?: "section" | "none";
 }
@@ -48,6 +50,10 @@ export interface ListField extends BaseField {
 export interface GroupField extends BaseField {
   type: "group";
   itemLabel: string;
+  /** Label of the item name input; default: "<itemLabel> <n> name". */
+  nameLabel?: string;
+  /** Headings read "<itemLabel> <n>: <name>"; earlier-item choices refer to that number. */
+  numbered?: boolean;
   defaultItems?: string[];
   children: Field[];
 }
@@ -119,7 +125,7 @@ export interface Provider {
 
 export interface Draft {
   values: Inputs;
-  mode: string;
+  modes: string[];
   scope: Scope;
   output: string;
   baseline: string;
@@ -134,7 +140,8 @@ export interface HistoryEntry {
   templateId: string;
   templateName: string;
   inputs: Inputs;
-  mode: string;
+  modes: string[];
+  /** Labels of the modes, joined; empty when none. */
   modeLabel: string;
   scope: Scope;
   generated: string;

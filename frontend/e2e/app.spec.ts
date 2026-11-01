@@ -21,11 +21,11 @@ async function chooseTemplate(page: Page, name: string) {
 }
 
 async function fillReview(page: Page) {
-  await chooseTemplate(page, "Review");
-  await page.getByRole("radio", { name: "Fix a bug" }).check();
+  await chooseTemplate(page, "Research");
+  await page.getByRole("radio", { name: "Bug Hunt" }).check();
   await page.getByLabel("Goal (required)").fill("Stop the crash.");
-  await page.getByRole("radio", { name: "Update codebase" }).check();
-  await page.getByLabel("Situation").fill("The app crashes on save.");
+  await page.getByLabel("Context").fill("The app crashes on save.");
+  await page.getByRole("button", { name: "Add source (path, name or link)" }).click();
   await page.getByLabel("Source (path, name or link) 1", { exact: true }).fill("src/save.ts");
 }
 
@@ -43,43 +43,53 @@ test("opens from file:// with no errors, no requests and the CSP first in head",
   expect(readFileSync(new URL(FILE)).length).toBeLessThanOrEqual(256_000);
 });
 
-test("task list: add, reorder by keyboard, generate", async ({ page }) => {
+test("task list: add, depend on an earlier task, reorder by keyboard, generate", async ({ page }) => {
   await open(page);
   await page.getByRole("button", { name: "Generate" }).click();
   await expect(page.locator("#error-summary")).toBeFocused();
   await expect(page.locator("#error-summary")).toContainText("Nothing to generate");
 
-  const work = page.locator(".item").filter({ has: page.getByLabel("Block 1 name") });
-  await work.getByRole("button", { name: "Add sub-block" }).click();
-  await expect(page.getByLabel("Sub-block 1 name")).toBeFocused();
+  await page.getByLabel("Context").fill("A parser for config files.");
+  const tasks = page.locator(".item");
+  await page.getByRole("button", { name: "Add task" }).click();
+  await expect(page.getByLabel("Title")).toBeFocused();
   await page.keyboard.type("Parser");
-  await page.getByLabel("Parser", { exact: true }).fill("Write the parser.");
+  await tasks.nth(0).getByLabel("Details (required)").fill("Write the parser.");
+  await expect(tasks.nth(0).getByLabel("Depends on")).toHaveCount(1);
+  await expect(tasks.nth(0).getByRole("option")).toHaveText(["None"]);
 
-  await page.getByRole("button", { name: "Move down: Work" }).click();
-  await expect(page.getByRole("button", { name: "Move down: Work" })).toBeFocused();
-  await expect(page.locator("[aria-live=polite]")).toHaveText("Work moved to position 2 of 3");
-  await page.getByRole("button", { name: "Move down: Work" }).press("Enter");
+  await page.getByRole("button", { name: "Add task" }).click();
+  await page.keyboard.type("Docs");
+  await tasks.nth(1).getByLabel("Details (required)").fill("Write the docs.");
+
+  await page.getByRole("button", { name: "Move down: Parser" }).click();
+  await expect(page.getByRole("button", { name: "Move down: Parser" })).toBeFocused();
+  await expect(page.locator("[aria-live=polite]")).toHaveText("Parser moved to position 2 of 2");
   // Last position: Move down is disabled, so focus moves to Move up.
-  await expect(page.getByRole("button", { name: "Move up: Work" })).toBeFocused();
+  await page.getByRole("button", { name: "Move down: Parser" }).press("Enter");
+  await expect(page.getByRole("button", { name: "Move up: Parser" })).toBeFocused();
+
+  await tasks.nth(1).getByLabel("Depends on").selectOption({ label: "Task 1: Docs" });
 
   await page.getByRole("button", { name: "Generate" }).click();
   await expect(output(page)).toBeFocused();
-  await expect(output(page)).toHaveValue(/## Work\n\n### Parser\nWrite the parser\.\n\nAfter completing/);
+  await expect(output(page)).toHaveValue(
+    /## Context\nA parser for config files\.\n\n## Task 1: Docs\n\*\*Details:\*\*\nWrite the docs\.\n\n## Task 2: Parser\n\*\*Details:\*\*\nWrite the parser\.\n\*\*Depends on:\*\* Task 1: Docs\n\nAfter completing/,
+  );
   await expect(page.locator("[aria-live=polite]")).toHaveText("Prompt generated");
 });
 
-test("review: required fields and Restricted scope block Generate", async ({ page }) => {
+test("research: required fields and Restricted scope block Generate", async ({ page }) => {
   await open(page);
-  await chooseTemplate(page, "Review");
-  await page.getByLabel("Situation").fill("x");
+  await chooseTemplate(page, "Research");
+  await page.getByLabel("Context").fill("x");
   await page.getByRole("radio", { name: /Restricted/ }).check();
   await page.getByRole("button", { name: "Generate" }).click();
   const summary = page.locator("#error-summary");
   await expect(summary).toBeFocused();
   await expect(summary.getByRole("link")).toHaveText([
-    "Choose a goal type.",
+    "Choose a deliverable.",
     "Goal is required.",
-    "Choose an action required.",
     "Restricted scope needs at least one source. Add a source or choose Open.",
   ]);
   await summary.getByRole("link", { name: "Goal is required." }).click();
@@ -90,8 +100,10 @@ test("review: required fields and Restricted scope block Generate", async ({ pag
 test("hand edits: confirm before replacing, saved to history, identical regenerate skipped", async ({ page }) => {
   await open(page);
   await fillReview(page);
-  await page.getByRole("radio", { name: "Case-closed" }).check();
+  await page.getByRole("radio", { name: "Cheap Lookup" }).check();
+  await page.getByRole("checkbox", { name: "Conversation" }).check();
   await page.getByRole("button", { name: "Generate" }).click();
+  await expect(output(page)).toHaveValue(/## Effort\nDo a quick lookup/);
   await expect(output(page)).toHaveValue(/## Reply mode\nThis overrides/);
 
   await page.getByRole("button", { name: "Generate" }).click();
@@ -119,7 +131,7 @@ test("drafts survive a reload; restore brings an entry back", async ({ page }) =
   await page.getByRole("button", { name: "Generate" }).click();
   await page.waitForTimeout(700);
   await page.reload();
-  await expect(page.getByRole("tab", { name: "Review", exact: true })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("tab", { name: "Research", exact: true })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByLabel("Goal (required)")).toHaveValue("Stop the crash.");
 
   await page.getByLabel("Goal (required)").fill("Something else");
@@ -130,16 +142,16 @@ test("drafts survive a reload; restore brings an entry back", async ({ page }) =
   await expect(page.getByLabel("Goal (required)")).toHaveValue("Stop the crash.");
 });
 
-test("copy and review request preview match", async ({ page, context, browserName }) => {
+test("copy and re-prompt request preview match", async ({ page, context, browserName }) => {
   test.skip(browserName !== "chromium", "clipboard permissions are Chromium-only in Playwright");
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await open(page);
   await fillReview(page);
   await page.getByRole("button", { name: "Generate" }).click();
   await output(page).fill("Use ```js``` blocks");
-  await page.getByRole("radio", { name: "Review request" }).check();
-  await page.locator("summary", { hasText: "Review request preview" }).click();
-  const preview = await page.getByLabel("Review request preview").inputValue();
+  await page.getByRole("radio", { name: "Re-Prompt Request" }).check();
+  await page.locator("summary", { hasText: "Re-Prompt Request preview" }).click();
+  const preview = await page.getByLabel("Re-Prompt Request preview").inputValue();
   expect(preview).toContain("````markdown\nUse ```js``` blocks\n````");
   await page.getByRole("button", { name: "Copy", exact: true }).click();
   await expect(page.locator("[aria-live=polite]")).toHaveText("Copied");
@@ -174,7 +186,7 @@ test("open in ChatGPT asks first, Cancel opens nothing, long prompts fall back",
   const popup = context.waitForEvent("page");
   await dialog.getByRole("button", { name: "Open ChatGPT" }).click();
   await popup;
-  await expect.poll(() => urls.at(-1)).toMatch(/^https:\/\/chatgpt\.com\/\?q=Write%20all%20of%20your%20replies%20to%20me%20in%20English\.%20[^\n]*%0A%0AReview%20the%20goal/);
+  await expect.poll(() => urls.at(-1)).toMatch(/^https:\/\/chatgpt\.com\/\?q=Write%20all%20of%20your%20replies%20to%20me%20in%20English\.%20[^\n]*%0A%0AResearch%20the%20goal/);
 
   // The popup takes focus in Firefox; input events only reach the page in front.
   await page.bringToFront();
@@ -201,21 +213,21 @@ test("a change in one tab appears in another; a conflicting edit shows the banne
   await expect(b.getByRole("radio", { name: "Dark" })).toBeChecked();
 
   await a.getByRole("link", { name: "Builder" }).click();
-  await chooseTemplate(a, "Review");
+  await chooseTemplate(a, "Research");
   await a.waitForTimeout(700);
   await b.bringToFront();
   await b.getByRole("link", { name: "Builder" }).click();
-  await chooseTemplate(b, "Review");
-  await b.getByLabel("Situation").fill("mine");
+  await chooseTemplate(b, "Research");
+  await b.getByLabel("Context").fill("mine");
   // a writes while b's autosave is still pending.
   await a.evaluate(() => {
     const drafts = JSON.parse(localStorage.getItem("pb.drafts") ?? "{}");
-    drafts.review = { values: { situation: "theirs" }, mode: "standard", scope: "open", output: "", baseline: "", entryId: null, outputType: "bare", updatedAt: 0 };
+    drafts.review = { values: { situation: "theirs" }, modes: [], scope: "open", output: "", baseline: "", entryId: null, outputType: "bare", updatedAt: 0 };
     localStorage.setItem("pb.drafts", JSON.stringify(drafts));
   });
   await expect(b.getByText("This data was changed in another tab.")).toBeVisible();
   await b.getByRole("button", { name: "Load theirs" }).click();
-  await expect(b.getByLabel("Situation")).toHaveValue("theirs");
+  await expect(b.getByLabel("Context")).toHaveValue("theirs");
 });
 
 test("export, then import with Replace all into a clean profile", async ({ page, browser }) => {
@@ -245,31 +257,28 @@ test("export, then import with Replace all into a clean profile", async ({ page,
   await fresh.close();
 });
 
-test("review: form order, and the report destination appears only for Write a report", async ({ page }) => {
+test("research: form order, Effort defaults to Case-closed, no reply mode is selected", async ({ page }) => {
   await open(page);
-  await chooseTemplate(page, "Review");
+  await chooseTemplate(page, "Research");
   const order = await page.locator("#form-heading ~ div legend, #form-heading ~ div .field > label").allTextContents();
   const idx = (t: string) => order.findIndex((x) => x.startsWith(t));
-  expect(idx("Goal type")).toBeLessThan(idx("Action required"));
-  expect(idx("Action required")).toBeLessThan(idx("Reply mode"));
-  expect(idx("Reply mode")).toBeLessThan(idx("Situation"));
-  expect(idx("Situation")).toBeLessThan(idx("Source scope"));
+  expect(idx("Deliverable")).toBeLessThan(idx("Goal"));
+  expect(idx("Goal")).toBeLessThan(idx("Context"));
+  expect(idx("Context")).toBeLessThan(idx("Source scope"));
   expect(idx("Source scope")).toBeLessThan(idx("Sources"));
-  const dest = page.getByLabel("Report destination (required)");
-  await expect(dest).toHaveCount(0);
-  await page.getByRole("radio", { name: "Write a report" }).check();
-  await expect(dest).toHaveValue("Markdown document");
-  await dest.fill("GitHub PR comment");
-  await page.getByRole("radio", { name: "Fix a bug" }).check();
-  await page.getByLabel("Goal (required)").fill("Stop the crash.");
-  await page.getByRole("button", { name: "Generate" }).click();
-  await expect(output(page)).toHaveValue(/## Action required\n[^\n]+\n\n[^\n]*write a report to GitHub PR comment\./);
+  expect(idx("Sources")).toBeLessThan(idx("Effort"));
+  expect(idx("Effort")).toBeLessThan(idx("Reply mode"));
+  expect(order.some((x) => x.startsWith("Action required") || x.startsWith("Report destination"))).toBe(false);
+  await expect(page.getByRole("radio", { name: "Case-closed" })).toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "Conversation" })).not.toBeChecked();
+  await expect(page.getByRole("radio", { name: "Standard" })).toHaveCount(0);
 });
 
 test("clear form resets fields, radios and the prompt after confirming", async ({ page }) => {
   await open(page);
   await fillReview(page);
-  await page.getByRole("radio", { name: "Case-closed" }).check();
+  await page.getByRole("radio", { name: "Cheap Lookup" }).check();
+  await page.getByRole("checkbox", { name: "Conversation" }).check();
   await page.getByRole("button", { name: "Generate" }).click();
   await page.getByRole("button", { name: "Clear form" }).click();
   const dialog = page.getByRole("dialog", { name: "Clear the form?" });
@@ -280,9 +289,10 @@ test("clear form resets fields, radios and the prompt after confirming", async (
   await page.getByRole("button", { name: "Clear form" }).click();
   await dialog.getByRole("button", { name: "Clear" }).click();
   await expect(page.getByLabel("Goal (required)")).toHaveValue("");
-  await expect(page.getByLabel("Situation")).toHaveValue("");
-  await expect(page.getByRole("radio", { name: "Fix a bug" })).not.toBeChecked();
-  await expect(page.getByRole("radio", { name: "Standard" })).toBeChecked();
+  await expect(page.getByLabel("Context")).toHaveValue("");
+  await expect(page.getByRole("radio", { name: "Bug Hunt" })).not.toBeChecked();
+  await expect(page.getByRole("radio", { name: "Case-closed" })).toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "Conversation" })).not.toBeChecked();
   await expect(page.getByRole("radio", { name: /^Open/ })).toBeChecked();
   await expect(output(page)).toHaveValue("");
   await expect(page.locator("[aria-live=polite]")).toHaveText("Form cleared");
@@ -295,9 +305,9 @@ test("template tabs switch with the keyboard", async ({ page }) => {
   const tabs = page.getByRole("tablist", { name: "Template" });
   await tabs.getByRole("tab", { name: "Task list" }).focus();
   await page.keyboard.press("ArrowRight");
-  await expect(tabs.getByRole("tab", { name: "Review" })).toBeFocused();
-  await expect(tabs.getByRole("tab", { name: "Review" })).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByRole("tabpanel", { name: "Review" })).toBeVisible();
+  await expect(tabs.getByRole("tab", { name: "Research" })).toBeFocused();
+  await expect(tabs.getByRole("tab", { name: "Research" })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("tabpanel", { name: "Research" })).toBeVisible();
   await expect(page.getByLabel("Goal (required)")).toBeVisible();
   await page.keyboard.press("Home");
   await expect(tabs.getByRole("tab", { name: "Task list" })).toHaveAttribute("aria-selected", "true");
@@ -315,17 +325,16 @@ test.describe("language", () => {
     await page.goto(FILE);
     await expect(page.locator("html")).toHaveAttribute("lang", "fr");
     await expect(page).toHaveTitle("Éditeur – Prompt Builder");
-    await page.getByRole("tab", { name: "Revue" }).click();
-    await page.getByRole("radio", { name: "Corriger un bug" }).check();
+    await page.getByRole("tab", { name: "Recherche" }).click();
+    await page.getByRole("radio", { name: "Chasse au bug" }).check();
     await page.getByRole("button", { name: "Générer" }).click();
     await expect(page.locator("#error-summary")).toContainText("Le champ « Objectif » est obligatoire.");
     await page.getByLabel("Objectif (obligatoire)").fill("Arrêter le crash.");
-    await page.getByRole("radio", { name: "Modifier le code" }).check();
     await page.getByRole("button", { name: "Générer" }).click();
     const prompt = page.getByLabel("Prompt généré");
-    await expect(prompt).toHaveValue(/^Write all of your replies to me in French\. [^\n]+\n\nReview the goal/);
-    await expect(prompt).toHaveValue(/## Goal\n\*\*Fix a bug:\*\* Arrêter le crash\./);
-    await expect(prompt).toHaveValue(/## Action required\n/);
+    await expect(prompt).toHaveValue(/^Write all of your replies to me in French\. [^\n]+\n\nResearch the goal/);
+    await expect(prompt).toHaveValue(/## Goal\n\*\*Bug Hunt:\*\* Arrêter le crash\./);
+    await expect(prompt).toHaveValue(/## Effort\n/);
 
     await page.getByRole("link", { name: "Paramètres" }).click();
     await page.getByRole("radio", { name: "English" }).check();
@@ -338,7 +347,7 @@ test.describe("language", () => {
 
 test("JSON view: lint errors are listed and block Apply", async ({ page }) => {
   await open(page, "#/settings");
-  await page.getByRole("button", { name: "Edit: Review" }).click();
+  await page.getByRole("button", { name: "Edit: Research" }).click();
   await page.getByText("Advanced: JSON view").click();
   const json = page.getByLabel("Template JSON");
   await json.fill('{ "id": "review", "name": }');
@@ -346,7 +355,7 @@ test("JSON view: lint errors are listed and block Apply", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Apply" })).toBeDisabled();
   await page.getByRole("button", { name: "Revert JSON" }).click();
   const text = await json.inputValue();
-  await json.fill(text.replace('"name": "Review"', '"name": "My review"'));
+  await json.fill(text.replace('"name": "Research"', '"name": "My review"'));
   await page.getByRole("button", { name: "Apply" }).click();
   await expect(page.getByLabel("Name", { exact: true })).toHaveValue("My review");
   await page.getByRole("button", { name: "Save" }).first().click();

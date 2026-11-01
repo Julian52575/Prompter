@@ -73,7 +73,8 @@ export function isEmpty(field: Field, v: Value | undefined): boolean {
     case "longtext":
       return str(v).trim() === "";
     case "choice":
-      return !field.options.some((o) => o.value === v);
+      // An earlier-item choice holds an item key; whether it still exists is checked where items are known.
+      return field.from ? typeof v !== "string" || v === "" : !field.options.some((o) => o.value === v);
     case "list":
       return filledRows(v).length === 0;
     case "group":
@@ -82,7 +83,7 @@ export function isEmpty(field: Field, v: Value | undefined): boolean {
 }
 
 export function itemHasContent(group: GroupField, item: GroupItem): boolean {
-  return group.children.some((c) => !isEmpty(c, item.values[c.id]));
+  return group.children.some((c) => !(c.type === "choice" && c.from) && !isEmpty(c, item.values[c.id]));
 }
 
 export function resolveWording(w: Wording, template: Template, inputs: Inputs): string {
@@ -127,16 +128,28 @@ function valueText(field: Exclude<Field, GroupField>, v: Value | undefined): str
   return clean(str(v));
 }
 
-function renderItem(group: GroupField, item: GroupItem, level: number): string {
-  const head = `${"#".repeat(level)} ${headingName(item.name)}`;
+/** "Task 2" for numbered groups, else "". */
+const itemRef = (group: GroupField, n: number) => (group.numbered ? `${group.itemLabel} ${n}` : "");
+
+function renderItem(group: GroupField, item: GroupItem, level: number, n: number, earlier: GroupItem[]): string {
+  const ref = itemRef(group, n);
+  const head = `${"#".repeat(level)} ${ref ? `${ref}: ` : ""}${headingName(item.name)}`;
   const plain = group.children.filter((c): c is Exclude<Field, GroupField> => c.type !== "group");
+  const valueOf = (c: Exclude<Field, GroupField>) => {
+    const v = item.values[c.id];
+    if (c.type === "choice" && c.from) {
+      const i = earlier.findIndex((e) => e.k === v);
+      return i < 0 || !itemHasContent(group, earlier[i]) ? "" : `${itemRef(group, i + 1)}: ${headingName(earlier[i].name)}`;
+    }
+    return valueText(c, v);
+  };
   const nested = group.children.filter((c): c is GroupField => c.type === "group");
   let body: string;
-  if (plain.length === 1) body = valueText(plain[0], item.values[plain[0].id]);
+  if (plain.length === 1) body = valueOf(plain[0]);
   else
     body = plain
       .map((c) => {
-        const v = valueText(c, item.values[c.id]);
+        const v = valueOf(c);
         if (!v) return "";
         const multi = c.type === "longtext" || c.type === "list";
         return multi ? `**${c.label}:**\n${v}` : `**${c.label}:** ${v}`;
@@ -149,9 +162,9 @@ function renderItem(group: GroupField, item: GroupItem, level: number): string {
 }
 
 function renderGroupItems(group: GroupField, v: Value | undefined, level: number): string[] {
-  return items(v)
-    .filter((it) => itemHasContent(group, it))
-    .map((it) => renderItem(group, it, level));
+  // Numbers follow the form's positions, so a skipped empty item leaves a gap.
+  const all = items(v);
+  return all.flatMap((it, i) => (itemHasContent(group, it) ? [renderItem(group, it, level, i + 1, all.slice(0, i))] : []));
 }
 
 /** The prompt is always English; only this line names the language the user reads. */
@@ -163,7 +176,7 @@ export const languageLine = (lang: Language) =>
 export interface RenderInput {
   template: Template;
   inputs: Inputs;
-  mode: ReplyMode | null;
+  modes: ReplyMode[];
   scope: Scope;
   language: Language;
 }
@@ -172,7 +185,7 @@ export function renderPreamble(template: Template, inputs: Inputs): string {
   return clean(resolveWording(template.preamble, template, inputs));
 }
 
-export function render({ template, inputs, mode, scope, language }: RenderInput): string {
+export function render({ template, inputs, modes, scope, language }: RenderInput): string {
   const parts: string[] = [languageLine(language), renderPreamble(template, inputs)];
   for (const f of template.fields) {
     const v = inputs[f.id];
@@ -210,7 +223,10 @@ export function render({ template, inputs, mode, scope, language }: RenderInput)
     }
   }
   parts.push(clean(resolveWording(template.closing, template, inputs)));
-  const instruction = clean(mode?.instruction ?? "");
+  const instruction = modes
+    .map((m) => clean(m.instruction))
+    .filter(Boolean)
+    .join("\n\n");
   if (instruction) parts.push(`## Reply mode\n${REPLY_MODE_OVERRIDE}\n\n${instruction}`);
   return `${parts.filter((p) => p !== "").join("\n\n")}\n`;
 }

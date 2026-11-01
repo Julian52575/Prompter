@@ -1,4 +1,4 @@
-import { BUILTIN_WRAPPER, REVIEW, TASK_LIST } from "./builtins";
+import { BUILTIN_WRAPPER, RESEARCH, TASK_LIST } from "./builtins";
 import { effectiveModes, effectiveTemplates, hasUpdate, matchValues, offeredModes } from "./catalog";
 import { checkTemplate, lintTemplateText } from "./lint";
 import {
@@ -22,8 +22,8 @@ const entry = (id: string, createdAt: number): HistoryEntry => ({
   templateId: "review",
   templateName: "Review",
   inputs: {},
-  mode: "standard",
-  modeLabel: "Standard",
+  modes: [],
+  modeLabel: "",
   scope: "open",
   generated: "x\n",
   prompt: "x\n",
@@ -33,8 +33,8 @@ const entry = (id: string, createdAt: number): HistoryEntry => ({
 
 describe("lint", () => {
   test("built-ins are clean", () => {
-    expect(checkTemplate(TASK_LIST, ["case-closed"])).toEqual([]);
-    expect(checkTemplate(REVIEW, ["case-closed"])).toEqual([]);
+    expect(checkTemplate(TASK_LIST, ["conversation"])).toEqual([]);
+    expect(checkTemplate(RESEARCH, ["conversation"])).toEqual([]);
   });
 
   test("syntax errors carry line and column", () => {
@@ -44,9 +44,9 @@ describe("lint", () => {
   });
 
   test("semantic errors point at the offending value", () => {
-    const t = { ...REVIEW, fields: [...REVIEW.fields, { id: "Bad", label: "x", type: "text", required: false }] };
+    const t = { ...RESEARCH, fields: [...RESEARCH.fields, { id: "Bad", label: "x", type: "text", required: false }] };
     const text = JSON.stringify(t, null, 2);
-    const { issues, value } = lintTemplateText(text, ["case-closed"]);
+    const { issues, value } = lintTemplateText(text, ["conversation"]);
     expect(value).toBeUndefined();
     const i = issues.find((x) => x.path.endsWith("/id"))!;
     expect(text.slice(i.offset, i.offset + 5)).toBe('"Bad"');
@@ -62,25 +62,29 @@ describe("lint", () => {
     ["scope", (t) => ({ ...t, sourceScope: { field: "goal" } }), "sourceScope.field"],
     ["schema", (t) => ({ ...t, schema: 99 }), "supports up to"],
     ["showWhen field", (t) => ({ ...t, fields: t.fields.map((f) => (f.id === "situation" ? { ...f, showWhen: { field: "goal", value: "x" } } : f)) }), "showWhen.field"],
-    ["showWhen value", (t) => ({ ...t, fields: t.fields.map((f) => (f.id === "situation" ? { ...f, showWhen: { field: "action", value: "zz" } } : f)) }), '"zz" is not an option'],
+    ["showWhen value", (t) => ({ ...t, fields: t.fields.map((f) => (f.id === "situation" ? { ...f, showWhen: { field: "effort", value: "zz" } } : f)) }), '"zz" is not an option'],
     ["replyModesAfter", (t) => ({ ...t, replyModesAfter: "nope" }), '"replyModesAfter" must name'],
-    ["option instruction placeholder", (t) => ({ ...t, fields: t.fields.map((f) => (f.type === "choice" && f.id === "action" ? { ...f, options: [{ value: "a", label: "A", instruction: "{{nope}}" }] } : f)) }), "{{nope}}"],
+    ["option instruction placeholder", (t) => ({ ...t, fields: t.fields.map((f) => (f.type === "choice" && f.id === "effort" ? { ...f, options: [{ value: "a", label: "A", instruction: "{{nope}}" }] } : f)) }), "{{nope}}"],
   ])("%s is an error", (_, mutate, msg) => {
-    const issues = checkTemplate(mutate(REVIEW), ["case-closed"]);
+    const issues = checkTemplate(mutate(RESEARCH), ["conversation"]);
     expect(issues.some((i) => i.level === "error" && i.message.includes(msg))).toBe(true);
   });
 
   test("groups deeper than two levels are an error", () => {
     const deep = structuredClone(TASK_LIST) as Template;
-    (deep.fields[0] as { children: unknown[] }).children[0] = {
-      ...(deep.fields[0] as { children: object[] }).children[0],
+    (deep.fields[1] as { children: unknown[] }).children[0] = {
+      id: "mid",
+      label: "M",
+      type: "group",
+      required: false,
+      itemLabel: "M",
       children: [{ id: "deeper", label: "D", type: "group", required: false, itemLabel: "D", children: [] }],
     };
     expect(checkTemplate(deep, []).some((i) => i.message.includes("nested only one level"))).toBe(true);
   });
 
   test("a missing variant and an unknown mode are warnings", () => {
-    const t = { ...REVIEW, replyModes: ["gone"], closing: { by: "goalType", variants: { fix: "x" }, fallback: "f" } };
+    const t = { ...RESEARCH, replyModes: ["gone"], closing: { by: "goalType", variants: { bughunt: "x" }, fallback: "f" } };
     const levels = checkTemplate(t, []).map((i) => i.level);
     expect(levels).toContain("warning");
     expect(levels).not.toContain("error");
@@ -118,25 +122,44 @@ describe("wrapper and links", () => {
 describe("layers", () => {
   test("user defaults replace built-ins and report updates", () => {
     const mine = { ...TASK_LIST, name: "Mine", basedOn: { id: "task-list", version: 0 } };
-    const list = effectiveTemplates({ "task-list": mine, "c-1": { ...REVIEW, id: "c-1" } });
-    expect(list.map((t) => t.name)).toEqual(["Mine", "Review", "Review"]);
+    const list = effectiveTemplates({ "task-list": mine, "c-1": { ...RESEARCH, id: "c-1" } });
+    expect(list.map((t) => t.name)).toEqual(["Mine", "Research", "Research"]);
     expect(hasUpdate(mine, TASK_LIST)).toBe(true);
-    expect(hasUpdate({ ...mine, basedOn: { id: "task-list", version: 1 } }, TASK_LIST)).toBe(false);
+    expect(hasUpdate({ ...mine, basedOn: { id: "task-list", version: 2 } }, TASK_LIST)).toBe(false);
   });
 
   test('"all" offers custom modes without editing the template; unknown ids are skipped', () => {
     const modes = effectiveModes({ "m-1": { id: "m-1", label: "Terse", instruction: "Be terse." } });
-    expect(offeredModes({ ...REVIEW, replyModes: "all" }, modes).map((m) => m.id)).toEqual(["standard", "case-closed", "m-1"]);
-    expect(offeredModes({ ...REVIEW, replyModes: ["gone", "m-1"] }, modes).map((m) => m.id)).toEqual(["standard", "m-1"]);
+    expect(offeredModes({ ...RESEARCH, replyModes: "all" }, modes).map((m) => m.id)).toEqual(["conversation", "m-1"]);
+    expect(offeredModes({ ...RESEARCH, replyModes: ["gone", "m-1"] }, modes).map((m) => m.id)).toEqual(["m-1"]);
     expect(offeredModes(TASK_LIST, modes)).toEqual([]);
   });
 
+  test("drafts and entries saved with a single mode are read as a list", () => {
+    const b = memoryBackend({
+      "pb.version": "1",
+      "pb.drafts": JSON.stringify({ a: { values: {}, mode: "standard" }, b: { values: {}, mode: "conversation" } }),
+      "pb.h.x": JSON.stringify({ ...entry("x", 1), mode: "conversation", modeLabel: "Conversation", modes: undefined }),
+    });
+    const r = repo(new Store(b));
+    expect(r.drafts().a.modes).toEqual([]);
+    expect(r.drafts().b.modes).toEqual(["conversation"]);
+    expect(r.drafts().b).not.toHaveProperty("mode");
+    expect(r.entry("x")?.modes).toEqual(["conversation"]);
+  });
+
+  test("an earlier-items choice is only valid inside a group", () => {
+    const bad = structuredClone(RESEARCH) as Template;
+    (bad.fields[0] as unknown as { from: string }).from = "earlierItems";
+    expect(checkTemplate(bad, []).some((i) => i.message.includes("only inside a group"))).toBe(true);
+  });
+
   test("restored inputs are matched by field id", () => {
-    const m = matchValues(REVIEW.fields, { situation: "s", removed: "lost" });
+    const m = matchValues(RESEARCH.fields, { situation: "s", removed: "lost" });
     expect(m.dropped).toBe(true);
     expect(m.values.situation).toBe("s");
     expect(m.values.goalType).toBeNull();
-    expect(matchValues(REVIEW.fields, { situation: "s" }).dropped).toBe(false);
+    expect(matchValues(RESEARCH.fields, { situation: "s" }).dropped).toBe(false);
   });
 });
 
@@ -199,10 +222,10 @@ describe("storage", () => {
   test("export then replace-all import restores identical data", () => {
     const a = new Store(memoryBackend());
     a.setJson(KEYS.settings, { theme: "dark", lastTemplate: "review", dismissed: [], confirmedProviders: ["chatgpt"] });
-    a.setJson(KEYS.templates, { "c-1": { ...REVIEW, id: "c-1", version: undefined } });
+    a.setJson(KEYS.templates, { "c-1": { ...RESEARCH, id: "c-1", version: undefined } });
     addHistoryEntry(a, entry("e1", 5));
     const file = JSON.parse(JSON.stringify(exportData(a)));
-    expect(validateExport(file, ["case-closed"])).toEqual([]);
+    expect(validateExport(file, ["conversation"])).toEqual([]);
     const b = new Store(memoryBackend());
     expect(importData(b, file, "replace")).toBe(true);
     const { exportedAt: _a, ...x } = exportData(a);

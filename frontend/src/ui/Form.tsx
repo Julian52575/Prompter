@@ -65,6 +65,8 @@ interface FieldProps<F extends Field> {
   path: string;
   /** Visible label override: a sub-block's name labels its textarea. */
   label?: string;
+  /** For a choice built from earlier items: the items it can pick. */
+  earlier?: { value: string; label: string }[];
 }
 
 function FieldInput(p: FieldProps<Field>) {
@@ -111,8 +113,25 @@ function TextInput({ field, value, set, errors, path, label }: FieldProps<TextFi
   );
 }
 
-function ChoiceInput({ field, value, set, errors, path }: FieldProps<ChoiceField>) {
+function ChoiceInput({ field, value, set, errors, path, earlier }: FieldProps<ChoiceField>) {
+  const { t } = useApp();
   const id = domId.field(path);
+  if (field.from) {
+    const current = earlier?.some((o) => o.value === value) ? (value as string) : "";
+    return (
+      <div class="field">
+        <label for={id}>{field.label}</label>
+        <select id={id} value={current} onChange={(e) => set(e.currentTarget.value || null)}>
+          <option value="">{t.form.none}</option>
+          {earlier?.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  }
   return (
     <fieldset id={id} {...invalid(id, errors)}>
       <legend>
@@ -270,9 +289,10 @@ function GroupInput({ field, value, set, errors, path }: FieldProps<GroupField>)
           const childPath = (cid: string) => domId.child(path, it.k, cid);
           return (
             <li key={it.k} class="item">
+              {field.numbered && <p class="item-id">{t.form.numbered(field.itemLabel, i + 1)}</p>}
               <div class="field">
                 <label for={nid}>
-                  {t.form.itemName(field.itemLabel, i + 1)}
+                  {field.nameLabel ?? t.form.itemName(field.itemLabel, i + 1)}
                 </label>
                 <ErrorText id={nid} errors={errors} />
                 <input
@@ -302,6 +322,10 @@ function GroupInput({ field, value, set, errors, path }: FieldProps<GroupField>)
                 field.children.map((c) => (
                   <FieldInput
                     key={c.id}
+                    earlier={items.slice(0, i).map((e, j) => ({
+                      value: e.k,
+                      label: `${t.form.numbered(field.itemLabel, j + 1)}${e.name.trim() ? `: ${e.name.trim()}` : ""}`,
+                    }))}
                     field={c}
                     value={it.values[c.id]}
                     set={(v) => setItem(i, { ...it, values: { ...it.values, [c.id]: v } })}

@@ -31,7 +31,7 @@ Download `prompt-builder.html` from the latest
 1. Pick a template (*Task list* or *Review*, or your own from *Settings*).
 2. Fill the form, choose a reply mode and source scope where offered.
 3. Press **Generate**, edit the prompt on the right if needed.
-4. Choose **Bare prompt** or **Review request** (wraps the prompt and asks a
+4. Choose **Bare prompt** or **Re-Prompt Request** (wraps the prompt and asks a
    chatbot to review it), then **Copy**, **Open in ChatGPT** or **Open in
    Mistral**.
 

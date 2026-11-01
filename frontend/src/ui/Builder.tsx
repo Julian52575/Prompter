@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { BUILTIN_PROVIDERS, STANDARD_MODE } from "../core/builtins";
+import { BUILTIN_PROVIDERS } from "../core/builtins";
 import {
   builtinTemplate,
   omit,
@@ -59,9 +59,10 @@ export function Builder() {
     const fresh = newDraft(localizeTemplate(t, tpl));
     const d: Draft = stored ? { ...fresh, ...stored, values: matchValues(tpl.fields, stored.values ?? {}).values } : fresh;
     const modes = offeredModes(tpl, effectiveModes(repo(store).modes()));
-    if (modes.length && !modes.some((m) => m.id === d.mode)) {
-      if (d.mode !== STANDARD_MODE.id) setTimeout(() => addNotice("missingMode"), 0);
-      d.mode = STANDARD_MODE.id;
+    const kept = d.modes.filter((id) => modes.some((m) => m.id === id));
+    if (kept.length !== d.modes.length) {
+      setTimeout(() => addNotice("missingMode"), 0);
+      d.modes = kept;
     }
     return d;
   };
@@ -173,8 +174,8 @@ export function Builder() {
       });
       if (res.choice !== "confirm") return;
     }
-    const mode = offered.find((m) => m.id === d.mode) ?? null;
-    const text = render({ template, inputs: d.values, mode, scope: d.scope, language: lang });
+    const chosen = offered.filter((m) => d.modes.includes(m.id));
+    const text = render({ template, inputs: d.values, modes: chosen, scope: d.scope, language: lang });
     const rr = repo(store);
     const lastRow = rr.historyIndex().find((row) => row.templateId === template.id);
     const last = lastRow && rr.entry(lastRow.id);
@@ -191,8 +192,8 @@ export function Builder() {
         templateId: template.id,
         templateName: template.name,
         inputs,
-        mode: mode?.id ?? STANDARD_MODE.id,
-        modeLabel: mode?.label ?? STANDARD_MODE.label,
+        modes: chosen.map((m) => m.id),
+        modeLabel: chosen.map((m) => m.label).join(", "),
         scope: d.scope,
         generated: text,
         prompt: text,
@@ -405,7 +406,15 @@ export function Builder() {
               <legend>{t.builder.replyMode}</legend>
               {offered.map((m) => localizeMode(t, m)).map((m) => (
                 <label class="radio" key={m.id}>
-                  <input type="radio" name="reply-mode" checked={draft.mode === m.id} onChange={() => patch({ mode: m.id })} /> {m.label}
+                  <input
+                    type="checkbox"
+                    name="reply-mode"
+                    checked={draft.modes.includes(m.id)}
+                    onChange={(e) =>
+                      patch({ modes: e.currentTarget.checked ? [...draft.modes, m.id] : draft.modes.filter((id) => id !== m.id) })
+                    }
+                  />{" "}
+                  {m.label}
                 </label>
               ))}
             </fieldset>

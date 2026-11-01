@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { BUILTIN_PROVIDERS, BUILTIN_WRAPPER, STANDARD_MODE } from "../core/builtins";
+import { BUILTIN_PROVIDERS, BUILTIN_WRAPPER } from "../core/builtins";
 import {
   blankTemplate,
   builtinMode,
@@ -210,11 +210,6 @@ function Modes() {
     <section aria-labelledby="modes-heading">
       <h3 id="modes-heading">{t.settings.modes}</h3>
       <ul class="list">
-        <li class="list-row">
-          <p>
-            <strong>{localizeMode(t, STANDARD_MODE).label}</strong> <span class="tag">{t.settings.fixed}</span> {t.settings.standardInfo}
-          </p>
-        </li>
         {modes.map((raw) => {
           const m = localizeMode(t, raw);
           const b = builtinMode(m.id);

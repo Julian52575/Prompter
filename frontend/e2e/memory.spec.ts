@@ -30,10 +30,10 @@ function seedHistory(n: number): Record<string, string> {
       id: `seed${i}`,
       createdAt: 1_790_000_000_000 - i * 60_000,
       templateId: "review",
-      templateName: "Review",
+      templateName: "Research",
       inputs: { goal: `Entry ${i}` },
-      mode: "standard",
-      modeLabel: "Standard",
+      modes: [],
+      modeLabel: "",
       scope: "open",
       generated: prompt,
       prompt,
@@ -41,7 +41,7 @@ function seedHistory(n: number): Record<string, string> {
       summary: `Entry ${i}: investigate the failing build`,
     };
     items[`pb.h.${e.id}`] = JSON.stringify(e);
-    const { inputs: _i, generated: _g, prompt: _p, mode: _m, modeLabel: _l, scope: _s, ...row } = e;
+    const { inputs: _i, generated: _g, prompt: _p, modes: _m, modeLabel: _l, scope: _s, ...row } = e;
     index.push(row);
   }
   items["pb.history"] = JSON.stringify(index);
@@ -69,14 +69,13 @@ test("every page stays within the memory budget", async ({ page }) => {
   await go(page, "#/builder");
   await measure("Builder – Task list");
 
-  await page.getByRole("tab", { name: "Review", exact: true }).click();
-  await page.getByRole("radio", { name: "Fix a bug" }).check();
+  await page.getByRole("tab", { name: "Research", exact: true }).click();
+  await page.getByRole("radio", { name: "Bug Hunt" }).check();
   await page.getByLabel("Goal (required)").fill("Stop the crash on save.");
-  await page.getByRole("radio", { name: "Update codebase" }).check();
-  await page.getByLabel("Situation").fill("The app crashes when saving a large file.\n".repeat(20));
+  await page.getByLabel("Context").fill("The app crashes when saving a large file.\n".repeat(20));
   await page.getByRole("button", { name: "Generate" }).click();
-  await page.getByRole("radio", { name: "Review request" }).check();
-  await measure("Builder – Review, generated, review request");
+  await page.getByRole("radio", { name: "Re-Prompt Request" }).check();
+  await measure("Builder – Research, generated, re-prompt request");
 
   await page.evaluate(() => {
     const s = JSON.parse(localStorage.getItem("pb.settings") ?? "{}");
@@ -97,7 +96,7 @@ test("every page stays within the memory budget", async ({ page }) => {
   await go(page, "#/settings");
   await measure("Settings");
 
-  await page.getByRole("button", { name: "Edit: Review" }).click();
+  await page.getByRole("button", { name: "Edit: Research" }).click();
   await page.getByText("Advanced: JSON view").click();
   await measure("Settings – template editor with JSON view");
 

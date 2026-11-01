@@ -346,15 +346,35 @@ export function formatSize(bytes: number, locale = "en"): string {
 
 export const DEFAULT_SETTINGS: Settings = { theme: "system", language: null, lastTemplate: null, dismissed: [], confirmedProviders: [] };
 
+/** Drafts and entries saved before reply modes became a multi-select hold a single `mode`. */
+function legacyModes(x: { mode?: string; modes?: string[] }): string[] {
+  if (Array.isArray(x.modes)) return x.modes;
+  return x.mode && x.mode !== "standard" ? [x.mode] : [];
+}
+
+function normalizeDraft(d: Draft): Draft {
+  if (typeof d !== "object" || d === null) return d;
+  const { mode: _m, ...rest } = d as Draft & { mode?: string };
+  return { ...rest, modes: legacyModes(d as Draft & { mode?: string }) };
+}
+
+function normalizeEntry(e: HistoryEntry | null): HistoryEntry | null {
+  if (typeof e !== "object" || e === null) return e;
+  const { mode: _m, ...rest } = e as HistoryEntry & { mode?: string };
+  const modes = legacyModes(e as HistoryEntry & { mode?: string });
+  return { ...rest, modes, modeLabel: modes.length ? (e.modeLabel ?? "") : "" };
+}
+
 export const repo = (s: Store) => ({
   settings: (): Settings => ({ ...DEFAULT_SETTINGS, ...s.get<Partial<Settings>>(KEYS.settings, {}) }),
   templates: () => s.get<Record<string, Template>>(KEYS.templates, {}),
   modes: () => s.get<Record<string, ReplyMode>>(KEYS.modes, {}),
   wrapper: () => s.get<Wrapper | null>(KEYS.wrapper, null),
   providers: () => s.get<Partial<Record<string, Partial<Provider>>>>(KEYS.providers, {}),
-  drafts: () => s.get<Record<string, Draft>>(KEYS.drafts, {}),
+  drafts: (): Record<string, Draft> =>
+    Object.fromEntries(Object.entries(s.get<Record<string, Draft>>(KEYS.drafts, {})).map(([k, d]) => [k, normalizeDraft(d)])),
   historyIndex: () => s.get<HistoryIndexRow[]>(KEYS.history, []),
-  entry: (id: string) => s.get<HistoryEntry | null>(KEYS.entry(id), null),
+  entry: (id: string) => normalizeEntry(s.get<HistoryEntry | null>(KEYS.entry(id), null)),
 });
 
 export function updateRecord<T extends object>(s: Store, key: string, fallback: T, fn: (v: T) => T): boolean {

@@ -14,7 +14,7 @@ Prompt Builder is a private, local web app that turns a filled-in template into 
 
 **Non-goals (v1):** calling AI APIs, writing to chosen disk paths, running a server, automatic or scheduled backup, auto-deleting history, multi-user use, translating prompts or template wording.
 
-**Primary flow:** pick a template, fill the form on the left, choose a reply mode and (where offered) a source scope, press Generate, edit the prompt on the right, choose the output type (Bare prompt or Review request), then press Copy, Open in ChatGPT or Open in Mistral.
+**Primary flow:** pick a template, fill the form on the left, choose reply modes (any number, none by default) and (where offered) a source scope, press Generate, edit the prompt on the right, choose the output type (Bare prompt or Re-Prompt Request), then press Copy, Open in ChatGPT or Open in Mistral.
 
 ### Changes from v1
 
@@ -22,18 +22,19 @@ Prompt Builder is a private, local web app that turns a filled-in template into 
 
 - The template schema now defines how every field renders, so built-in and custom templates use one generic renderer.
 - Wording variants name their choice field and carry a fallback. Placeholder substitution is one pass and never touches user text.
-- Task list preamble, two Review closings, the Open scope line and the Case-closed instruction are reworded to remove mismatches.
+- Task list preamble, two Research closings, the Open scope line and the Case-closed instruction are reworded to remove mismatches.
 - Open scope renders its instruction even when no sources are listed.
-- Review lists Goal type and Goal first, so the form and the prompt start with the goal.
-- Review gains a required Action required field (Prepare context, Write a report, Update codebase, Chat) with a report destination shown only for Write a report. Files is merged into Sources.
-- Conditional form fields (`showWhen`) are supported, reversing that v1 non-goal. Choice options can carry an instruction, text fields a default, a hint and `output: "none"`, and templates can place the reply mode radio with `replyModesAfter`.
-- Standard is a fixed mode. Templates can offer all reply modes, so new custom modes need no template edit.
+- Review is renamed Research and lists Deliverable (formerly Goal type) and Goal first, so the form and the prompt start with the goal. Files is merged into Sources. The Action required field and its report destination are dropped; the deliverable decides what the agent produces.
+- Research gains a required Effort radio (Case-closed or Cheap Lookup). Case-closed moves there from the reply modes.
+- Task list is rebuilt around tasks: an optional Context, and Tasks that each have a Title, Details, Proof of Completion and an optional Depends on.
+- Conditional form fields (`showWhen`) are supported, reversing that v1 non-goal. Choice options can carry an instruction, text fields a default, a hint and `output: "none"`, and templates can place the reply mode checkboxes with `replyModesAfter`.
+- Reply modes are a multi-select with nothing selected by default; there is no Standard mode. Templates can offer all reply modes, so new custom modes need no template edit.
 - History: hand edits are saved to the entry, identical regenerations are skipped, summaries work for every template, single deletes are confirmed, and Restore handles changed or deleted templates.
 - Storage: multi-tab sync, corrected corrupt-data rule, history index repair, built-in update notices, a storage meter, and Export/Import (reverses the v1 "no export" non-goal).
 - Accessibility: "Draft saved" is no longer announced, contrast is verified against panels too, `prefers-contrast` is defined, a manual theme setting exists, and dialogs default to the safe choice.
 - UI layer settled as Preact. Acceptance criteria extended.
 
-* New: two output types, Bare prompt and Review request (the bare prompt inside an editable review wrapper), plus Open in ChatGPT and Open in Mistral buttons that copy the prompt and open the chatbot with it pre-filled.
+* New: two output types, Bare prompt and Re-Prompt Request (the bare prompt inside an editable review wrapper), plus Open in ChatGPT and Open in Mistral buttons that copy the prompt and open the chatbot with it pre-filled.
 
 ## Data model
 
@@ -43,15 +44,15 @@ Every template is declarative JSON rendered by one generic renderer. Built-in an
 
 | Key | Type | Meaning |
 | --- | --- | --- |
-| `id` | string | Stable identifier. Built-ins use fixed ids (`task-list`, `review`); custom ids are `c-` plus a random suffix |
+| `id` | string | Stable identifier. Built-ins use fixed ids (`task-list`, `review`; the Research template keeps `review` so saved drafts and history still match); custom ids are `c-` plus a random suffix |
 | `name` | string | Display name |
 | `schema` | number | Template schema version, for migration |
 | `version` | number | Built-ins only: incremented whenever the app changes the built-in |
 | `basedOn` | `{ id, version }` | User defaults only: the built-in id and version the user default was saved from |
 | `fields` | Field\[\] | Ordered form fields (below) |
 | `preamble`, `closing` | Wording | Fixed text placed before and after the user's content |
-| `replyModes` | `"none"`, `"all"` or string\[\] | `"none"`: no reply mode radio. `"all"`: Standard plus every built-in and custom mode. A list: Standard plus the listed mode ids |
-| `replyModesAfter` | field id (optional) | Form only: the reply mode radio follows this top-level field. Omitted: after all fields |
+| `replyModes` | `"none"`, `"all"` or string\[\] | `"none"`: no reply modes. `"all"`: every built-in and custom mode. A list: the listed mode ids. Offered as checkboxes, none checked by default |
+| `replyModesAfter` | field id (optional) | Form only: the reply mode checkboxes follow this top-level field. Omitted: after all fields |
 | `sourceScope` | `null` or `{ field }` | When set, the Restricted/Open radio is shown directly above the named `list` field, and its instruction is placed in that field's section |
 
 ### Wording
@@ -75,11 +76,12 @@ Every field has `id`, `label`, `type`, `required` and an optional `showWhen`. Fi
 | --- | --- | --- |
 | `text` | single-line input | `prefixFrom?`: id of a `choice` field whose label is prefixed to the value; `default?`: initial text; `hint?`: help text under the label; `output?`: `"section"` (default) or `"none"` (the value only feeds placeholders) |
 | `longtext` | textarea | as `text` |
-| `choice` | radio group | `options`: list of `{ value, label, instruction? }` (an `instruction` is wording, with placeholders, rendered instead of the label); `default?`: an option value; `output?`: `"section"` (default) or `"none"` (the field only feeds wording and prefixes) |
+| `choice` | radio group | `options`: list of `{ value, label, instruction? }` (an `instruction` is wording, with placeholders, rendered instead of the label); `from?`: `"earlierItems"`, allowed only inside a group, renders a dropdown of the group's earlier items (the value is the item key) and takes `options: []`; `default?`: an option value; `output?`: `"section"` (default) or `"none"` (the field only feeds wording and prefixes) |
 | `list` | repeatable rows of text plus optional note | `itemLabel`, `noteLabel`, `format`: `"code"` or `"plain"` |
-| `group` | repeatable, reorderable items, each with a `name` and child fields | `itemLabel`, `defaultItems?`: list of item names, `children`: Field\[\] |
+| `group` | repeatable, reorderable items, each with a `name` and child fields | `itemLabel`, `nameLabel?`: label of the item name input (default "<itemLabel> <n> name"), `numbered?`: headings read "<itemLabel> <n>: <name>", `defaultItems?`: list of item names, `children`: Field\[\] |
 
 - A `group` may contain one nested `group`, no deeper (two heading levels).
+- A `choice` with `from: "earlierItems"` offers "None" plus the items above the current one, labelled "<itemLabel> <n>: <name>". Moving an item can leave a reference pointing at a later or removed item; that reference is treated as unset and is not rendered. A reference alone is not content: an item whose only value is a dependency counts as empty.
 - `prefixFrom` is allowed only on top-level fields.
 - `showWhen: { field, value }` is allowed only on top-level fields and names another top-level `choice` field and one of its option values. While that choice has a different value (or none), the field is hidden, not validated, not rendered, and its placeholders insert nothing. Its value is kept, so switching back restores it.
 
@@ -92,17 +94,17 @@ Every field has `id`, `label`, `type`, `required` and an optional `showWhen`. Fi
 | `list` | no row has text | at least one row has text |
 | `group` | no item has content | at least one item has content |
 
-A `list` row is empty when its text is empty. A note on a row with no text is a validation error ("Add a path or remove this row"). A group item has content when any of its child fields is non-empty. An item with content but an empty name is a validation error ("Name this block").
+A `list` row is empty when its text is empty. A note on a row with no text is a validation error ("Add a path or remove this row"). A group item has content when any of its child fields is non-empty. An item with content but an empty name is a validation error ("Name this task", "Name this sub-block", and so on, from the group's `itemLabel`).
 
 ### Rendering rules
 
-The renderer is a pure function of (template, inputs, mode, scope, language). It outputs, in order, each separated by one blank line:
+The renderer is a pure function of (template, inputs, modes, scope, language). It outputs, in order, each separated by one blank line:
 
 1. The language line: "Write all of your replies to me in <English|French>. Keep code, identifiers and file contents in their original language."
 2. The preamble, resolved and substituted.
 3. Each top-level field in order, as below. Empty fields are omitted.
 4. The closing, resolved and substituted.
-5. The Reply mode section, only when the selected mode has a non-empty instruction (see Reply modes).
+5. The Reply mode section, only when at least one selected mode has a non-empty instruction (see Reply modes).
 
 **Top-level fields**
 
@@ -111,13 +113,13 @@ The renderer is a pure function of (template, inputs, mode, scope, language). It
 - `choice` with `output: "section"`: `## <label>`, then the selected option's instruction (resolved and substituted) or, without one, its label. With `output: "none"` nothing is rendered.
 - Fields hidden by `showWhen` are skipped.
 - `list`: `## <label>`, then the scope instruction if this is the `sourceScope` field, then one bullet per non-empty row: `- <text>: <note>`, or `- <text>` when the note is empty. With `format: "code"`, the text is inline code.
-- `group`: the group's own label is never output. Each item with content renders as `## <item name>`, followed by its children.
+- `group`: the group's own label is never output. Each item with content renders as `## <item name>`, or `## <itemLabel> <n>: <item name>` when `numbered` (n is the item's position in the form, so a skipped empty item leaves a gap), followed by its children.
 
 **Children of a group item**
 
 - A nested `group` renders each item with content as `### <item name>`, followed by its children.
 - If an item has exactly one non-group child, its value is rendered alone, with no label.
-- Otherwise each non-group child renders as `**<label>:** <value>`. For `longtext` and `list`, the label sits on its own line and the value follows.
+- Otherwise each non-group child renders as `**<label>:** <value>`. An `earlierItems` choice renders as `<itemLabel> <n>: <name>` of the referenced item, and is omitted when that item is missing, later or empty. For `longtext` and `list`, the label sits on its own line and the value follows.
 
 **Text handling**
 
@@ -140,160 +142,177 @@ Custom templates have only a stored version and a Delete action, with no reset. 
 ### Other records
 
 - **Reply mode:** `id`, `label`, `instruction`, plus `version` for built-ins and `basedOn` for user defaults. The same layers as templates apply, with these rules:
-  - Standard (`id: "standard"`) is fixed: empty instruction, not editable, not deletable, always offered first when a template offers reply modes.
+  - There is no Standard mode: with no mode selected, the prompt has no Reply mode section.
   - A custom or edited mode must have a non-empty instruction.
   - A template listing a mode id that no longer exists gets a lint warning, and that id is skipped when offering modes.
-- **Draft:** one per template: `values`, `mode`, `scope`, `output` (current textarea text), `baseline` (the text last produced by Generate or Restore), `entryId` (the history entry hand edits are saved to, or null), outputType ("bare" or "review", default "bare") and `updatedAt`. On load, values for fields that no longer exist are dropped.
-- **History entry:** `id`, `createdAt`, `templateId`, `templateName` (snapshot), `inputs` (snapshot), `mode`, `modeLabel` (snapshot), `scope`, `generated` (text as rendered), `prompt` (final text, including hand edits), `edited` (boolean) and `summary`. Entries are never deleted automatically.
+- **Draft:** one per template: `values`, `modes` (list of reply mode ids), `scope`, `output` (current textarea text), `baseline` (the text last produced by Generate or Restore), `entryId` (the history entry hand edits are saved to, or null), outputType ("bare" or "review", default "bare") and `updatedAt`. On load, values for fields that no longer exist are dropped.
+- **History entry:** `id`, `createdAt`, `templateId`, `templateName` (snapshot), `inputs` (snapshot), `modes`, `modeLabel` (snapshot, labels joined with ", ", empty when none), `scope`, `generated` (text as rendered), `prompt` (final text, including hand edits), `edited` (boolean) and `summary`. Entries are never deleted automatically. Drafts and entries saved with a single `mode` are read as `modes` (`"standard"` becomes an empty list).
 - **Summary:** the first non-empty line of the first non-empty `text` or `longtext` value, searching top-level fields in order, then group items in order. If none, the first non-empty line of the prompt after the preamble. Truncated to 80 characters with an ellipsis.
 
 ## Built-in templates
 
-Two built-in templates ship with the app: Task list at `version: 1` and Review at `version: 6` (2: Goal type and Goal moved first; 3: Action required added, Files merged into Sources; 4: Learn the stack became Teaches the user about, a goal type where the AI gathers knowledge, then teaches step by step; 5: Chat action added; 6: Create a specification goal type). Both are rendered by the generic renderer, with no special-case code. All wording below becomes final once the sign-offs under Open items are given.
+Two built-in templates ship with the app: Task list at `version: 2` (2: Blocks became Tasks with a title, details, proof of completion and dependency; Context added) and Research at `version: 7` (2: Goal type and Goal moved first; 3: Action required added, Files merged into Sources; 4: Learn the stack became Teaches the user about; 5: Chat action added; 6: Create a specification goal type; 7: renamed from Review to Research, Deliverable replaces Goal type, Bug Hunt merges Fix and Prevent a bug, Action required dropped, Effort added). Both are rendered by the generic renderer, with no special-case code. All wording below becomes final once the sign-offs under Open items are given.
 
 ### Task list
 
 ```json
 {
-  "id": "task-list", "name": "Task list", "schema": 1, "version": 1,
-  "fields": [{
-    "id": "blocks", "label": "Blocks", "type": "group", "required": true,
-    "itemLabel": "Block", "defaultItems": ["Work", "Testing", "Documenting"],
-    "children": [{
-      "id": "subBlocks", "label": "Sub-blocks", "type": "group", "required": false,
-      "itemLabel": "Sub-block",
-      "children": [{ "id": "text", "label": "Instructions", "type": "longtext", "required": false }]
-    }]
-  }],
-  "preamble": "Before you begin, read every block below. Complete each block's sub-tasks in the order listed, then move to the next block.",
-  "closing": "After completing the work, report the result of each sub-task. State any that you could not complete and why.",
+  "id": "task-list", "name": "Task list", "schema": 1, "version": 2,
+  "fields": [
+    { "id": "context", "label": "Context", "type": "longtext", "required": false },
+    {
+      "id": "tasks", "label": "Tasks", "type": "group", "required": true,
+      "itemLabel": "Task", "nameLabel": "Title", "numbered": true,
+      "children": [
+        { "id": "details", "label": "Details", "type": "longtext", "required": true },
+        { "id": "proof", "label": "Proof of Completion", "type": "longtext", "required": false },
+        { "id": "dependsOn", "label": "Depends on", "type": "choice", "required": false, "from": "earlierItems", "options": [] }
+      ]
+    }
+  ],
+  "preamble": "Before you begin, read the context, if any, and every task below. Complete the tasks in the order listed. A task that depends on another one starts only after that one is complete.",
+  "closing": "After completing the work, report for each task the proof that it is complete. State any task that you could not complete and why.",
   "replyModes": "none",
   "sourceScope": null
 }
 ```
 
-- The three default blocks start with no sub-blocks. The user can add, rename, remove and reorder blocks and sub-blocks.
-- In the form, each sub-block's name is also the visible label of its textarea.
-- `blocks` is required, so Generate is blocked until at least one sub-block has text. Error: "Add text to at least one sub-block."
-- A block or sub-block with no text is omitted. A sub-block with text but no name is a validation error.
+- There are no default tasks. The user can add, rename, remove and reorder tasks. The task title is the item name.
+- `tasks` is required, so Generate is blocked until at least one task has content. Error: "Add text to at least one task."
+- Depends on is a dropdown of the earlier tasks only ("None" by default), so a dependency can never point forward or form a cycle.
+- A task with no details, proof or other content is omitted. A task with content but no title is a validation error ("Name this task."). Once a task has content, Details is required.
 
-Generated Markdown:
+Generated Markdown (Context and the Proof and Depends on lines appear only when filled):
 
 ```markdown
 <preamble>
 
-## Work
+## Context
+<context>
 
-### <sub-block name>
-<sub-block text>
+## Task 1: <title>
+**Details:**
+<details>
+**Proof of Completion:**
+<proof>
 
-## Testing
-
-### <sub-block name>
-<sub-block text>
+## Task 2: <title>
+**Details:**
+<details>
+**Depends on:** Task 1: <title>
 
 <closing>
 ```
 
-### Review
+### Research
 
 | Field | Type | Required | Details |
 | --- | --- | --- | --- |
-| `goalType` | choice | yes | Label "Goal type", `output: "none"`, no default. Options: `fix` Fix a bug, `prevent` Prevent a bug, `learn` Teaches the user about, `answer` Answer a question, `spec` Create a specification |
+| `goalType` | choice | yes | Label "Deliverable", `output: "none"`, no default. Options: `bughunt` Bug Hunt, `teacher` Teacher mode, `answer` Answer mode, `spec` Specification mode. The deliverable is what the agent produces: a change, a lesson, an answer or a specification |
 | `goal` | longtext | yes | Label "Goal", `prefixFrom: "goalType"`. The user's own statement of what they want |
-| `action` | choice | yes | Label "Action required", no default. Options and instructions below |
-| `reportLocation` | text | yes, while shown | Label "Report destination", default "Markdown document", `output: "none"`, `showWhen: { "field": "action", "value": "report" }`. Hint: "Where should the report go? For example: Markdown document, GitHub PR comment, issue comment, or Confluence page." |
-| `situation` | longtext | no | Label "Situation" |
+| `situation` | longtext | no | Label "Context" (the field id stays `situation`) |
 | `sources` | list | no | Label "Sources", item "Source (path, name or link)", note "Note", `format: "plain"`. Holds repository paths too: the former Files field was merged into it |
+| `effort` | choice | yes | Label "Effort", default `case-closed`. Options and instructions below |
 
-- `id: "review"`, `replyModes: ["case-closed"]` (Standard is added automatically), `replyModesAfter: "reportLocation"`, `sourceScope: { "field": "sources" }`.
-- Form order: Goal type, Goal, Action required, Report destination (when shown), Reply mode, Situation, Source scope, Sources.
+- `id: "review"` and the field id `goalType` are kept from earlier versions, so saved drafts and history still match. Only the visible names changed.
+- `replyModes: ["conversation"]`, `replyModesAfter: "effort"`, `sourceScope: { "field": "sources" }`.
+- Form order: Deliverable, Goal, Context, Source scope, Sources, Effort, Reply mode.
+- Defaults: Source scope is Open and the Sources list starts with no rows (the user adds them). A `list` field starts empty in every template.
 
-**Action required.** Each instruction starts with the precedence line "This takes precedence over any conflicting instruction about what work to do; a reply mode controls only the format of your answer." and a blank line. The action decides what the agent may do; the reply mode decides only how it formats the answer.
+**Effort.** How much work the research deserves. Cheap Lookup saves time and tokens on a subject whose documentation is easy to reach, or whose answer is easy to verify.
 
-| Option | Value | Instruction (after the precedence line) |
+| Option | Value | Instruction |
 | --- | --- | --- |
-| Prepare context | `context` | Investigate the goal, situation, and sources to build a clear understanding. Read code and run tests or read-only commands as needed. Do not edit files, commit, push, or open a pull request. Reply briefly with what you understand and any open questions or gaps, then wait for the next task. |
-| Write a report | `report` | Investigate the goal, situation, and sources, then write a report to {{reportLocation}}. Do not change code or post anywhere else; writing the report itself is allowed. Do not commit, push, or open a pull request. |
-| Update codebase | `update` | Investigate the goal, situation, and sources, then make the repository changes needed to address the goal. You may edit files and run relevant tests or read-only commands. Do not commit, push, or open a pull request. |
-| Chat | `chat` | Discuss the goal, situation, and sources with me in a conversation. Reply in short messages, ask clarifying questions when something is unclear, and wait for my reply before going further. Do not read or change files, or run commands, unless I ask you to. Do not commit, push, or open a pull request. |
-- Preamble and closing are variant maps with `by: "goalType"`.
+| Case-closed | `case-closed` | The override line "This overrides any conflicting reporting instructions above.", then: Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument. The output has the sections Verdict, Evidence, Argument, Remedy and Grounds for appeal (full text under Reply modes). |
+| Cheap Lookup | `cheap-lookup` | Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check. |
 
-| Goal type | Preamble | Closing |
+Preamble and closing are variant maps with `by: "goalType"`. Every preamble starts with "Research the goal, context, and sources."
+
+| Deliverable | Preamble (after the shared opening) | Closing |
 | --- | --- | --- |
-| Fix a bug | Review the goal, situation, and sources. Trace the bug to its root cause, then make the smallest change that fixes it without breaking existing behavior. | Run relevant tests and report the root cause, change, and test results. Cite supporting files and sources. |
-| Prevent a bug | Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior. | Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources. |
-| Teaches the user about | Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong. | Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference. |
-| Answer a question | Review the goal, situation, and sources. Find and combine the evidence needed to answer the question. | Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer. |
-| Create a specification | Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions. | Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. |
-| Fallback | Review the goal, situation, and sources. | Report your findings. Cite supporting files and sources. |
+| Bug Hunt | Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. | Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask. |
+| Teacher mode | Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong. | Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference. |
+| Answer mode | Find and combine the evidence needed to answer the question. | Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer. |
+| Specification mode | Look for a specification that already covers the goal, in the repository, the sources, or the context. If one exists, review it against the code and sources, then update it. If none exists, gather what is needed to write one: the requirements, constraints, existing behavior, and open questions. | If a specification exists, update it: keep what is still correct, fix what is wrong or outdated, fill the gaps, and list what you changed. Otherwise write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. Do not commit, push, or open a pull request unless I ask. |
+| Fallback | (the shared opening only) | Report your findings. Cite supporting files and sources. |
 
 Generated Markdown (empty sections are skipped, except that the Sources section always appears when scope is Open):
 
 ```markdown
-<preamble for the goal type>
+<preamble for the deliverable>
 
 ## Goal
-**<goal type label>:** <goal>
+**<deliverable label>:** <goal>
 
-## Action required
-<precedence line>
-
-<action instruction>
-
-## Situation
-<situation>
+## Context
+<context>
 
 ## Sources
 <source scope instruction>
 - <source>: <note>
 
-<closing for the goal type>
+## Effort
+<effort instruction>
+
+<closing for the deliverable>
 
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-<reply mode instruction>
+<reply mode instructions>
 ```
 
-The Reply mode section appears only when a mode other than Standard is selected.
+The Reply mode section appears only when at least one mode is selected.
 
 ## Reply modes and source scope
 
-A reply mode adds a response-format instruction to the prompt. A source scope tells the AI how far it may look for evidence. The user chooses both explicitly with radio groups.
+A reply mode adds a response-format instruction to the prompt. A source scope tells the AI how far it may look for evidence. The user chooses reply modes with checkboxes (any number, none by default) and the source scope with a radio group.
 
 ### Reply modes
 
 | Mode | Id | Behaviour |
 | --- | --- | --- |
-| Standard | `standard` | Adds nothing. Fixed, always first, the starting selection |
-| Case-closed | `case-closed` | Built-in (`version: 2`), editable and resettable. The AI acts like a lawyer closing a case |
+| Conversation | `conversation` | Built-in (`version: 1`), editable and resettable. The AI works over several exchanges and asks for approval before saving anything |
 | Custom | `m-` plus a random suffix | Added in Settings (label plus instruction). Offered on every template with `replyModes: "all"`, or where listed by id |
 
-When the selected mode has a non-empty instruction, the renderer appends:
+When at least one selected mode has a non-empty instruction, the renderer appends one section, with the instructions of all selected modes in the order offered, separated by a blank line:
 
 ```markdown
 ## Reply mode
 This overrides any conflicting reporting instructions above.
 
-<mode instruction>
+<mode instructions>
 ```
 
 The override line is needed because the closings ask for a report shape that a mode may replace.
 
-Full instruction for Case-closed, which covers all four Review goal types:
+Full instruction for Conversation. It is neutral about the deliverable, so it works with every Research deliverable:
 
 ```markdown
-Act like a lawyer closing a case. For a bug, whether to fix or to prevent, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question or a topic to teach, treat the rules as the law: find and combine the applicable rules into one argument.
+This overrides any conflicting reporting instructions above.
 
-Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
+
+Do not write or edit any file, commit, push, or open a pull request until you have asked whether I am satisfied and I have said yes. If the deliverable is a lesson, there is nothing to save: pace the lesson in short steps, check my understanding between steps, and ask what to cover next.
 ```
 
-**Missing modes:** if a draft or history entry names a mode that no longer exists, the Builder selects Standard and shows: "The saved reply mode no longer exists. Standard is selected."
+For Teacher mode, the last sentence keeps Conversation from duplicating the lesson itself: Conversation sets the pace and the approval rule, and the Teacher mode closing sets the content.
+
+Full instruction for the Case-closed effort (the `## Effort` section; it starts with the override line):
+
+```markdown
+This overrides any conflicting reporting instructions above.
+
+Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
+
+Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
+```
+
+**Missing modes:** if a draft or history entry names a mode that no longer exists, the Builder unselects it and shows: "A saved reply mode no longer exists and was unselected."
 
 ### Source scope
 
-Shown only for templates with `sourceScope` set (the built-in Review template). The instruction is the first line of the named list field's section, above the rows.
+Shown only for templates with `sourceScope` set (the built-in Research template). The instruction is the first line of the named list field's section, above the rows.
 
 | Scope | Sources listed | Instruction |
 | --- | --- | --- |
@@ -310,19 +329,19 @@ Shown only for templates with `sourceScope` set (the built-in Review template). 
 
 ## Output types and chatbot links
 
-Generate always produces the bare prompt. The Output type decides what Copy and the chatbot links use: the bare prompt itself, or a review request that wraps it and asks a chatbot to review it.
+Generate always produces the bare prompt. The Output type decides what Copy and the chatbot links use: the bare prompt itself, or a re-prompt request that wraps it and asks a chatbot to review it.
 
 ### Output types
 
 | Output type | Text used by Copy and the chatbot links |
 | --- | --- |
 | Bare prompt (default) | The Generated prompt field exactly as it stands, including hand edits |
-| Review request | The review wrapper with the current bare prompt inserted |
+| Re-Prompt Request | The review wrapper with the current bare prompt inserted |
 
 - The Output type is a radio group in the right pane, above the action buttons. The draft remembers it per template (`outputType`: `"bare"` or `"review"`).
 - The wrapper is applied when Copy or a chatbot button is pressed, to the field's current text, so hand edits are always included.
-- When Review request is selected, a collapsible, read-only "Review request preview" (`details` element) shows the exact text that will be used, updated as the field changes.
-- Generate, validation, hand-edit protection and history are unchanged. History stores the bare prompt only, since the review request can be rebuilt from it.
+- When Re-Prompt Request is selected, a collapsible, read-only "Re-Prompt Request preview" (`details` element) shows the exact text that will be used, updated as the field changes.
+- Generate, validation, hand-edit protection and history are unchanged. History stores the bare prompt only, since the re-prompt request can be rebuilt from it.
 - **Review loop:** when the chatbot returns a revised prompt, the user pastes it into the Generated prompt field. This counts as a hand edit and is saved to the current history entry.
 
 ### Review wrapper
@@ -387,9 +406,9 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 ### Builder (main view)
 
-- **Left pane:** a strip as wide as the pane sits directly above it: a **+** button (accessible name "New template", opens Settings with the new-template editor), then one tab per template with no gap between them (ARIA tabs pattern: arrow keys, Home and End switch template), then empty space. A line separates every item from the pane except the selected tab, which shares the pane's surface and opens into it. The pane holds the template's form, then the Generate button. The source scope radio (when offered) sits directly above its list field. The reply mode radio (when offered) follows the `replyModesAfter` field, or the whole form when that is not set.
-- **Right pane:** an editable textarea labelled "Generated prompt" (always the bare prompt), the Output type radio, the Review request preview when that type is selected, the Copy, Open in ChatGPT and Open in Mistral buttons, and a status line. Below 60em of width the panes stack, form first.
-- **Defaults:** reply mode starts on Standard. Source scope starts on Open. Output type starts on Bare prompt. All three are then remembered in the draft.
+- **Left pane:** a strip as wide as the pane sits directly above it: a **+** button (accessible name "New template", opens Settings with the new-template editor), then one tab per template with no gap between them (ARIA tabs pattern: arrow keys, Home and End switch template), then empty space. A line separates every item from the pane except the selected tab, which shares the pane's surface and opens into it. The pane holds the template's form, then the Generate button. The source scope radio (when offered) sits directly above its list field. The reply mode checkboxes (when offered) follow the `replyModesAfter` field, or the whole form when that is not set.
+- **Right pane:** an editable textarea labelled "Generated prompt" (always the bare prompt), the Output type radio, the Re-Prompt Request preview when that type is selected, the Copy, Open in ChatGPT and Open in Mistral buttons, and a status line. Below 60em of width the panes stack, form first.
+- **Defaults:** no reply mode is selected. Source scope starts on Open. Output type starts on Bare prompt. All three are then remembered in the draft.
 
 **Repeatable items (groups and lists)**
 
@@ -408,7 +427,7 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 **Clear form**
 
-- A **Clear form** button sits next to Generate. It returns the current template's draft to its starting state: field defaults (empty text, default choices, default group items), reply mode Standard, source scope Open, an empty Generated prompt, no `entryId`. The Output type is kept.
+- A **Clear form** button sits next to Generate. It returns the current template's draft to its starting state: field defaults (empty text, default choices, default group items), no reply mode selected, source scope Open, an empty Generated prompt, no `entryId`. The Output type is kept.
 - When the form or the prompt has content, it first asks "Clear the form?" with **Cancel** (default focus, Esc action) and **Clear**. History entries are kept.
 - Afterwards focus moves to the first field, inline errors are removed, and the live region announces "Form cleared".
 
@@ -480,7 +499,7 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 **Reply modes**
 
-- The same list, builder, Save, Reset and Delete behaviour as templates, for label and instruction. Standard is shown but cannot be edited or deleted.
+- The same list, builder, Save, Reset and Delete behaviour as templates, for label and instruction. There is no fixed Standard mode.
 - Deleting a mode asks for confirmation and names the templates that list it.
 
 **Review wrapper and chatbot links**
@@ -689,31 +708,31 @@ Ratios use the WCAG 2.2 relative-luminance formula, measured against the backgro
 
 Both are enforced in CI on every pull request.
 
-- **Memory:** at most 5 MB of JavaScript heap on any single page, measured in Chromium after a forced garbage collection (Chrome DevTools protocol). The measured pages are: Builder with Task list; Builder with a generated Review and the review request selected; Builder in the Retro platformer theme; History with 200 entries; Settings; and Settings with the template editor and JSON view open. The CI job summary shows a table per page (heap, share of the budget, DOM nodes, result) and statistics (highest, lowest, mean, headroom).
+- **Memory:** at most 5 MB of JavaScript heap on any single page, measured in Chromium after a forced garbage collection (Chrome DevTools protocol). The measured pages are: Builder with Task list; Builder with a generated Research and the re-prompt request selected; Builder in the Retro platformer theme; History with 200 entries; Settings; and Settings with the template editor and JSON view open. The CI job summary shows a table per page (heap, share of the budget, DOM nodes, result) and statistics (highest, lowest, mean, headroom).
 - **File size:** `dist/index.html` is at most 250 KB (256,000 bytes) and is the only file in `dist`. File size only loosely tracks memory, so this is a guard against accidental bloat, not the memory measure.
 
 ### Acceptance criteria
 
 1. The app opens from a local HTML file of at most 250 KB, using at most 5 MB of JavaScript memory per page, with no console errors and no CSP violations, and Playwright records zero requests from the app page other than the file itself. External pages open only in a new tab after the user presses a chatbot button.
 2. Both built-in templates, rendered by the generic renderer, produce exactly the Markdown structures in this spec, with empty items omitted.
-3. Every combination of Review goal type, reply mode (Standard, Case-closed) and scope (Restricted, Open with and without sources) produces the specified output, covered by snapshot tests.
-4. Task list blocks and sub-blocks can be added, renamed, removed and reordered by keyboard, with the specified focus moves and announcements.
-5. Task list with no sub-block text, and any template with no content, blocks Generate with an announced error summary.
-6. Review offers the four goal types, each with its own preamble and closing; `goalType` and `goal` are required.
-7. Reply mode and source scope are radio groups; Restricted with no sources blocks Generate with an announced error.
+3. Every combination of Research deliverable, effort (Case-closed, Cheap Lookup), reply mode (none, Conversation) and scope (Restricted, Open with and without sources) produces the specified output, covered by snapshot tests.
+4. Task list tasks can be added, renamed, removed and reordered by keyboard, with the specified focus moves and announcements.
+5. Task list with no task details, and any template with no content, blocks Generate with an announced error summary.
+6. Research offers the four deliverables, each with its own preamble and closing; `goalType`, `goal` and `effort` are required, and Effort starts on Case-closed.
+7. Reply modes are checkboxes with none selected by default, and source scope is a radio group; Restricted with no sources blocks Generate with an announced error.
 8. Generate after hand-editing asks for confirmation; Keep editing (the default and Esc action) leaves the text untouched.
 9. Hand edits after Generate are saved into that history entry and mark it Edited; an identical regeneration adds no entry.
 10. Copy places the selected output type's text on the clipboard or falls back, and announces the result.
 11. Drafts survive a reload; Restore loads an entry back, drops inputs for removed fields with a notice, and offers View prompt when the template was deleted.
 12. A built-in saved as a user default persists after restart; Reset shows the current built-in again; a higher built-in version shows the update notice.
-13. A custom reply mode appears on templates with `replyModes: "all"` without editing them; a deleted mode falls back to Standard with a notice.
+13. A custom reply mode appears on templates with `replyModes: "all"` without editing them; a deleted mode is unselected with a notice.
 14. Invalid JSON in the advanced view shows linted, navigable errors and cannot be applied; valid JSON updates the builder on Apply.
 15. Full storage produces a visible error and loses no in-memory work; unavailable storage runs in memory with a banner.
 16. A corrupt record is copied to `pb.corrupt.*` before reset, or left untouched when there is no room; newer data opens read-only; a broken history index is repaired on load.
 17. A change in one tab appears in another, and a conflicting unsaved change shows the Load theirs / Keep mine banner.
 18. Export then Import (Replace all) into a clean browser profile restores identical data; an invalid or newer file is refused and changes nothing.
 19. axe-core reports no violations on any view or dialog, and every flow passes a keyboard-only run at 400% zoom.
-20. Review request wraps the current bare prompt, including hand edits, in the review wrapper, inside a fence longer than any backtick run in the prompt; the preview matches exactly what Copy copies.
+20. Re-Prompt Request wraps the current bare prompt, including hand edits, in the review wrapper, inside a fence longer than any backtick run in the prompt; the preview matches exactly what Copy copies.
 21. Open in ChatGPT and Open in Mistral copy the selected output, open the provider link in a new tab when it is at most 8,000 characters, otherwise the home URL with a paste instruction, and announce the result.
 22. The first use of each provider asks for confirmation; Cancel (the default) copies and opens nothing.
 23. The review wrapper and chatbot links can be edited, are linted, persist after restart and reset to their defaults; a wrapper without `{{prompt}}` cannot be saved.
@@ -730,8 +749,8 @@ Resolved in this version:
 Pending your sign-off:
 
 - [ ] New Task list preamble wording.
-- [ ] Reworded closings for Teaches the user about and Answer a question, and the new fallback wording.
-- [ ] Revised Case-closed instruction.
+- [ ] Reworded closings for Teaches the user about and Answer mode, and the new fallback wording.
+- [ ] Revised Case-closed effort instruction, the Cheap Lookup instruction and the Conversation reply mode.
 - [ ] Open scope wording: "label each cited source" and the new no-sources line.
 - [ ] Adding Export/Import, which reverses the v1 "no export" non-goal.
 - [ ] Pixel font (Pixelify Sans) and palette.
