@@ -1,4 +1,4 @@
-import { CONVERSATION, RESEARCH, TASK_LIST } from "./builtins";
+import { CONVERSATION, IMPLEMENT_SPEC, RESEARCH, TASK_LIST } from "./builtins";
 import { initValues, newDraft } from "./catalog";
 import { clean, codeFence, headingName, inlineCode, languageLine, REPLY_MODE_OVERRIDE, render, SCOPE_TEXT, summarize } from "./render";
 import type { ChoiceField, GroupItem, Inputs, ReplyMode, Scope } from "./types";
@@ -249,5 +249,24 @@ describe("summary", () => {
     const inputs = { tasks: [task("t1", "A", "x".repeat(100))] };
     expect(summarize(TASK_LIST, inputs, "")).toBe(`${"x".repeat(79)}…`);
     expect(summarize(TASK_LIST, { tasks: [] }, `${languageLine("fr")}\n\n${TASK_LIST.preamble}\n\n## Task 1: A\n`)).toBe("## Task 1: A");
+  });
+});
+
+describe("Implement Specification", () => {
+  test("renders the context and the specification file between the preamble and the closing", () => {
+    const out = render({
+      template: IMPLEMENT_SPEC,
+      inputs: { context: "ctx", specFile: "docs/spec.md" },
+      modes: [],
+      scope: "open",
+      language: "en",
+    });
+    expect(out).toContain("## Context\nctx");
+    expect(out).toContain("## Specification File\ndocs/spec.md");
+    expect(out.indexOf("## Task")).toBeLessThan(out.indexOf("## Context"));
+    expect(out.indexOf("## Specification File")).toBeLessThan(out.indexOf("## Process"));
+  });
+  test("requires the specification file", () => {
+    expect(validateInputs(IMPLEMENT_SPEC, { context: "", specFile: "" }, "open")).not.toEqual([]);
   });
 });

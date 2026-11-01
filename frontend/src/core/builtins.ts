@@ -141,7 +141,36 @@ When updating an existing specification, summarize the changes within the Contex
   sourceScope: { field: "sources" },
 };
 
-export const BUILTIN_TEMPLATES: Template[] = [TASK_LIST, RESEARCH];
+export const IMPLEMENT_SPEC: Template = {
+  id: "implement-spec",
+  name: "Implement Specification",
+  schema: 1,
+  version: 1,
+  fields: [
+    { id: "context", label: "Context", type: "longtext", required: false },
+    { id: "specFile", label: "Specification File", type: "text", required: true, hint: "Path to the specification" },
+  ],
+  preamble: `You are an AI coding agent responsible for implementing an approved implementation specification.
+
+## Task
+Implement the specification in the repository. Treat its Requirements, Constraints, Acceptance criteria, and Out of scope sections as authoritative. Do not implement items listed as Out of scope.`,
+  closing: `## Process
+1. Inspect the repository and relevant references before making changes. Check that the specification matches the current code and identify any conflicts, missing information, or assumptions that prevent a safe implementation.
+2. Implement the work in the specification's ordered Phases. Keep changes within the scope of each Phase and preserve existing behavior unless the specification requires otherwise.
+3. After each Phase, run the relevant checks and verify its acceptance criteria. Continue only when the Phase is verifiable.
+4. If the specification is contradictory, materially incomplete, or conflicts with the repository in a way that blocks implementation, stop before making affected changes. Explain the issue and ask for clarification. Do not invent requirements.
+5. Do not make unrelated changes. Do not commit, push, or open a pull request unless explicitly asked.
+
+## Completion report
+Summarize:
+- What you implemented, organized by Phase.
+- Which acceptance criteria and checks passed or did not pass.
+- Any deviations, blockers, assumptions, or remaining work.`,
+  replyModes: "none",
+  sourceScope: null,
+};
+
+export const BUILTIN_TEMPLATES: Template[] = [TASK_LIST, RESEARCH, IMPLEMENT_SPEC];
 
 export const CONVERSATION: ReplyMode = {
   id: "conversation",

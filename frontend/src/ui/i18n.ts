@@ -627,6 +627,9 @@ const fr: Dict = {
   },
   builtinText: {
     "Task list": "Liste de tâches",
+    "Implement Specification": "Implémenter une spécification",
+    "Specification File": "Fichier de spécification",
+    "Path to the specification": "Chemin de la spécification",
     Context: "Contexte",
     Tasks: "Tâches",
     Task: "Tâche",
