@@ -149,7 +149,7 @@ Custom templates have only a stored version and a Delete action, with no reset. 
 
 ## Built-in templates
 
-Two built-in templates ship with the app: Task list at `version: 1` and Review at `version: 4` (2: Goal type and Goal moved first; 3: Action required added, Files merged into Sources; 4: Learn the stack became Teaches the user about, a goal type where the AI gathers knowledge, then teaches step by step; 5: Chat action added). Both are rendered by the generic renderer, with no special-case code. All wording below becomes final once the sign-offs under Open items are given.
+Two built-in templates ship with the app: Task list at `version: 1` and Review at `version: 6` (2: Goal type and Goal moved first; 3: Action required added, Files merged into Sources; 4: Learn the stack became Teaches the user about, a goal type where the AI gathers knowledge, then teaches step by step; 5: Chat action added; 6: Create a specification goal type). Both are rendered by the generic renderer, with no special-case code. All wording below becomes final once the sign-offs under Open items are given.
 
 ### Task list
 
@@ -199,7 +199,7 @@ Generated Markdown:
 
 | Field | Type | Required | Details |
 | --- | --- | --- | --- |
-| `goalType` | choice | yes | Label "Goal type", `output: "none"`, no default. Options: `fix` Fix a bug, `prevent` Prevent a bug, `learn` Teaches the user about, `answer` Answer a question |
+| `goalType` | choice | yes | Label "Goal type", `output: "none"`, no default. Options: `fix` Fix a bug, `prevent` Prevent a bug, `learn` Teaches the user about, `answer` Answer a question, `spec` Create a specification |
 | `goal` | longtext | yes | Label "Goal", `prefixFrom: "goalType"`. The user's own statement of what they want |
 | `action` | choice | yes | Label "Action required", no default. Options and instructions below |
 | `reportLocation` | text | yes, while shown | Label "Report destination", default "Markdown document", `output: "none"`, `showWhen: { "field": "action", "value": "report" }`. Hint: "Where should the report go? For example: Markdown document, GitHub PR comment, issue comment, or Confluence page." |
@@ -225,6 +225,7 @@ Generated Markdown:
 | Prevent a bug | Review the goal, situation, and sources. Identify how the bug could occur and make the smallest change that prevents it without breaking existing behavior. | Run relevant tests and report the risk, preventive change, and test results. Cite supporting files and sources. |
 | Teaches the user about | Review the goal, situation, and sources. Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong. | Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference. |
 | Answer a question | Review the goal, situation, and sources. Find and combine the evidence needed to answer the question. | Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer. |
+| Create a specification | Review the goal, situation, and sources. Gather what is needed to specify the goal: the requirements, constraints, existing behavior, and open questions. | Write an implementation specification for the goal: purpose and scope, requirements, design and interfaces, data and edge cases, acceptance criteria, and open questions. Be precise enough that someone else can implement it without further input. Do not implement it. Cite supporting files and sources, and mark assumptions. |
 | Fallback | Review the goal, situation, and sources. | Report your findings. Cite supporting files and sources. |
 
 Generated Markdown (empty sections are skipped, except that the Sources section always appears when scope is Open):
