@@ -83,7 +83,7 @@ export function isEmpty(field: Field, v: Value | undefined): boolean {
 }
 
 export function itemHasContent(group: GroupField, item: GroupItem): boolean {
-  return group.children.some((c) => !(c.type === "choice" && c.from) && !isEmpty(c, item.values[c.id]));
+  return (group.children.length === 0 && item.name.trim() !== "") || group.children.some((c) => !(c.type === "choice" && c.from) && !isEmpty(c, item.values[c.id]));
 }
 
 export function resolveWording(w: Wording, template: Template, inputs: Inputs): string {

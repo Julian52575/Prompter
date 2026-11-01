@@ -47,7 +47,8 @@ export const RESEARCH: Template = {
   // 2: Goal type and Goal first. 3: Action required added, Files merged into Sources.
   // 4: Learn the stack became Teaches the user about. 5: Chat action added. 6: Create a specification goal type.
   // 7: Renamed Research; Deliverable replaces Goal type; Action required dropped; Effort added.
-  version: 7,
+  // 8: Stories added.
+  version: 8,
   fields: [
     {
       id: "goalType",
@@ -72,6 +73,15 @@ export const RESEARCH: Template = {
       itemLabel: "Source (path, name or link)",
       noteLabel: "Note",
       format: "plain",
+    },
+    {
+      id: "stories",
+      label: "Stories",
+      type: "group",
+      required: false,
+      itemLabel: "Story",
+      nameLabel: "Story",
+      children: [],
     },
     {
       id: "effort",
