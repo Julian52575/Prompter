@@ -16,7 +16,7 @@ import { render, summarize } from "../core/render";
 import { addHistoryEntry, KEYS, providerList, repo, saveHistoryEntry, updateRecord } from "../core/storage";
 import type { Draft, OutputType, Provider, Scope, Settings, Template } from "../core/types";
 import { domId, type InputError, validateInputs } from "../core/validate";
-import { buildLink, wrapPrompt } from "../core/wrap";
+import { buildLink, unwrapPrompt, wrapPrompt } from "../core/wrap";
 import { copyText } from "./clipboard";
 import { focusLater, focusNow, useApp, useStoreVersion } from "./context";
 import { Form } from "./Form";
@@ -28,6 +28,8 @@ const DEBOUNCE = 500;
 const noKeys = (k: string, v: unknown) => (k === "k" ? undefined : v);
 /** One-off notices, as codes so they follow the UI language. */
 export type BuilderNotice = "missingMode" | "inputsDropped";
+
+const NO_MISTAKES = "\n\nMake no mistakes";
 
 export function Builder() {
   const app = useApp();
@@ -45,6 +47,7 @@ export function Builder() {
   const offered = offeredModes(template, effectiveModes(r.modes()));
   const wrapper = effectiveWrapper(r.wrapper());
   const providers = providerList(store);
+  const [noMistakes, setNoMistakes] = useState(false);
 
   const [notices, setNotices] = useState<BuilderNotice[]>(() => {
     const n = app.builderNotice.current as BuilderNotice | null;
@@ -75,8 +78,6 @@ export function Builder() {
   const [status, setStatus] = useState("");
   const [errors, setErrors] = useState<InputError[]>([]);
   const outRef = useRef<HTMLTextAreaElement>(null);
-  const previewRef = useRef<HTMLTextAreaElement>(null);
-  const detailsRef = useRef<HTMLDetailsElement>(null);
 
   const held = useRef(false);
   const saveDraft = () => {
@@ -240,13 +241,23 @@ export function Builder() {
     }, DEBOUNCE);
   };
 
-  const finalText = (type: OutputType = draft.outputType) =>
-    type === "review" ? wrapPrompt(wrapper.text, draft.output) : draft.output;
-
-  const fallbackField = () => {
-    if (draft.outputType === "review" && detailsRef.current) detailsRef.current.open = true;
-    return draft.outputType === "review" ? previewRef.current : outRef.current;
+  // The textarea shows the final text, so map an edit back to the prompt it came from.
+  const onFinalInput = (v: string) => {
+    let text = noMistakes && v.endsWith(NO_MISTAKES) ? v.slice(0, -NO_MISTAKES.length) : v;
+    if (draft.outputType === "review") {
+      const inner = unwrapPrompt(wrapper.text, text);
+      if (inner === null) patch({ outputType: "bare" });
+      else text = inner;
+    }
+    onOutput(text);
   };
+
+  const finalText = (type: OutputType = draft.outputType) => {
+    const text = type === "review" ? wrapPrompt(wrapper.text, draft.output) : draft.output;
+    return noMistakes && text ? `${text}${NO_MISTAKES}` : text;
+  };
+
+  const fallbackField = () => outRef.current;
 
   const copy = async () => {
     const res = await copyText(finalText(), fallbackField());
@@ -461,41 +472,10 @@ export function Builder() {
 
       <section class="pane" aria-labelledby="output-heading">
         <h2 id="output-heading">{t.builder.prompt}</h2>
-        <div class="field">
-          <label for="output">{t.builder.generatedPrompt}</label>
-          <textarea
-            id="output"
-            ref={outRef}
-            class="output"
-            rows={18}
-            spellcheck={false}
-            value={draft.output}
-            onInput={(e) => onOutput(e.currentTarget.value)}
-          />
-        </div>
-        <fieldset>
-          <legend>{t.builder.outputType}</legend>
-          {(
-            [
-              ["bare", t.builder.bare],
-              ["review", t.builder.review],
-            ] as [OutputType, string][]
-          ).map(([v, l]) => (
-            <label class="radio" key={v}>
-              <input type="radio" name="output-type" checked={draft.outputType === v} onChange={() => patch({ outputType: v })} /> {l}
-            </label>
-          ))}
-        </fieldset>
-        {draft.outputType === "review" && (
-          <details ref={detailsRef}>
-            <summary>{t.builder.preview}</summary>
-            <label for="review-preview" class="sr-only">
-              {t.builder.preview}
-            </label>
-            <textarea id="review-preview" ref={previewRef} class="output" rows={12} readOnly value={finalText("review")} />
-          </details>
-        )}
         <div class="actions">
+          <button type="button" id="generate-output" onClick={generate}>
+            {t.builder.generate}
+          </button>
           <button type="button" class="primary" onClick={copy} disabled={empty}>
             {t.common.copy}
           </button>
@@ -511,6 +491,34 @@ export function Builder() {
               <ExternalIcon />
             </button>
           ))}
+        </div>
+        <label class="radio">
+          <input type="checkbox" checked={noMistakes} onChange={(e) => setNoMistakes(e.currentTarget.checked)} /> {t.builder.noMistakes}
+        </label>
+        <fieldset>
+          <legend>{t.builder.outputType}</legend>
+          {(
+            [
+              ["bare", t.builder.bare],
+              ["review", t.builder.review],
+            ] as [OutputType, string][]
+          ).map(([v, l]) => (
+            <label class="radio" key={v}>
+              <input type="radio" name="output-type" checked={draft.outputType === v} onChange={() => patch({ outputType: v })} /> {l}
+            </label>
+          ))}
+        </fieldset>
+        <div class="field">
+          <label for="output">{t.builder.generatedPrompt}</label>
+          <textarea
+            id="output"
+            ref={outRef}
+            class="output"
+            rows={18}
+            spellcheck={false}
+            value={finalText()}
+            onInput={(e) => onFinalInput(e.currentTarget.value)}
+          />
         </div>
         <p class="status" id="status">
           {status}
