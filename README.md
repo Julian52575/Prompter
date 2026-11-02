@@ -3,6 +3,10 @@
 
 # Prompt Builder
 
+<img width="1265" height="657" alt="image" src="https://github.com/user-attachments/assets/2a5301f9-86b8-4758-86d1-0a3f14b23453" />
+<img width="288" height="335" alt="image" src="https://github.com/user-attachments/assets/d6ccf371-87bf-4589-a721-e61105c02a7b" />
+
+
 A private, local web app that turns a filled-in template into a Markdown
 prompt for an AI agent, which you can edit, copy, or open in ChatGPT or
 Mistral. The full specification is [`docs/spec.md`](docs/spec.md).
