@@ -176,6 +176,8 @@ export function App({ store }: { store: Store }) {
       <Scenery place="bottom" />
       <footer>
         <p class="hint">{t.app.footer}</p>
+        <p class="hint">© Julian Bottiglione, 2026</p>
+        <p class="hint">{__APP_VERSION__}</p>
       </footer>
       <div class="sr-only" aria-live="polite" aria-atomic="true">
         {live}
