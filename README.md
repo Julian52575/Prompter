@@ -3,6 +3,10 @@
 
 # Prompt Builder
 
+## Why wastes your credits on expensive models when cheap one can handle the work ?
+
+A local web app that helps you build the cheapest yet most effective prompts for your needs !  
+
 <img width="1265" height="657" alt="image" src="https://github.com/user-attachments/assets/2a5301f9-86b8-4758-86d1-0a3f14b23453" />
 <img width="288" height="335" alt="image" src="https://github.com/user-attachments/assets/d6ccf371-87bf-4589-a721-e61105c02a7b" />
 
