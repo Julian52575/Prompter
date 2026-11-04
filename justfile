@@ -125,6 +125,10 @@ lint:
 e2e *args:
     cd frontend && npm run build && npm run e2e -- "$@"
 
+# Build, then copy index.html to INSTALL_TARGET (.env): a local dir or user@host:/dir over ssh
+install: build
+    python3 scripts/install.py
+
 #### Lint
 
 # Lint every workflow: syntax + shellcheck, security audit, schema
