@@ -22,7 +22,8 @@ source of truth. The hard rules:
 - **Signed, signed-off commits**: `git commit -s` with signing configured;
   the `commit-msg` hook rejects anything else.
 - **Link the issue** a PR resolves (`Closes #NNN` in the body). Branch from `main`;
-  never push to `main`.
+  never push to `main`, except until release 1.0.0, which is owner-approved
+  to be committed and pushed to `main` directly.
 - **Workflows** (`.github/`):
   - pin every action to a full commit SHA with a `# vX.Y.Z` comment that
     matches it (`pin-github-action` does this);
