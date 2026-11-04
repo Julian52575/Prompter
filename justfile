@@ -110,8 +110,10 @@ _cid service:
 # One-off containers from the dev image, so the host needs no Node.js.
 
 # Build the single-file app into frontend/dist/index.html
+# The container has no .git, so the version (release tag, else build date and commit sha) is computed here.
 build:
-    {{compose}} run --rm --no-deps -T frontend npm run build
+    APP_VERSION="${APP_VERSION:-$(git describe --tags --exact-match 2>/dev/null || echo "$(date -u +%F) $(git rev-parse --short HEAD 2>/dev/null || echo dev)")}" \
+      {{compose}} run --rm --no-deps -T -e APP_VERSION frontend npm run build
 
 # Unit tests (Vitest); extra arguments go to vitest
 test *args:

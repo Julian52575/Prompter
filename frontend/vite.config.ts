@@ -5,13 +5,14 @@ import { defineConfig } from "vite";
 import { viteSingleFile } from "vite-plugin-singlefile";
 import { cspHash } from "./csp-hash.ts";
 
-// A release tag (set by the release workflow), else the commit sha.
+// A release tag (set by the release workflow), else the build date and commit sha.
 function appVersion(): string {
   if (process.env.APP_VERSION) return process.env.APP_VERSION;
   try {
-    return execSync("git rev-parse --short HEAD", { stdio: ["ignore", "pipe", "ignore"] })
+    const sha = execSync("git rev-parse --short HEAD", { stdio: ["ignore", "pipe", "ignore"] })
       .toString()
       .trim();
+    return `${new Date().toISOString().slice(0, 10)} ${sha}`;
   } catch {
     return "dev";
   }
