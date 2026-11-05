@@ -180,7 +180,43 @@ Summarize:
   sourceScope: null,
 };
 
-export const BUILTIN_TEMPLATES: Template[] = [TASK_LIST, RESEARCH, IMPLEMENT_SPEC];
+export const WRAP_UP: Template = {
+  id: "wrap-up",
+  name: "Wrap-up",
+  schema: 1,
+  version: 1,
+  fields: [
+    { id: "context", label: "Context", type: "longtext", required: false },
+    {
+      id: "docs",
+      label: "Documentation list",
+      type: "list",
+      required: false,
+      itemLabel: "Document (path or name)",
+      noteLabel: "Note",
+      format: "plain",
+    },
+    { id: "openPoints", label: "Open points", type: "longtext", required: false },
+  ],
+  preamble:
+    "You are responsible for closing out this working session. Review the full conversation and the repository state, then update the relevant documentation so a developer who did not see the discussion can understand what was decided and why, what changed, what was tried and abandoned, and what remains open. Use the context, documentation list, and open points, if provided, to guide your work.",
+  closing: `Follow the repository's conventions for documentation, commits, and changelogs; first read its guidance files, such as AGENTS.md, CLAUDE.md, or CONTRIBUTING, if they exist. Base every statement on evidence from the conversation and repository, including relevant status, diffs, history, and files. Do not invent events, decisions, or results; mark anything you cannot verify as an assumption.
+
+Update the documentation list if provided; otherwise, find the relevant documentation yourself. Record decisions and reasons, changes, rejected approaches, known issues, and next steps. Keep it concise, fix or remove documentation made outdated by this session, and avoid duplicating information.
+
+Before handing over, identify uncommitted changes, stray or temporary files, debug leftovers, and failing or skipped tests or checks. Run the project's tests, linters, and build if they are cheap to run, and report results honestly. Do not hide or silently fix unrelated problems; list them. Do not start new feature work. Do not commit, push, open a pull request, or delete anything unless I ask; propose a commit message that follows repository conventions instead. Ask me only if something blocks the wrap-up and cannot be resolved from the repository.
+
+Report back in this order:
+1. **Session summary:** what I asked and what you did.
+2. **Documentation changed:** one line per file.
+3. **Repository state:** whether it is clean, and tests and checks run with their results.
+4. **Open points and next steps:** what developers taking over need to know.
+5. **Assumptions and unverified items:** anything you could not verify.`,
+  replyModes: "none",
+  sourceScope: null,
+};
+
+export const BUILTIN_TEMPLATES: Template[] = [TASK_LIST, RESEARCH, IMPLEMENT_SPEC, WRAP_UP];
 
 export const CONVERSATION: ReplyMode = {
   id: "conversation",

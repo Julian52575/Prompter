@@ -1,4 +1,4 @@
-import { CONVERSATION, IMPLEMENT_SPEC, RESEARCH, TASK_LIST } from "./builtins";
+import { CONVERSATION, IMPLEMENT_SPEC, RESEARCH, TASK_LIST, WRAP_UP } from "./builtins";
 import { initValues, newDraft } from "./catalog";
 import { clean, codeFence, headingName, inlineCode, languageLine, REPLY_MODE_OVERRIDE, render, SCOPE_TEXT, summarize } from "./render";
 import type { ChoiceField, GroupItem, Inputs, ReplyMode, Scope } from "./types";
@@ -268,5 +268,25 @@ describe("Implement Specification", () => {
   });
   test("requires the specification file", () => {
     expect(validateInputs(IMPLEMENT_SPEC, { context: "", specFile: "" }, "open")).not.toEqual([]);
+  });
+});
+
+describe("Wrap-up", () => {
+  test("renders the filled fields between the preamble and the closing", () => {
+    const out = render({
+      template: WRAP_UP,
+      inputs: { context: "ctx", docs: [{ k: "1", text: "README.md", note: "" }], openPoints: "todo" },
+      modes: [],
+      scope: "open",
+      language: "en",
+    });
+    expect(out).toContain("## Context\nctx");
+    expect(out).toContain("## Open points\ntodo");
+    expect(out.indexOf("closing out this working session")).toBeLessThan(out.indexOf("## Context"));
+    expect(out.indexOf("## Open points")).toBeLessThan(out.indexOf("Report back in this order"));
+  });
+  test("has no required field, but an empty form is refused", () => {
+    expect(WRAP_UP.fields.some((f) => f.required)).toBe(false);
+    expect(validateInputs(WRAP_UP, { context: "ctx", docs: [], openPoints: "" }, "open")).toEqual([]);
   });
 });

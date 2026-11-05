@@ -630,6 +630,10 @@ const fr: Dict = {
   builtinText: {
     "Task list": "Liste de tâches",
     "Implement Specification": "Implémenter une spécification",
+    "Wrap-up": "Clôture",
+    "Documentation list": "Liste de documentation",
+    "Document (path or name)": "Document (chemin ou nom)",
+    "Open points": "Points ouverts",
     "Specification File": "Fichier de spécification",
     "Path to the specification": "Chemin de la spécification",
     Context: "Contexte",

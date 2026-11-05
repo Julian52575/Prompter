@@ -558,6 +558,13 @@ code {
 .tablist {
   display: flex;
   flex-wrap: wrap;
+  /* Every tab has a top and a bottom line. Rows and the pane overlap by one border,
+     so shared lines are drawn once and a row never leaves a gap above or below it. */
+  margin-bottom: calc(-1 * var(--border));
+}
+.tabs .tablist button {
+  margin-top: calc(-1 * var(--border));
+  border-top: var(--border) solid var(--fg);
 }
 .tab-fill {
   flex: 1;
@@ -566,12 +573,14 @@ code {
   position: relative;
   border: none;
   border-right: var(--border) solid var(--fg);
+  border-bottom: var(--border) solid var(--fg);
   box-shadow: none;
   background: var(--tab-idle);
   color: var(--fg);
 }
 .tabs .tab-add {
   font-size: 1.25rem;
+  margin-bottom: calc(-1 * var(--border));
 }
 .tabs button:active:not(:disabled) {
   transform: none;
@@ -580,8 +589,7 @@ code {
   z-index: 1;
   background: var(--pane-form);
   /* Covers the pane's top border under this tab only. */
-  margin-bottom: calc(-1 * var(--border));
-  border-bottom: var(--border) solid var(--pane-form);
+  border-bottom-color: var(--pane-form);
 }
 .tab-panel {
   background: var(--pane-form);
