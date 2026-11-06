@@ -14,7 +14,7 @@ Prompt Builder is a private, local web app that turns a filled-in template into 
 
 **Non-goals (v1):** calling AI APIs, writing to chosen disk paths, running a server, automatic or scheduled backup, auto-deleting history, multi-user use, translating prompts or template wording.
 
-**Primary flow:** pick a template, fill the form on the left, choose reply modes (any number, none by default) and (where offered) a source scope, press Generate, edit the prompt on the right, choose the output type (Bare prompt or Re-Prompt Request), then press Copy, Open in ChatGPT or Open in Mistral.
+**Primary flow:** pick a template, fill the form on the left, choose output modes (any number, none by default) and (where offered) a source scope, press Generate, edit the prompt on the right, choose the output type (Bare prompt or Re-Prompt Request), then press Copy, Open in ChatGPT or Open in Mistral.
 
 ### Changes from v1
 
@@ -25,10 +25,10 @@ Prompt Builder is a private, local web app that turns a filled-in template into 
 - Task list preamble, two Research closings, the Open scope line and the Case-closed instruction are reworded to remove mismatches.
 - Open scope renders its instruction even when no sources are listed.
 - Review is renamed Research and lists Deliverable (formerly Goal type) and Goal first, so the form and the prompt start with the goal. Files is merged into Sources. The Action required field and its report destination are dropped; the deliverable decides what the agent produces.
-- Research gains a required Effort radio (Case-closed or Cheap Lookup). Case-closed moves there from the reply modes.
+- Research gains a required Effort radio (Case-closed or Cheap Lookup). Case-closed moves there from the output modes.
 - Task list is rebuilt around tasks: an optional Context, and Tasks that each have a Title, Details, Proof of Completion and an optional Depends on.
-- Conditional form fields (`showWhen`) are supported, reversing that v1 non-goal. Choice options can carry an instruction, text fields a default, a hint and `output: "none"`, and templates can place the reply mode checkboxes with `replyModesAfter`.
-- Reply modes are a multi-select with nothing selected by default; there is no Standard mode. Templates can offer all reply modes, so new custom modes need no template edit.
+- Conditional form fields (`showWhen`) are supported, reversing that v1 non-goal. Choice options can carry an instruction, text fields a default, a hint and `output: "none"`, and templates can place the output mode checkboxes with `replyModesAfter`.
+- Output modes are a multi-select with nothing selected by default; there is no Standard mode. Templates can offer all output modes, so new custom modes need no template edit.
 - History: hand edits are saved to the entry, identical regenerations are skipped, summaries work for every template, single deletes are confirmed, and Restore handles changed or deleted templates.
 - Storage: multi-tab sync, corrected corrupt-data rule, history index repair, built-in update notices, a storage meter, and Export/Import (reverses the v1 "no export" non-goal).
 - Accessibility: "Draft saved" is no longer announced, contrast is verified against panels too, `prefers-contrast` is defined, a manual theme setting exists, and dialogs default to the safe choice.
@@ -51,8 +51,8 @@ Every template is declarative JSON rendered by one generic renderer. Built-in an
 | `basedOn` | `{ id, version }` | User defaults only: the built-in id and version the user default was saved from |
 | `fields` | Field\[\] | Ordered form fields (below) |
 | `preamble`, `closing` | Wording | Fixed text placed before and after the user's content |
-| `replyModes` | `"none"`, `"all"` or string\[\] | `"none"`: no reply modes. `"all"`: every built-in and custom mode. A list: the listed mode ids. Offered as checkboxes, none checked by default |
-| `replyModesAfter` | field id (optional) | Form only: the reply mode checkboxes follow this top-level field. Omitted: after all fields |
+| `replyModes` | `"none"`, `"all"` or string\[\] | `"none"`: no output modes. `"all"`: every built-in and custom mode. A list: the listed mode ids. Offered as checkboxes, none checked by default |
+| `replyModesAfter` | field id (optional) | Form only: the output mode checkboxes follow this top-level field. Omitted: after all fields |
 | `sourceScope` | `null` or `{ field }` | When set, the Restricted/Open radio is shown directly above the named `list` field, and its instruction is placed in that field's section |
 
 ### Wording
@@ -104,7 +104,7 @@ The renderer is a pure function of (template, inputs, modes, scope, language). I
 2. The preamble, resolved and substituted.
 3. Each top-level field in order, as below. Empty fields are omitted.
 4. The closing, resolved and substituted.
-5. The Reply mode section, only when at least one selected mode has a non-empty instruction (see Reply modes).
+5. The Output mode section, only when at least one selected mode has a non-empty instruction (see Output modes).
 
 **Top-level fields**
 
@@ -141,11 +141,11 @@ Custom templates have only a stored version and a Delete action, with no reset. 
 
 ### Other records
 
-- **Reply mode:** `id`, `label`, `instruction`, plus `version` for built-ins and `basedOn` for user defaults. The same layers as templates apply, with these rules:
-  - There is no Standard mode: with no mode selected, the prompt has no Reply mode section.
+- **Output mode:** `id`, `label`, `instruction`, plus `version` for built-ins and `basedOn` for user defaults. The same layers as templates apply, with these rules:
+  - There is no Standard mode: with no mode selected, the prompt has no Output mode section.
   - A custom or edited mode must have a non-empty instruction.
   - A template listing a mode id that no longer exists gets a lint warning, and that id is skipped when offering modes.
-- **Draft:** one per template: `values`, `modes` (list of reply mode ids), `scope`, `output` (current textarea text), `baseline` (the text last produced by Generate or Restore), `entryId` (the history entry hand edits are saved to, or null), outputType ("bare" or "review", default "bare") and `updatedAt`. On load, values for fields that no longer exist are dropped.
+- **Draft:** one per template: `values`, `modes` (list of output mode ids), `scope`, `output` (current textarea text), `baseline` (the text last produced by Generate or Restore), `entryId` (the history entry hand edits are saved to, or null), outputType ("bare" or "review", default "bare") and `updatedAt`. On load, values for fields that no longer exist are dropped.
 - **History entry:** `id`, `createdAt`, `templateId`, `templateName` (snapshot), `inputs` (snapshot), `modes`, `modeLabel` (snapshot, labels joined with ", ", empty when none), `scope`, `generated` (text as rendered), `prompt` (final text, including hand edits), `edited` (boolean) and `summary`. Entries are never deleted automatically. Drafts and entries saved with a single `mode` are read as `modes` (`"standard"` becomes an empty list).
 - **Summary:** the first non-empty line of the first non-empty `text` or `longtext` value, searching top-level fields in order, then group items in order. If none, the first non-empty line of the prompt after the preamble. Truncated to 80 characters with an ellipsis.
 
@@ -216,14 +216,14 @@ Generated Markdown (Context and the Proof and Depends on lines appear only when 
 
 - `id: "review"` and the field id `goalType` are kept from earlier versions, so saved drafts and history still match. Only the visible names changed.
 - `replyModes: ["conversation"]`, `replyModesAfter: "effort"`, `sourceScope: { "field": "sources" }`.
-- Form order: Deliverable, Goal, Context, Source scope, Sources, Effort, Reply mode.
+- Form order: Deliverable, Goal, Context, Source scope, Sources, Effort, Output mode.
 - Defaults: Source scope is Open and the Sources list starts with no rows (the user adds them). A `list` field starts empty in every template.
 
 **Effort.** How much work the research deserves. Cheap Lookup saves time and tokens on a subject whose documentation is easy to reach, or whose answer is easy to verify.
 
 | Option | Value | Instruction |
 | --- | --- | --- |
-| Case-closed | `case-closed` | The override line "This overrides any conflicting reporting instructions above.", then: Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument. The output has the sections Verdict, Evidence, Argument, Remedy and Grounds for appeal (full text under Reply modes). |
+| Case-closed | `case-closed` | The override line "This takes priority over conflicting reporting instructions above.", then: Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument. The output has the sections Verdict, Evidence, Argument, Remedy and Grounds for appeal (full text under Output modes). |
 | Cheap Lookup | `cheap-lookup` | Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check. |
 
 Preamble and closing are variant maps with `by: "goalType"`. Every preamble starts with "Research the goal, context, and sources."
@@ -256,19 +256,19 @@ Generated Markdown (empty sections are skipped, except that the Sources section 
 
 <closing for the deliverable>
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
-<reply mode instructions>
+<output mode instructions>
 ```
 
-The Reply mode section appears only when at least one mode is selected.
+The Output mode section appears only when at least one mode is selected.
 
-## Reply modes and source scope
+## Output modes and source scope
 
-A reply mode adds a response-format instruction to the prompt. A source scope tells the AI how far it may look for evidence. The user chooses reply modes with checkboxes (any number, none by default) and the source scope with a radio group.
+A output mode adds a response-format instruction to the prompt. A source scope tells the AI how far it may look for evidence. The user chooses output modes with checkboxes (any number, none by default) and the source scope with a radio group.
 
-### Reply modes
+### Output modes
 
 | Mode | Id | Behaviour |
 | --- | --- | --- |
@@ -278,8 +278,8 @@ A reply mode adds a response-format instruction to the prompt. A source scope te
 When at least one selected mode has a non-empty instruction, the renderer appends one section, with the instructions of all selected modes in the order offered, separated by a blank line:
 
 ```markdown
-## Reply mode
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 <mode instructions>
 ```
@@ -289,7 +289,7 @@ The override line is needed because the closings ask for a report shape that a m
 Full instruction for Conversation. It is neutral about the deliverable, so it works with every Research deliverable:
 
 ```markdown
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -301,14 +301,14 @@ For Teacher mode, the last sentence keeps Conversation from duplicating the less
 Full instruction for the Case-closed effort (the `## Effort` section; it starts with the override line):
 
 ```markdown
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 ```
 
-**Missing modes:** if a draft or history entry names a mode that no longer exists, the Builder unselects it and shows: "A saved reply mode no longer exists and was unselected."
+**Missing modes:** if a draft or history entry names a mode that no longer exists, the Builder unselects it and shows: "A saved output mode no longer exists and was unselected."
 
 ### Source scope
 
@@ -346,7 +346,7 @@ Generate always produces the bare prompt. The Output type decides what Copy and 
 
 ### Review wrapper
 
-- One built-in wrapper (`version: 1`), editable in Settings and resettable, with the same layers as reply modes. There are no custom wrappers.
+- One built-in wrapper (`version: 1`), editable in Settings and resettable, with the same layers as output modes. There are no custom wrappers.
 - It must contain `{{prompt}}` exactly once, on a line of its own. Otherwise it is a lint error and cannot be saved.
 - `{{prompt}}` is replaced by the bare prompt inside a Markdown code fence. The fence uses backticks, with length max(3, longest backtick run in the prompt + 1), and the info string `markdown`. Substitution is a single pass.
 
@@ -406,9 +406,9 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 ### Builder (main view)
 
-- **Left pane:** a strip as wide as the pane sits directly above it: a **+** button (accessible name "New template", opens Settings with the new-template editor), then one tab per template with no gap between them (ARIA tabs pattern: arrow keys, Home and End switch template), then empty space. A line separates every item from the pane except the selected tab, which shares the pane's surface and opens into it. The pane holds the template's form, then the Generate button. The source scope radio (when offered) sits directly above its list field. The reply mode checkboxes (when offered) follow the `replyModesAfter` field, or the whole form when that is not set.
+- **Left pane:** a strip as wide as the pane sits directly above it: a **+** button (accessible name "New template", opens Settings with the new-template editor), then one tab per template with no gap between them (ARIA tabs pattern: arrow keys, Home and End switch template), then empty space. A line separates every item from the pane except the selected tab, which shares the pane's surface and opens into it. The pane holds the template's form, then the Generate button. The source scope radio (when offered) sits directly above its list field. The output mode checkboxes (when offered) follow the `replyModesAfter` field, or the whole form when that is not set.
 - **Right pane:** an editable textarea labelled "Generated prompt" (always the bare prompt), the Output type radio, the Re-Prompt Request preview when that type is selected, the Copy, Open in ChatGPT and Open in Mistral buttons, and a status line. Below 60em of width the panes stack, form first.
-- **Defaults:** no reply mode is selected. Source scope starts on Open. Output type starts on Bare prompt. All three are then remembered in the draft.
+- **Defaults:** no output mode is selected. Source scope starts on Open. Output type starts on Bare prompt. All three are then remembered in the draft.
 
 **Repeatable items (groups and lists)**
 
@@ -427,7 +427,7 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 **Clear form**
 
-- A **Clear form** button sits next to Generate. It returns the current template's draft to its starting state: field defaults (empty text, default choices, default group items), no reply mode selected, source scope Open, an empty Generated prompt, no `entryId`. The Output type is kept.
+- A **Clear form** button sits next to Generate. It returns the current template's draft to its starting state: field defaults (empty text, default choices, default group items), no output mode selected, source scope Open, an empty Generated prompt, no `entryId`. The Output type is kept.
 - When the form or the prompt has content, it first asks "Clear the form?" with **Cancel** (default focus, Esc action) and **Clear**. History entries are kept.
 - Afterwards focus moves to the first field, inline errors are removed, and the live region announces "Form cleared".
 
@@ -468,7 +468,7 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 **Visual builder**
 
-- Edit the name, wording slots (plain text or one variant per option of a chosen choice field, plus the fallback), fields (add by type, Move up / Move down, remove, required toggle, type-specific options), offered reply modes (None, All, or a checklist) and source scope (off, or the list field to attach it to).
+- Edit the name, wording slots (plain text or one variant per option of a chosen choice field, plus the fallback), fields (add by type, Move up / Move down, remove, required toggle, type-specific options), offered output modes (None, All, or a checklist) and source scope (off, or the list field to attach it to).
 - **Save** stores the user default (built-ins) or the template (custom). **Reset** returns a built-in to its current version.
 - Leaving with unsaved changes asks "Discard unsaved changes?" with **Keep editing** as the default.
 
@@ -497,7 +497,7 @@ The app has three views, Builder, History and Settings, switched by a navigation
 | Placeholder in an option `instruction` naming an unknown or non-top-level field | error |
 | `schema` newer than the app supports | error |
 
-**Reply modes**
+**Output modes**
 
 - The same list, builder, Save, Reset and Delete behaviour as templates, for label and instruction. There is no fixed Standard mode.
 - Deleting a mode asks for confirmation and names the templates that list it.
@@ -533,7 +533,7 @@ All user data lives in the browser's localStorage as JSON. There is no server an
 | `pb.version` | Storage schema version |
 | `pb.settings` | UI settings: theme, language (`null` follows the browser), last template id, dismissed notices, providers confirmed with "Don't ask again" |
 | `pb.templates` | User defaults and custom templates, keyed by id |
-| `pb.modes` | User default and custom reply modes, keyed by id |
+| `pb.modes` | User default and custom output modes, keyed by id |
 | `pb.wrapper` | User default of the review wrapper, with `basedOn` |
 | `pb.providers` | User overrides of the chatbot links, keyed by `chatgpt` and `mistral` |
 | `pb.drafts` | One draft per template, keyed by template id |
@@ -715,17 +715,17 @@ Both are enforced in CI on every pull request.
 
 1. The app opens from a local HTML file of at most 250 KB, using at most 5 MB of JavaScript memory per page, with no console errors and no CSP violations, and Playwright records zero requests from the app page other than the file itself. External pages open only in a new tab after the user presses a chatbot button.
 2. Both built-in templates, rendered by the generic renderer, produce exactly the Markdown structures in this spec, with empty items omitted.
-3. Every combination of Research deliverable, effort (Case-closed, Cheap Lookup), reply mode (none, Conversation) and scope (Restricted, Open with and without sources) produces the specified output, covered by snapshot tests.
+3. Every combination of Research deliverable, effort (Case-closed, Cheap Lookup), output mode (none, Conversation) and scope (Restricted, Open with and without sources) produces the specified output, covered by snapshot tests.
 4. Task list tasks can be added, renamed, removed and reordered by keyboard, with the specified focus moves and announcements.
 5. Task list with no task details, and any template with no content, blocks Generate with an announced error summary.
 6. Research offers the four deliverables, each with its own preamble and closing; `goalType`, `goal` and `effort` are required, and Effort starts on Case-closed.
-7. Reply modes are checkboxes with none selected by default, and source scope is a radio group; Restricted with no sources blocks Generate with an announced error.
+7. Output modes are checkboxes with none selected by default, and source scope is a radio group; Restricted with no sources blocks Generate with an announced error.
 8. Generate after hand-editing asks for confirmation; Keep editing (the default and Esc action) leaves the text untouched.
 9. Hand edits after Generate are saved into that history entry and mark it Edited; an identical regeneration adds no entry.
 10. Copy places the selected output type's text on the clipboard or falls back, and announces the result.
 11. Drafts survive a reload; Restore loads an entry back, drops inputs for removed fields with a notice, and offers View prompt when the template was deleted.
 12. A built-in saved as a user default persists after restart; Reset shows the current built-in again; a higher built-in version shows the update notice.
-13. A custom reply mode appears on templates with `replyModes: "all"` without editing them; a deleted mode is unselected with a notice.
+13. A custom output mode appears on templates with `replyModes: "all"` without editing them; a deleted mode is unselected with a notice.
 14. Invalid JSON in the advanced view shows linted, navigable errors and cannot be applied; valid JSON updates the builder on Apply.
 15. Full storage produces a visible error and loses no in-memory work; unavailable storage runs in memory with a banner.
 16. A corrupt record is copied to `pb.corrupt.*` before reset, or left untouched when there is no room; newer data opens read-only; a broken history index is repaired on load.
@@ -743,14 +743,14 @@ Resolved in this version:
 
 - UI layer: Preact.
 - Splitting the review goal into `goalType` and `goal`: adopted.
-- Override line in the Reply mode section: adopted, because without it the closings conflict with mode formats.
+- Override line in the Output mode section: adopted, because without it the closings conflict with mode formats.
 - Palette: contrast verified (see Palette and measured contrast).
 
 Pending your sign-off:
 
 - [ ] New Task list preamble wording.
 - [ ] Reworded closings for Teaches the user about and Answer mode, and the new fallback wording.
-- [ ] Revised Case-closed effort instruction, the Cheap Lookup instruction and the Conversation reply mode.
+- [ ] Revised Case-closed effort instruction, the Cheap Lookup instruction and the Conversation output mode.
 - [ ] Open scope wording: "label each cited source" and the new no-sources line.
 - [ ] Adding Export/Import, which reverses the v1 "no export" non-goal.
 - [ ] Pixel font (Pixelify Sans) and palette.

@@ -14,7 +14,7 @@ interface FormProps {
   errors: Errors;
   /** Path prefix for DOM ids; "" at the top level. */
   path?: string;
-  /** Extra controls placed before or after a field, keyed by field id (the reply mode and source scope radios). */
+  /** Extra controls placed before or after a field, keyed by field id (the output mode and source scope radios). */
   before?: Record<string, ComponentChildren>;
   after?: Record<string, ComponentChildren>;
 }

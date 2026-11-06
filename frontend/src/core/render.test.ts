@@ -145,7 +145,7 @@ describe("Research", () => {
             expect(out.endsWith("\n") && !out.endsWith("\n\n")).toBe(true);
             expect(out).toContain(`## Effort\n${effortInstruction(e)}`);
             if (scope === "open") expect(out).toContain("## Sources\n");
-            expect(out.includes("## Reply mode")).toBe(modes.length > 0);
+            expect(out.includes("## Output mode")).toBe(modes.length > 0);
           });
 
   test("full structure for one combination", () => {
@@ -177,7 +177,7 @@ ${effortInstruction("cheap-lookup")}
 
 ${close}
 
-## Reply mode
+## Output mode
 ${REPLY_MODE_OVERRIDE}
 
 ${CONVERSATION.instruction}
@@ -187,7 +187,7 @@ ${CONVERSATION.instruction}
   test("several reply modes are all rendered under one heading", () => {
     const extra: ReplyMode = { id: "m-1", label: "Terse", instruction: "Be terse." };
     const out = render({ template: RESEARCH, inputs: base("answer", []), modes: [CONVERSATION, extra], scope: "open", language: "en" });
-    expect(out.match(/## Reply mode/g)).toHaveLength(1);
+    expect(out.match(/## Output mode/g)).toHaveLength(1);
     expect(out).toContain(`${CONVERSATION.instruction}\n\nBe terse.\n`);
   });
 

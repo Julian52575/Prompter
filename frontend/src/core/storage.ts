@@ -346,7 +346,7 @@ export function formatSize(bytes: number, locale = "en"): string {
 
 export const DEFAULT_SETTINGS: Settings = { theme: "system", language: null, lastTemplate: null, dismissed: [], confirmedProviders: [] };
 
-/** Drafts and entries saved before reply modes became a multi-select hold a single `mode`. */
+/** Drafts and entries saved before output modes became a multi-select hold a single `mode`. */
 function legacyModes(x: { mode?: string; modes?: string[] }): string[] {
   if (Array.isArray(x.modes)) return x.modes;
   return x.mode && x.mode !== "standard" ? [x.mode] : [];
@@ -461,7 +461,7 @@ export function validateExport(data: unknown, knownModes: string[]): string[] {
     if (!isValidTemplate(t, modeIds) || (t as Template).id !== id) p.push(`Template "${id}" is invalid.`);
   for (const [id, m] of Object.entries(data.modes as Obj))
     if (!isObj(m) || m.id !== id || typeof m.label !== "string" || typeof m.instruction !== "string")
-      p.push(`Reply mode "${id}" is invalid.`);
+      p.push(`Output mode "${id}" is invalid.`);
   for (const [id, d] of Object.entries(data.drafts as Obj))
     if (!isObj(d) || !isObj(d.values) || typeof d.output !== "string") p.push(`The draft for "${id}" is invalid.`);
   (data.history as unknown[]).forEach((e, i) => {
@@ -485,7 +485,7 @@ export function importConflicts(s: Store, f: ExportFile): string[] {
   const out: string[] = [];
   for (const [label, mine, theirs] of [
     ["template", r.templates(), f.templates],
-    ["reply mode", r.modes(), f.modes],
+    ["output mode", r.modes(), f.modes],
     ["draft", r.drafts(), f.drafts],
   ] as const)
     for (const id of Object.keys(theirs)) if (id in mine) out.push(`${label} ${id}`);

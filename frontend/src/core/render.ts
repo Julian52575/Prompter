@@ -13,7 +13,7 @@ import type {
   Wording,
 } from "./types";
 
-export const REPLY_MODE_OVERRIDE = "This overrides any conflicting reporting instructions above.";
+export const REPLY_MODE_OVERRIDE = "This takes priority over conflicting reporting instructions above.";
 
 export const SCOPE_TEXT = {
   restricted: "Use only the listed sources. Treat anything else as off-limits.",
@@ -227,7 +227,7 @@ export function render({ template, inputs, modes, scope, language }: RenderInput
     .map((m) => clean(m.instruction))
     .filter(Boolean)
     .join("\n\n");
-  if (instruction) parts.push(`## Reply mode\n${REPLY_MODE_OVERRIDE}\n\n${instruction}`);
+  if (instruction) parts.push(`## Output mode\n${REPLY_MODE_OVERRIDE}\n\n${instruction}`);
   return `${parts.filter((p) => p !== "").join("\n\n")}\n`;
 }
 

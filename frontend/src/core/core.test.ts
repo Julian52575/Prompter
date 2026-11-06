@@ -34,7 +34,7 @@ const entry = (id: string, createdAt: number): HistoryEntry => ({
 describe("lint", () => {
   test("built-ins are clean", () => {
     expect(checkTemplate(TASK_LIST, ["conversation"])).toEqual([]);
-    expect(checkTemplate(RESEARCH, ["conversation"])).toEqual([]);
+    expect(checkTemplate(RESEARCH, ["conversation", "tldr"])).toEqual([]);
   });
 
   test("syntax errors carry line and column", () => {
@@ -130,7 +130,7 @@ describe("layers", () => {
 
   test('"all" offers custom modes without editing the template; unknown ids are skipped', () => {
     const modes = effectiveModes({ "m-1": { id: "m-1", label: "Terse", instruction: "Be terse." } });
-    expect(offeredModes({ ...RESEARCH, replyModes: "all" }, modes).map((m) => m.id)).toEqual(["conversation", "m-1"]);
+    expect(offeredModes({ ...RESEARCH, replyModes: "all" }, modes).map((m) => m.id)).toEqual(["conversation", "tldr", "m-1"]);
     expect(offeredModes({ ...RESEARCH, replyModes: ["gone", "m-1"] }, modes).map((m) => m.id)).toEqual(["m-1"]);
     expect(offeredModes(TASK_LIST, modes)).toEqual([]);
   });

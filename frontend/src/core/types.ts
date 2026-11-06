@@ -76,7 +76,7 @@ export interface Template {
   preamble: Wording;
   closing: Wording;
   replyModes: "none" | "all" | string[];
-  /** Field the reply mode radio follows in the form; default: after all fields. */
+  /** Field the output mode radio follows in the form; default: after all fields. */
   replyModesAfter?: string;
   sourceScope: null | { field: string };
 }

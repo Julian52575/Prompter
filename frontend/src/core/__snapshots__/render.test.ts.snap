@@ -15,7 +15,7 @@ The app crashes.
 No sources are listed. You may search for sources; cite each one you use.
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -23,10 +23,8 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 
 Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -50,7 +48,7 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 - src/a.ts: docs
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -58,10 +56,8 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 
 Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -86,7 +82,7 @@ Use only the listed sources. Treat anything else as off-limits.
 - RFC 9110
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -94,10 +90,8 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 
 Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -120,7 +114,7 @@ The app crashes.
 No sources are listed. You may search for sources; cite each one you use.
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -146,7 +140,7 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 - src/a.ts: docs
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -173,7 +167,7 @@ Use only the listed sources. Treat anything else as off-limits.
 - RFC 9110
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -202,10 +196,8 @@ Do a quick lookup to save time and tokens. Use what is easy to reach, such as th
 
 Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -233,10 +225,8 @@ Do a quick lookup to save time and tokens. Use what is easy to reach, such as th
 
 Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -265,10 +255,8 @@ Do a quick lookup to save time and tokens. Use what is easy to reach, such as th
 
 Answer the question directly. Cite supporting files and sources, and identify any evidence needed to qualify the answer.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -357,7 +345,7 @@ The app crashes.
 No sources are listed. You may search for sources; cite each one you use.
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -365,10 +353,8 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 
 Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -392,7 +378,7 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 - src/a.ts: docs
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -400,10 +386,8 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 
 Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -428,7 +412,7 @@ Use only the listed sources. Treat anything else as off-limits.
 - RFC 9110
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -436,10 +420,8 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 
 Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -462,7 +444,7 @@ The app crashes.
 No sources are listed. You may search for sources; cite each one you use.
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -488,7 +470,7 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 - src/a.ts: docs
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -515,7 +497,7 @@ Use only the listed sources. Treat anything else as off-limits.
 - RFC 9110
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -544,10 +526,8 @@ Do a quick lookup to save time and tokens. Use what is easy to reach, such as th
 
 Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -575,10 +555,8 @@ Do a quick lookup to save time and tokens. Use what is easy to reach, such as th
 
 Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -607,10 +585,8 @@ Do a quick lookup to save time and tokens. Use what is easy to reach, such as th
 
 Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -699,7 +675,7 @@ The app crashes.
 No sources are listed. You may search for sources; cite each one you use.
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -725,10 +701,8 @@ Check the specification against the current code and available sources. Remove o
 
 When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -752,7 +726,7 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 - src/a.ts: docs
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -778,10 +752,8 @@ Check the specification against the current code and available sources. Remove o
 
 When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -806,7 +778,7 @@ Use only the listed sources. Treat anything else as off-limits.
 - RFC 9110
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -832,10 +804,8 @@ Check the specification against the current code and available sources. Remove o
 
 When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -858,7 +828,7 @@ The app crashes.
 No sources are listed. You may search for sources; cite each one you use.
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -902,7 +872,7 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 - src/a.ts: docs
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -947,7 +917,7 @@ Use only the listed sources. Treat anything else as off-limits.
 - RFC 9110
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -1012,10 +982,8 @@ Check the specification against the current code and available sources. Remove o
 
 When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -1061,10 +1029,8 @@ Check the specification against the current code and available sources. Remove o
 
 When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -1111,10 +1077,8 @@ Check the specification against the current code and available sources. Remove o
 
 When updating an existing specification, summarize the changes within the Context section without adding another top-level section. Do not commit, push, or open a pull request unless I ask.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -1257,7 +1221,7 @@ The app crashes.
 No sources are listed. You may search for sources; cite each one you use.
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -1265,10 +1229,8 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 
 Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -1292,7 +1254,7 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 - src/a.ts: docs
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -1300,10 +1262,8 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 
 Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -1328,7 +1288,7 @@ Use only the listed sources. Treat anything else as off-limits.
 - RFC 9110
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -1336,10 +1296,8 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
 
 Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -1362,7 +1320,7 @@ The app crashes.
 No sources are listed. You may search for sources; cite each one you use.
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -1388,7 +1346,7 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 - src/a.ts: docs
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -1415,7 +1373,7 @@ Use only the listed sources. Treat anything else as off-limits.
 - RFC 9110
 
 ## Effort
-This overrides any conflicting reporting instructions above.
+This takes priority over conflicting reporting instructions above.
 
 Research long and solid. Act like a lawyer closing a case. For a bug, treat the bug as the crime: identify its root cause, or how it could occur, from evidence. For a question, a topic to teach or a specification, treat the rules as the law: find and combine the applicable rules into one argument.
 
@@ -1444,10 +1402,8 @@ Do a quick lookup to save time and tokens. Use what is easy to reach, such as th
 
 Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -1475,10 +1431,8 @@ Do a quick lookup to save time and tokens. Use what is easy to reach, such as th
 
 Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
@@ -1507,10 +1461,8 @@ Do a quick lookup to save time and tokens. Use what is easy to reach, such as th
 
 Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.
 
-## Reply mode
-This overrides any conflicting reporting instructions above.
-
-This overrides any conflicting reporting instructions above.
+## Output mode
+This takes priority over conflicting reporting instructions above.
 
 Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 

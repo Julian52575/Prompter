@@ -419,16 +419,13 @@ export function Builder() {
           const modeNode = offered.length > 0 && (
             <fieldset>
               <legend>{t.builder.replyMode}</legend>
+              <label class="radio">
+                <input type="radio" name="reply-mode" checked={draft.modes.length === 0} onChange={() => patch({ modes: [] })} />{" "}
+                {t.builder.replyModeNone}
+              </label>
               {offered.map((m) => localizeMode(t, m)).map((m) => (
                 <label class="radio" key={m.id}>
-                  <input
-                    type="checkbox"
-                    name="reply-mode"
-                    checked={draft.modes.includes(m.id)}
-                    onChange={(e) =>
-                      patch({ modes: e.currentTarget.checked ? [...draft.modes, m.id] : draft.modes.filter((id) => id !== m.id) })
-                    }
-                  />{" "}
+                  <input type="radio" name="reply-mode" checked={draft.modes.includes(m.id)} onChange={() => patch({ modes: [m.id] })} />{" "}
                   {m.label}
                 </label>
               ))}

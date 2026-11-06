@@ -22,7 +22,7 @@ Mistral. The full specification is [`docs/spec.md`](docs/spec.md).
 - **Private:** a Content Security Policy blocks every network request from
   the page. A prompt leaves the app only when you press *Open in ChatGPT* or
   *Open in Mistral*, after a first-use confirmation.
-- **Persistent:** drafts, history, custom templates and reply modes live in
+- **Persistent:** drafts, history, custom templates and output modes live in
   the browser's localStorage. *Settings → Data → Export all* writes a JSON
   backup; *Import* restores it (merge or replace).
 - **Accessible:** targets WCAG 2.2 AA (keyboard-only flows, labelled forms,
@@ -37,7 +37,7 @@ Download `prompt-builder.html` from the latest
 `frontend/dist/index.html`) and open it in a browser.
 
 1. Pick a template (*Task list* or *Review*, or your own from *Settings*).
-2. Fill the form, choose a reply mode and source scope where offered.
+2. Fill the form, choose a output mode and source scope where offered.
 3. Press **Generate**, edit the prompt on the right if needed.
 4. Choose **Bare prompt** or **Re-Prompt Request** (wraps the prompt and asks a
    chatbot to review it), then **Copy**, **Open in ChatGPT** or **Open in

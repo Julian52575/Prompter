@@ -37,7 +37,7 @@ const RESEARCH_INTRO = "Research the goal, context, and sources.";
 const NO_PUBLISH = "Do not commit, push, or open a pull request unless I ask.";
 
 export const REPLY_MODE_PRECEDENCE =
-  "This overrides any conflicting reporting instructions above.";
+  "This takes priority over conflicting reporting instructions above.";
 
 // Ids stay "review" and "goalType" so saved drafts and history keep matching the template.
 export const RESEARCH: Template = {
@@ -146,7 +146,7 @@ When updating an existing specification, summarize the changes within the Contex
     },
     fallback: "Report your findings. Cite supporting files and sources.",
   },
-  replyModes: ["conversation"],
+  replyModes: ["conversation", "tldr"],
   replyModesAfter: "effort",
   sourceScope: { field: "sources" },
 };
@@ -434,14 +434,58 @@ export const CONVERSATION: ReplyMode = {
   id: "conversation",
   label: "Conversation",
   version: 1,
-  instruction: `${REPLY_MODE_PRECEDENCE}
-
-Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
+  instruction: `Work as a conversation over several exchanges. First do the work yourself, without waiting for me, and draft the deliverable in your reply at a sufficient quality. Then show me your findings and your open questions clearly, in two separate parts, and ask for my feedback. Fold each of my replies into the deliverable, then show what changed and what is still open. Repeat until nothing important is open.
 
 Do not write or edit any file, commit, push, or open a pull request until you have asked whether I am satisfied and I have said yes. If the deliverable is a lesson, there is nothing to save: pace the lesson in short steps, check my understanding between steps, and ask what to cover next.`,
 };
 
-export const BUILTIN_MODES: ReplyMode[] = [CONVERSATION];
+export const TLDR: ReplyMode = {
+  id: "tldr",
+  label: "TLDR",
+  version: 2,
+  instruction: `Answer with maximum brevity. Guide me to the task with steps and trust me to understand and research the details; do not explain what I can look up myself.
+
+Reply with exactly this structure and nothing else (no intro, conclusion, alternatives or pleasantries):
+- First line: \`TLDR:\` and a one-sentence restatement of the task, ending with \`Doable in n steps.\` where n is the number of steps.
+- Then a blank line and \`@=@=@ TLDR Start @=@=@\`.
+- Each step is a numbered title, \`# 1. Title\`, \`# 2. Title\` and so on, one blank line above it, then very short extra information. Skip the extra information when the title is enough.
+- Under a step, bullets may use \`- **NOTE:**\` for a useful hint, \`- **WARN:**\` for a risk I can accept, or \`- **ERROR:**\` for something I must not do. Keep each to one short message.
+- Close with \`@=@=@ TLDR End @=@=@\`.
+- After the End marker, add only the lines that apply, each one short and starting with its bold label: \`**Assumed:**\` for anything you guessed, \`**Check:**\` for a quick way to verify the result, and \`**Confidence:**\` only when you are not confident, naming what is unverified.
+- Beyond that, only add what is critical to the integrity of the project (e.g. O(n^2) or worse complexity, security risks, irreversible file deletion), as a WARN or ERROR bullet.
+
+Example, for "How do I clean my build and reinstall dependencies?":
+\`\`\`
+TLDR: You want to clean a project's build artifacts and reinstall its dependencies. Doable in 3 steps.
+
+@=@=@ TLDR Start @=@=@
+
+# 1. Remove the build output
+
+Run \`rm -rf dist node_modules\`.
+
+- **WARN:** \`rm -rf\` is irreversible, and any uncommitted file inside those folders is lost.
+- **ERROR:** Never run it from \`/\` or with an unset variable, e.g. \`rm -rf $DIR/\`.
+
+# 2. Reinstall the dependencies
+
+Run \`npm install\`.
+
+- **WARN:** Without a lockfile, versions can change. Use \`npm ci\` to keep them fixed.
+
+# 3. Rebuild
+
+Run \`npm run build\`.
+
+@=@=@ TLDR End @=@=@
+
+**Assumed:** npm project with a lockfile.
+**Check:** \`npm test\` passes.
+**Confidence:** medium, the build script name is unverified.
+\`\`\``,
+};
+
+export const BUILTIN_MODES: ReplyMode[] = [CONVERSATION, TLDR];
 
 export const BUILTIN_WRAPPER: Wrapper = {
   version: 1,
