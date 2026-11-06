@@ -1,5 +1,49 @@
 # Changelog
 
+## [1.1.0](https://github.com/Julian52575/Prompter/compare/1.0.0...1.1.0) (2026-11-06)
+
+
+### Features
+
+* add a create a specification goal type ([5012c91](https://github.com/Julian52575/Prompter/commit/5012c9138d1768cd891f2e82525c20d733aab132))
+* add a french interface with english prompts ([fb00983](https://github.com/Julian52575/Prompter/commit/fb00983318672d64a32ecd890b71d0ea49796667))
+* add a just install recipe to copy the build to a host ([663a308](https://github.com/Julian52575/Prompter/commit/663a3082bfd3c7143d1f98f86a1e10aeb7920a47))
+* add a pull-request review template and document template creation ([3293039](https://github.com/Julian52575/Prompter/commit/3293039c65ecc8aa810e3dfecd8436f52de11dff))
+* add a retro platformer theme ([8351e62](https://github.com/Julian52575/Prompter/commit/8351e6299c0014b3dfd5e92b49e343b5265e1bdb))
+* add a TLDR output mode and rename reply mode to output mode ([9ea3104](https://github.com/Julian52575/Prompter/commit/9ea3104e969b4f221376aee61d1669be28bcc4de))
+* add a wrap-up template and fix stacked template tab borders ([9bd566a](https://github.com/Julian52575/Prompter/commit/9bd566ae120da6b053b09a2001f4b0d9c60318c5))
+* add action required to the review template ([6d2d0b7](https://github.com/Julian52575/Prompter/commit/6d2d0b7944075685df36d3eb2219cc68646a54ed))
+* add an AGENTS.md review template ([0299e63](https://github.com/Julian52575/Prompter/commit/0299e635fbad70bb5de8c564bae376a98c0bd1fe))
+* add an info popup with a template summary next to the form heading ([3ad57c1](https://github.com/Julian52575/Prompter/commit/3ad57c14602c406673b2afa8eab7450612cc5f99))
+* add an optional stories list to the Research template ([2cf9052](https://github.com/Julian52575/Prompter/commit/2cf905244f22fd40ac9f938139c0c8593a3e6a44))
+* add chat action and a teaching goal type ([b908d3c](https://github.com/Julian52575/Prompter/commit/b908d3ca871fadb9468822d1e3162f90aadfb1a6))
+* add dragon i and adventure themes ([7480fb8](https://github.com/Julian52575/Prompter/commit/7480fb815fad905447d31a0fc0c667ec1fc0978a))
+* add red, gold, awakening and watch themes ([b0cbc67](https://github.com/Julian52575/Prompter/commit/b0cbc67c47e11aa201a80ac0068a1cd54305aeb7))
+* add shared markdown section and agent doc check scripts ([3d0d754](https://github.com/Julian52575/Prompter/commit/3d0d7547b90a8eb3d01b1db8f050397051d5eb7c))
+* add template tabs and a clear form button ([ce61191](https://github.com/Julian52575/Prompter/commit/ce61191abb4083a8f6a84cef8acd847f2b7d3a26))
+* add the Implement Specification template ([87c9f7e](https://github.com/Julian52575/Prompter/commit/87c9f7e82af86821a951c60ed71acf0d23617eee))
+* implement prompt builder from the v2 specification ([9a1a415](https://github.com/Julian52575/Prompter/commit/9a1a4154839d70ee12b8f63ca95a72c59efe11ad))
+* list goal type and goal first in the review template ([49bec39](https://github.com/Julian52575/Prompter/commit/49bec39acba2b6335a00d8dcd981bd8c01989615))
+* put appearance first in settings and give its blocks a background ([654302b](https://github.com/Julian52575/Prompter/commit/654302b8c78715376c486a6398b91556591b4b02))
+* rework the prompt block layout ([09ae49a](https://github.com/Julian52575/Prompter/commit/09ae49a1dd36c9fb8e80ce720d914965e55329ed))
+* rework the task list and research templates ([0318ba6](https://github.com/Julian52575/Prompter/commit/0318ba6423ec4a9e8d83bbbe4c2dfff564a39d39))
+* show copyright and version in the footer ([c2964a3](https://github.com/Julian52575/Prompter/commit/c2964a3cdf374b2436c422f1f5f86e931a924a3a))
+* structure the specification prompt into sections and phases ([f97cf38](https://github.com/Julian52575/Prompter/commit/f97cf38a759363cc674f256275d96e21a1867038))
+
+
+### Bug Fixes
+
+* add the csp meta tag at build time only ([00fcffd](https://github.com/Julian52575/Prompter/commit/00fcffd4c57098423d0f8393e763a931d6844211))
+* count a titled list item as having content ([1763212](https://github.com/Julian52575/Prompter/commit/1763212bc7c0e010161de04713af2d42fddfbf4f))
+* pass APP_VERSION to compose run as KEY=VALUE ([26b43d8](https://github.com/Julian52575/Prompter/commit/26b43d8c9adba437d4dad5332d0684a7210bd26e))
+* show build date and commit sha in the footer of container builds ([1c4e8ac](https://github.com/Julian52575/Prompter/commit/1c4e8ac5cbb758f4082075b6b87fad8cc58487ad))
+
+
+### Documentation
+
+* add a prompt examples rule and a research tldr example ([d8b867e](https://github.com/Julian52575/Prompter/commit/d8b867e6435d8130365b5a26177f0abe950fd85e))
+* allow direct pushes to main until release 1.0.0 ([6137c1d](https://github.com/Julian52575/Prompter/commit/6137c1df5d61164bc9238061c9a79869a4463fd2))
+
 ## 1.0.0 (2026-10-26)
 
 
