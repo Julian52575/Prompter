@@ -1,4 +1,4 @@
-import { CONVERSATION, IMPLEMENT_SPEC, PR_REVIEW, RESEARCH, TASK_LIST, WRAP_UP } from "./builtins";
+import { AGENTS_REVIEW, CONVERSATION, IMPLEMENT_SPEC, PR_REVIEW, RESEARCH, TASK_LIST, WRAP_UP } from "./builtins";
 import { initValues, newDraft } from "./catalog";
 import { clean, codeFence, headingName, inlineCode, languageLine, REPLY_MODE_OVERRIDE, render, SCOPE_TEXT, summarize } from "./render";
 import type { ChoiceField, GroupItem, Inputs, ReplyMode, Scope } from "./types";
@@ -304,5 +304,34 @@ describe("Pull-Request Review", () => {
   });
   test("an empty form is valid: the purpose is optional", () => {
     expect(validateInputs(PR_REVIEW, defaults, "open")).toEqual([]);
+  });
+});
+
+describe("AGENTS.md Review", () => {
+  const empty = initValues(AGENTS_REVIEW.fields);
+  test("an empty form is valid and renders the default change scope and the scripts", () => {
+    expect(validateInputs(AGENTS_REVIEW, empty, "open")).toEqual([]);
+    const out = render({ template: AGENTS_REVIEW, inputs: empty, modes: [], scope: "open", language: "en" });
+    expect(out).toContain("## Change Scope\nYou may edit any documentation");
+    expect(out).toContain("read_md_section.py");
+    expect(out).toContain("agent_md_check.py");
+  });
+  test("scenarios, rules and tools render between the preamble and the closing", () => {
+    const inputs = {
+      ...empty,
+      scenarios: [{ k: "a", name: "create a template", values: { expected: "ask another AI first" } }],
+      rules: [{ k: "b", name: "Local tests", values: { details: "run just test" } }],
+      tools: [{ k: "c", text: "just", note: "task runner" }],
+    };
+    const out = render({ template: AGENTS_REVIEW, inputs, modes: [], scope: "open", language: "en" });
+    expect(out).toContain("Scenario 1: create a template");
+    expect(out).toContain("ask another AI first");
+    expect(out).toContain("Local tests");
+    expect(out).toContain("- just: task runner");
+    expect(out.indexOf("## Tools")).toBeGreaterThan(out.indexOf("## Prompt Scenarios"));
+    expect(out.indexOf("## Tools")).toBeLessThan(out.indexOf("Verification loop"));
+  });
+  test("placeholders only use ids the renderer can substitute", () => {
+    expect(AGENTS_REVIEW.fields.every((f) => /^[a-zA-Z0-9]+$/.test(f.id))).toBe(true);
   });
 });

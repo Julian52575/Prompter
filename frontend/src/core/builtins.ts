@@ -333,7 +333,102 @@ Report back in this order:
   sourceScope: null,
 };
 
-export const BUILTIN_TEMPLATES: Template[] = [TASK_LIST, RESEARCH, IMPLEMENT_SPEC, WRAP_UP, PR_REVIEW];
+export const AGENTS_REVIEW: Template = {
+  id: "agents-review",
+  name: "AGENTS.md Review",
+  schema: 1,
+  version: 1,
+  fields: [
+    { id: "context", label: "Project Context", type: "longtext", required: false },
+    {
+      id: "scenarios",
+      label: "Prompt Scenarios",
+      type: "group",
+      required: false,
+      itemLabel: "Scenario",
+      nameLabel: "User prompt",
+      numbered: true,
+      children: [{ id: "expected", label: "Expected behaviour", type: "longtext", required: false }],
+    },
+    {
+      id: "rules",
+      label: "Rules",
+      type: "group",
+      required: false,
+      itemLabel: "Rule",
+      nameLabel: "Title",
+      children: [{ id: "details", label: "Details", type: "longtext", required: false }],
+    },
+    {
+      id: "tools",
+      label: "Tools",
+      type: "list",
+      required: false,
+      itemLabel: "Tool",
+      noteLabel: "Purpose",
+      format: "plain",
+    },
+    {
+      id: "scope",
+      label: "Change Scope",
+      type: "choice",
+      required: true,
+      default: "all",
+      options: [
+        {
+          value: "all",
+          label: "All documentation",
+          instruction:
+            "You may edit any documentation that carries these rules: AI instruction files (AGENTS.md, CLAUDE.md) and human docs (README, CONTRIBUTING, script docs), to move a fact where it belongs and remove duplicates. Edit documentation only, never code.",
+        },
+        {
+          value: "ai",
+          label: "AI Doc only",
+          instruction:
+            "You may edit only AI instruction files (AGENTS.md, CLAUDE.md and similar). Read the human docs but do not change them; list the changes they would need in your report.",
+        },
+      ],
+    },
+  ],
+  preamble: `We are going to rework my repository's AGENTS.md so that an AI agent understands it at once and has zero friction on common user prompts. Below I give you the project context, example user prompts with the behaviour I expect (Prompt Scenarios), the Rules to apply on the repository, and the Tools that exist in it. Cross-reference all of them into one coherent documentation: every scenario must be answerable by pointing its behaviour at the rules and the tools, with nothing left to guess. Find the best ratio between token usage and mandatory information yourself: keep what an agent cannot infer from the repository, drop the rest.
+
+Discuss before you write. Work scenario by scenario: say what you would do from the rules and tools alone, citing each one, and flag every gap, conflict, ambiguity, scenario with no rule or tool behind it, rule or tool that no scenario needs, and anything in the repository that contradicts what I listed (verify my rules and tools against the repository, not the reverse). Ask me questions until you are sure you understood every scenario, rule and tool. WAIT for my answers: do not edit any file before I confirm you understood.
+
+Where information belongs (hard principle):
+- Facts useful to humans AND the AI (how to test, lint, build, release, commit conventions) live in the human docs (README, CONTRIBUTING, scripts, CI). AGENTS.md must not restate them; it only points to them.
+- AGENTS.md holds what only an AI needs: what to do when the user asks X (trigger -> action), what never to do, and where to look.
+- Every pointer into another document must target a SECTION as a Markdown heading anchor (e.g. CONTRIBUTING.md#2-branches-and-commits), never "read CONTRIBUTING". You read only that section, not the whole file.`,
+  closing: `Writing: once I confirm you understood, write the changes within the Change Scope above. Every rule must be specific and checkable (you can tell whether you complied). Group rules by trigger ("When the user asks X: do Y"). Keep hard "never" rules at the top. No rationale unless the "why" prevents a wrong guess. Do NOT commit or push unless I ask.
+
+Verification loop: after writing, re-read the updated files from disk (section by section), never from memory or from what you just wrote. Replay every scenario using only those files and the documents they point to, as an agent that has never seen this conversation: each scenario must resolve to its expected behaviour without guessing. Run the checks below. Fix what fails, then re-read again; repeat until every scenario flows coherently and the checks pass. If it does not converge after 5 passes, stop and report what blocks.
+
+Standard tooling - use it, do not eyeball. Two stdlib-only Python 3 scripts exist. Resolve them in this order:
+1. If my repository already has equivalents (scripts/shared/read_md_section.py, scripts/shared/agent_md_check.py, a justfile/Makefile/package script), use those.
+2. Otherwise download BOTH into the same scratchpad directory (agent_md_check.py imports read_md_section.py), READ each before running it, then run it with python3. Pick <ref>: the "tag_name" of https://api.github.com/repos/Julian52575/Prompter/releases/latest; if there is no release (HTTP 404), use "main".
+   - https://raw.githubusercontent.com/Julian52575/Prompter/<ref>/scripts/shared/read_md_section.py
+   - https://raw.githubusercontent.com/Julian52575/Prompter/<ref>/scripts/shared/agent_md_check.py
+3. If you cannot download them, fetch https://raw.githubusercontent.com/Julian52575/Prompter/<ref>/scripts/shared/README.tsv (columns: name, purpose, usage, requires, summary; same <ref> rule) and write equivalent stdlib-only Python scripts from the summary column, in the scratchpad.
+What they do: "python3 read_md_section.py FILE#anchor" prints one Markdown section (subsections included, code fences ignored; exit 1 and lists the anchors if missing). "python3 agent_md_check.py [FILE]" prints "STALE <ref>" for missing paths or missing #anchors, "DUP in <file>: <rule>" for rules repeated in other .md files, and a SIZE line (lines, bytes, ~tokens = bytes/4); exit 1 on stale references.
+Never guess a section's content or a file's size. Run the checks at the start (baseline) and after each rewrite pass, and verify each pointer with read_md_section.py. Never add the scripts to my repository unless I ask.
+
+Research: read AGENTS.md and the files it points to (by section). Fetch the CURRENT official documentation of the agent tools in use (Claude Code memory/CLAUDE.md, agents.md) instead of guessing how instruction files are loaded or prioritised.
+
+Known evidence to apply: instruction files cost tokens on every run and agents follow them faithfully, so keep only what cannot be inferred from the code; repo overviews rarely help; prefer one example over a paragraph; one source of truth, no duplicate files that drift; push detail into linked files read on demand.
+
+Base every claim on evidence; mark guesses as assumptions; ask me only when the repository cannot answer.
+
+Report back in this order:
+1. **Scenario results:** per scenario, the rules and tools it resolves to, and the gaps found and fixed.
+2. **Understanding check:** what you confirmed with me, and what I corrected.
+3. **Changes:** each file changed, with what was merged, moved, or dropped and why.
+4. **Size change:** before and after, and the token/information trade-off you chose.
+5. **Check results:** script output before and after, and the number of verification passes.
+6. **Assumptions and open questions.**`,
+  replyModes: "none",
+  sourceScope: null,
+};
+
+export const BUILTIN_TEMPLATES: Template[] = [TASK_LIST, RESEARCH, IMPLEMENT_SPEC, WRAP_UP, PR_REVIEW, AGENTS_REVIEW];
 
 export const CONVERSATION: ReplyMode = {
   id: "conversation",
