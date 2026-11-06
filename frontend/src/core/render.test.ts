@@ -1,4 +1,4 @@
-import { CONVERSATION, IMPLEMENT_SPEC, RESEARCH, TASK_LIST, WRAP_UP } from "./builtins";
+import { CONVERSATION, IMPLEMENT_SPEC, PR_REVIEW, RESEARCH, TASK_LIST, WRAP_UP } from "./builtins";
 import { initValues, newDraft } from "./catalog";
 import { clean, codeFence, headingName, inlineCode, languageLine, REPLY_MODE_OVERRIDE, render, SCOPE_TEXT, summarize } from "./render";
 import type { ChoiceField, GroupItem, Inputs, ReplyMode, Scope } from "./types";
@@ -288,5 +288,21 @@ describe("Wrap-up", () => {
   test("has no required field, but an empty form is refused", () => {
     expect(WRAP_UP.fields.some((f) => f.required)).toBe(false);
     expect(validateInputs(WRAP_UP, { context: "ctx", docs: [], openPoints: "" }, "open")).toEqual([]);
+  });
+});
+
+describe("Pull-Request Review", () => {
+  const defaults = Object.fromEntries(PR_REVIEW.fields.map((f) => [f.id, f.type === "choice" ? f.default ?? null : ""]));
+  test("defaults: scope on, diff depth, every action off", () => {
+    const out = render({ template: PR_REVIEW, inputs: defaults, modes: [], scope: "open", language: "en" });
+    expect(out).toContain("You may read the CI checks and logs.");
+    expect(out).toContain("Review the final diff as it stands");
+    expect(out).toContain("Do not publish any comment.");
+    expect(out).toContain("Do not push.");
+    expect(out).toContain("Do not trigger CI.");
+    expect(out).toContain(" ###### 🤖 <AI_name> Review asked by <user>.");
+  });
+  test("an empty form is valid: the purpose is optional", () => {
+    expect(validateInputs(PR_REVIEW, defaults, "open")).toEqual([]);
   });
 });

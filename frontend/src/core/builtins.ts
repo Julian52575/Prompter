@@ -216,7 +216,124 @@ Report back in this order:
   sourceScope: null,
 };
 
-export const BUILTIN_TEMPLATES: Template[] = [TASK_LIST, RESEARCH, IMPLEMENT_SPEC, WRAP_UP];
+export const PR_REVIEW: Template = {
+  id: "pr-review",
+  name: "Pull-Request Review",
+  schema: 1,
+  version: 1,
+  fields: [
+    {
+      id: "purpose",
+      label: "PR Purpose",
+      type: "longtext",
+      required: false,
+      hint: "What the PR is for and the goal it tries to achieve. Leave blank and the AI researches it first.",
+    },
+    {
+      id: "scopeCommits",
+      label: "Scope: Commits",
+      type: "choice",
+      required: true,
+      default: "on",
+      options: [
+        { value: "on", label: "On", instruction: "You may read the PR commits." },
+        { value: "off", label: "Off", instruction: "Do not read the PR commits." },
+      ],
+    },
+    {
+      id: "scopeComments",
+      label: "Scope: Comments",
+      type: "choice",
+      required: true,
+      default: "on",
+      options: [
+        { value: "on", label: "On", instruction: "You may read the PR comments and review comments." },
+        { value: "off", label: "Off", instruction: "Do not read the PR comments or review comments." },
+      ],
+    },
+    {
+      id: "scopeCi",
+      label: "Scope: CI",
+      type: "choice",
+      required: true,
+      default: "on",
+      options: [
+        { value: "on", label: "On", instruction: "You may read the CI checks and logs." },
+        { value: "off", label: "Off", instruction: "Do not read the CI checks or logs." },
+      ],
+    },
+    {
+      id: "depth",
+      label: "Review depth",
+      type: "choice",
+      required: true,
+      default: "diff",
+      options: [
+        { value: "diff", label: "Diff against target", instruction: "Review the final diff as it stands against the target branch." },
+        { value: "all", label: "All commits", instruction: "Review the whole life of the branch, commit by commit." },
+      ],
+    },
+    {
+      id: "actComment",
+      label: "Actions allowed: Publish comments",
+      type: "choice",
+      required: true,
+      default: "off",
+      options: [
+        { value: "on", label: "On", instruction: "You may publish PR comments via `gh`." },
+        { value: "off", label: "Off", instruction: "Do not publish any comment. Say in the chat what you would have published." },
+      ],
+    },
+    {
+      id: "actPush",
+      label: "Actions allowed: Push",
+      type: "choice",
+      required: true,
+      default: "off",
+      options: [
+        { value: "on", label: "On", instruction: "You may run a plain `git push`." },
+        { value: "off", label: "Off", instruction: "Do not push. Say in the chat what you would have pushed." },
+      ],
+    },
+    {
+      id: "actCi",
+      label: "Actions allowed: Trigger CI",
+      type: "choice",
+      required: true,
+      default: "off",
+      options: [
+        { value: "on", label: "On", instruction: "You may trigger CI runs via `gh`." },
+        { value: "off", label: "Off", instruction: "Do not trigger CI. Say in the chat what you would have triggered." },
+      ],
+    },
+  ],
+  preamble:
+    "You are reviewing a pull request. If a purpose is given below, let it guide the whole review; otherwise first work out the purpose yourself from the PR title, body, linked issues, commits, and branch name, and keep it in mind throughout. Write in a very informal tone: short, human, direct, no corporate or stiff phrasing.",
+  closing: `Use \`gh\` for everything on GitHub: PR metadata, comments, CI runs, logs. Do not guess how a tool, CI step, linter, or framework behaves: fetch its current official documentation (never rely on memory) before judging code that depends on it.
+
+First read AGENTS.md, CLAUDE.md, and CONTRIBUTING if they exist, and follow the repository's rules, including its commit conventions (e.g. Conventional Commits, sign-off) for any commit you are allowed to make.
+
+Hard rule: the FIRST line of every comment you publish and of every commit body (not the commit title) must be exactly the line below, followed by a newline. Keep the leading space and the exact characters. <AI_name> is your own name; <user> is the current git/GitHub user (\`gh api user\` or \`git config user.name\`).
+\` ###### 🤖 <AI_name> Review asked by <user>.\`
+
+Keep every comment short and precise: one point per comment, anchored to the file and line, and prefer a scoped reference (a link to a doc section, a file:line, a rule name) over a long explanation.
+
+Base every finding on evidence: the diff, the logs, the docs. Never invent results; mark anything you could not verify as an assumption.
+
+Only perform the actions switched On above. For anything switched Off, report in the chat what you would have done.
+
+Report back in this order:
+1. **Purpose:** as given, or as you inferred it.
+2. **Verdict:** one informal line.
+3. **Findings:** by severity, each with file:line and a doc reference when relevant.
+4. **CI status:** if in scope.
+5. **Actions taken:** what you published, pushed, or triggered, or "none".
+6. **Assumptions and unverified items.**`,
+  replyModes: "none",
+  sourceScope: null,
+};
+
+export const BUILTIN_TEMPLATES: Template[] = [TASK_LIST, RESEARCH, IMPLEMENT_SPEC, WRAP_UP, PR_REVIEW];
 
 export const CONVERSATION: ReplyMode = {
   id: "conversation",

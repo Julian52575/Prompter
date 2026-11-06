@@ -56,6 +56,31 @@ source of truth. The hard rules:
   (see CONTRIBUTING.md).
 - AI-assisted commits carry a `Co-Authored-By:` trailer naming the assistant.
 
+## Creating a Prompter template (built-in prompt template)
+
+The user may ask for a new template and want another AI (e.g. ChatGPT) to
+write its wording. Then:
+
+1. **Do not write the template yourself.** Write a self-contained prompt for
+   the other AI instead, and give it to the user in the chat.
+2. Read `frontend/src/core/types.ts` (field types, `Template`),
+   `builtins.ts` (style reference) and `render.ts` (how fields and
+   `{{placeholders}}` render) first, and embed in the prompt: the types, one
+   existing template as style reference, the fields (id, type, defaults), the
+   behaviours the preamble/closing must enforce, and "output only the
+   TypeScript object". Mention unsupported things: there is no multi-checkbox,
+   so model each checkbox as an On/Off `choice` with a `default` and an
+   `instruction` per option.
+3. **A pasted `Template` object coming back is the request to integrate it**;
+   do not ask what to do with it. Review it against `types.ts` and `lint.ts`,
+   fix voice and schema problems (hints are shown to the user, so no
+   first-person AI wording), then add it to `builtins.ts` and
+   `BUILTIN_TEMPLATES`, update the list assertion in `core.test.ts`, add
+   render/validation tests in `render.test.ts`, add French labels in
+   `ui/i18n.ts`, and run `vitest` and `tsc`. Tell the user what you changed
+   from the pasted version.
+4. Commit and push only when asked (see the commit rules above).
+
 ## Working on a repository created from the template
 
 Follow [README.md](README.md) and [CONTRIBUTING.md](CONTRIBUTING.md); they
