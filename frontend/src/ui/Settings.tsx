@@ -41,11 +41,11 @@ export function Settings() {
   return (
     <section aria-labelledby="settings-heading" class="settings">
       <h2 id="settings-heading">{t.settings.heading}</h2>
+      <Appearance />
       <Templates />
       <Modes />
       <WrapperSettings />
       <Providers />
-      <Appearance />
       <Data />
     </section>
   );

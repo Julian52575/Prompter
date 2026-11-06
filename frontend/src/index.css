@@ -597,6 +597,23 @@ code {
 .builder > .pane {
   background: var(--pane-out);
 }
+/* Opaque blocks, so no theme's scenery lies under settings text. */
+.settings > section,
+.settings > h2 {
+  background: var(--pane-out);
+  border: var(--border) solid var(--fg);
+  padding: 1rem;
+}
+.settings > section {
+  margin: 0 0 1.25rem;
+}
+.settings > section > h3:first-child {
+  margin-top: 0;
+}
+.settings > h2 {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+}
 .tabs button:focus-visible {
   z-index: 2;
   /* Inside the button, so neighbours never hide it. */
