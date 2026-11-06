@@ -37,7 +37,7 @@ describe("Task list", () => {
       context: "A parser for the config files.",
       tasks: [
         task("t1", "Parser", "Write it.\nCarefully.", "Tests pass."),
-        task("t2", "Empty", "", ""),
+        task("t2", "", "", ""),
         task("t3", "Docs", "Document it.", "", "t1"),
       ],
     };
@@ -71,7 +71,7 @@ ${TASK_LIST.closing}
       tasks: [task("t1", "A", "a", "", "t2"), task("t2", "B", "b", "", "gone"), task("t3", "C", "c")],
     };
     expect(render0(inputs)).not.toContain("Depends on");
-    const empty: Inputs = { tasks: [task("t1", "A", "", ""), task("t2", "B", "b", "", "t1")] };
+    const empty: Inputs = { tasks: [task("t1", "", "", ""), task("t2", "B", "b", "", "t1")] };
     expect(render0(empty)).not.toContain("Depends on");
   });
 
