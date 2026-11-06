@@ -318,6 +318,15 @@ const en = {
   },
   /** Display names of built-in template and mode texts; the prompt keeps the English. */
   builtinText: {} as Record<string, string>,
+  /** Three-line summary of each built-in template, shown in the info popup next to the form heading. */
+  templateInfo: {
+    "task-list": "Hands the AI an ordered list of tasks.\nEach task has details, a proof of completion and optional dependencies.\nThe AI works in order and reports the proof for each task.",
+    review: "Asks the AI to research a goal before acting.\nPick a deliverable: bug hunt, teacher, answer or specification mode.\nSources can be restricted, and the AI cites what it used.",
+    "implement-spec": "Asks the AI to implement a specification file.\nIt follows the spec, with your context and constraints.\nIt reports what was built and what deviates from the spec.",
+    "wrap-up": "Closes out a working session.\nThe AI updates the documentation with decisions, changes and open points.\nIt checks the repository state and never commits unless asked.",
+    "pr-review": "Reviews a pull request in an informal tone, using gh.\nYou scope what it reads and what it may do (comment, push, trigger CI).\nEvery comment it posts opens with an AI signature line.",
+  } as Record<string, string>,
+  info: "About this template",
 };
 
 export type Dict = typeof en;
@@ -627,6 +636,14 @@ const fr: Dict = {
     removeOption: (label) => `Retirer l'option : ${label}`,
     defaultOption: "Option par défaut",
   },
+  templateInfo: {
+    "task-list": "Donne à l'IA une liste ordonnée de tâches.\nChaque tâche a des détails, une preuve d'achèvement et des dépendances optionnelles.\nL'IA suit l'ordre et rapporte la preuve de chaque tâche.",
+    review: "Demande à l'IA de rechercher un objectif avant d'agir.\nChoisissez un livrable : chasse aux bugs, pédagogue, réponse ou spécification.\nLes sources peuvent être restreintes, et l'IA cite ce qu'elle a utilisé.",
+    "implement-spec": "Demande à l'IA d'implémenter un fichier de spécification.\nElle suit la spécification, avec votre contexte et vos contraintes.\nElle rapporte ce qui a été construit et les écarts avec la spécification.",
+    "wrap-up": "Clôture une session de travail.\nL'IA met à jour la documentation : décisions, changements et points ouverts.\nElle vérifie l'état du dépôt et ne commit jamais sans demande.",
+    "pr-review": "Revoit une pull request sur un ton informel, avec gh.\nVous limitez ce qu'elle lit et ce qu'elle peut faire (commenter, pousser, lancer la CI).\nChaque commentaire publié commence par une ligne de signature de l'IA.",
+  },
+  info: "À propos de ce modèle",
   builtinText: {
     "Task list": "Liste de tâches",
     "Implement Specification": "Implémenter une spécification",

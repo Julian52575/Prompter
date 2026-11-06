@@ -20,6 +20,7 @@ import { buildLink, unwrapPrompt, wrapPrompt } from "../core/wrap";
 import { copyText } from "./clipboard";
 import { focusLater, focusNow, useApp, useStoreVersion } from "./context";
 import { Form } from "./Form";
+import { InfoTip } from "./InfoTip";
 import { localizeMode, localizeTemplate } from "./i18n";
 import { Notice } from "./Notice";
 
@@ -350,7 +351,10 @@ export function Builder() {
         <div class="tab-fill" aria-hidden="true" />
       </div>
       <section class="pane tab-panel" id="form-panel" role="tabpanel" aria-labelledby={`tab-${template.id}`}>
-        <h2 id="form-heading">{t.builder.form}</h2>
+        <h2 id="form-heading">
+          {t.templateInfo[template.id] && <InfoTip label={t.info} text={t.templateInfo[template.id]} />}
+          {t.builder.form}
+        </h2>
         {showUpdate && (
           <Notice>
             {t.builder.updatedBuiltin}{" "}
