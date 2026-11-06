@@ -91,6 +91,14 @@ write its wording. Then:
    back to writing its own from the README.tsv row.
 5. Commit and push only when asked (see the commit rules above).
 
+## Prompt examples
+
+Store each generated prompt with a real AI output in
+`docs/examples/<template_name>-<mode>_.md`, verbatim and each inside a
+four-backtick `markdown` fence (the prompt holds its own fences). Sections:
+`# Generated Prompt`, then `# AI Output` with `##### <ai_model_used>` above the
+raw output.
+
 ## Working on a repository created from the template
 
 Follow [README.md](README.md) and [CONTRIBUTING.md](CONTRIBUTING.md); they
