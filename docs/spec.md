@@ -180,7 +180,7 @@ Two built-in templates ship with the app: Task list at `version: 2` (2: Blocks b
 - There are no default tasks. The user can add, rename, remove and reorder tasks. The task title is the item name.
 - `tasks` is required, so Generate is blocked until at least one task has content. Error: "Add text to at least one task."
 - Depends on is a dropdown of the earlier tasks only ("None" by default), so a dependency can never point forward or form a cycle.
-- A task with no details, proof or other content is omitted. A task with content but no title is a validation error ("Name this task."). Once a task has content, Details is required.
+- A task with no title and no content is omitted. A task with content but no title is a validation error ("Name this task."). A task with a title counts as having content, so Details is required and a titled task is never dropped silently.
 
 Generated Markdown (Context and the Proof and Depends on lines appear only when filled):
 
@@ -510,7 +510,7 @@ The app has three views, Builder, History and Settings, switched by a navigation
 
 **Appearance**
 
-- Theme: System (default), Light, Dark, Retro platformer, Dragon I or Adventure.
+- Theme: System (default), Light, Dark, Retro platformer, Dragon I, Adventure, Red, Gold, Awakening or Watch.
 - Language: Browser default (default), English or Français (each language named in itself). See Languages.
 
 **Data**
@@ -642,7 +642,11 @@ The target is WCAG 2.2 level AA, and the pixel style must never cost legibility.
   - headings use the embedded "Super Mario Bros. 3" fan font by David Fens (FontStruct Non-Commercial License; attribution in `assets/PlatformerLettering-LICENSE.txt`). Characters it lacks (punctuation, accents) fall back to Pixelify Sans. Because of this licence, builds must not be used commercially.
 - **Dragon I**, a dark theme inspired by 8-bit role-playing games: black message windows with thick white rounded borders, white text, a gold accent and a ▶ cursor on the current page. An overworld map (dotted grass, forests, snow-capped mountains, a diagonal river) fills the page behind the windows; every text sits in an opaque black window (the views, the panes, the header and the footer), so none lies on the map.
 - **Adventure**, a light theme inspired by bright 8-bit action games: a sky-blue page, cream and pink panes framed in rounded orange-brown like a status bar, a peach status-bar header and footer, puffy clouds in a band under the header, and an orange-and-green checkered hill on bushy grass with the sea in a band above the footer.
-- Both use Pixelify Sans for headings and draw their scenery with CSS gradients only. Their contrast is tested like the other themes, and axe runs on every view in each game theme.
+- **Red**, a light theme inspired by the first handheld Pokémon games: a white screen, black outlines, double-ruled dialog boxes, salmon dithering and a row of round bushes in a band above the content and another above the footer.
+- **Gold**, a light theme inspired by their sequels: a speckled yellow-green ground, white message boxes in a grey frame, a header and footer split in gold and silver like the two cartridges, a roofed house under the header and, above the footer, a striped hedge beside water.
+- **Awakening**, a light theme inspired by a handheld island adventure: a grey flagstone plaza with a repeated grass-and-flower tile, a yellow status bar with hearts after the title, and parchment and pink-floor panes in a room frame (gold edge, white band, brick wall, dark lip), a row of round trees on grass under the header and another above the footer.
+- **Watch**, a light theme inspired by 1980s handheld LCD games: a brushed-silver body inside a maroon frame, grey-green LCD panes with dark bezels, pill buttons, silver name-plate header and footer, and red buttons in a band above the footer.
+- All use Pixelify Sans for headings and draw their scenery with CSS gradients only. Their contrast is tested like the other themes, and axe runs on every view in each game theme.
 
 ### Palette and measured contrast
 

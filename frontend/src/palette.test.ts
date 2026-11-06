@@ -57,6 +57,10 @@ describe("platformer palette (WCAG 2.2)", () => {
 describe.each([
   ["dragon", ["bg", "sf"]],
   ["adventure", ["bg", "sf", "pane-form", "pane-out", "hud"]],
+  ["red", ["bg", "sf", "pane-form", "pane-out", "hud"]],
+  ["gold", ["bg", "sf", "pane-form", "pane-out", "hud", "hud-alt"]],
+  ["awakening", ["bg", "sf", "pane-form", "pane-out"]],
+  ["watch", ["bg", "sf", "pane-form", "pane-out", "hud"]],
 ])("%s palette (WCAG 2.2)", (theme, surfaces) => {
   const p = block(`:root[data-theme="${theme}"]`);
   test.each(["fg", "muted", "accent", "error", "success"])("%s text is at least 4.5:1 on every surface", (k) => {
@@ -68,5 +72,13 @@ describe.each([
   });
   test("focus ring is at least 3:1 on every surface", () => {
     for (const s of surfaces) expect(ratio(p.focus, p[s]), s).toBeGreaterThanOrEqual(3);
+  });
+});
+
+describe("awakening status bar (WCAG 2.2)", () => {
+  const p = block(':root[data-theme="awakening"]');
+  test("title and hint are legible on black, and so is the focus ring", () => {
+    expect(ratio(p["hud-fg"], p.hud)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(p["hud-focus"], p.hud)).toBeGreaterThanOrEqual(3);
   });
 });

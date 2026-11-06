@@ -386,6 +386,10 @@ test.describe("accessibility", () => {
     ["platformer", "Retro platformer"],
     ["dragon", "Dragon I"],
     ["adventure", "Adventure"],
+    ["red", "Red"],
+    ["gold", "Gold"],
+    ["awakening", "Awakening"],
+    ["watch", "Watch"],
   ])
     test(`axe: ${label} theme on every view`, async ({ page }) => {
       await open(page, "#/settings");

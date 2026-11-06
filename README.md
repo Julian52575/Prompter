@@ -28,7 +28,7 @@ Mistral. The full specification is [`docs/spec.md`](docs/spec.md).
 - **Accessible:** targets WCAG 2.2 AA (keyboard-only flows, labelled forms,
   error summaries, live announcements, light/dark/high-contrast themes).
 - **English or French** interface; prompts are always English. A Retro
-  platformer theme sits next to Light and Dark.
+  platformer theme and several other game-inspired themes sit next to Light and Dark.
 
 ## Use it
 

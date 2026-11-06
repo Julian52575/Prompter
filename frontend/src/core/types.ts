@@ -156,7 +156,7 @@ export type HistoryIndexRow = Pick<
 >;
 
 export interface Settings {
-  theme: "system" | "light" | "dark" | "platformer" | "dragon" | "adventure";
+  theme: "system" | "light" | "dark" | "platformer" | "dragon" | "adventure" | "red" | "gold" | "awakening" | "watch";
   /** null: follow the browser. */
   language: "en" | "fr" | null;
   lastTemplate: string | null;

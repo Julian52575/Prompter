@@ -223,6 +223,22 @@ const SCENERY: Partial<Record<string, { map?: string[]; top?: string[]; bottom?:
     top: ["puff puff-1", "puff puff-2", "puff puff-3"],
     bottom: ["kb-sea", "kb-hill", "kb-grass"],
   },
+  red: {
+    top: ["gb-dither", "gb-bushes"],
+    bottom: ["gb-dither", "gb-bushes gb-bushes-top"],
+  },
+  gold: {
+    top: ["gs-roof", "gs-wall"],
+    bottom: ["gs-grass", "gs-water"],
+  },
+  awakening: {
+    top: ["lz-grass", "lz-trunk", "lz-bush"],
+    bottom: ["lz-grass", "lz-trunk", "lz-bush"],
+  },
+  watch: {
+    map: ["wm"],
+    bottom: ["gw-btn gw-btn-1", "gw-btn gw-btn-2", "gw-btn gw-btn-3", "gw-big gw-big-l", "gw-big gw-big-r"],
+  },
 };
 
 /**
