@@ -112,8 +112,8 @@ _cid service:
 # Build the single-file app into frontend/dist/index.html
 # The container has no .git, so the version (release tag, else build date and commit sha) is computed here.
 build:
-    APP_VERSION="${APP_VERSION:-$(git describe --tags --exact-match 2>/dev/null || echo "$(date -u +%F) $(git rev-parse --short HEAD 2>/dev/null || echo dev)")}" \
-      {{compose}} run --rm --no-deps -T -e APP_VERSION frontend npm run build
+    v="${APP_VERSION:-$(git describe --tags --exact-match 2>/dev/null || echo "$(date -u +%F) $(git rev-parse --short HEAD 2>/dev/null || echo dev)")}"; \
+      {{compose}} run --rm --no-deps -T -e "APP_VERSION=$v" frontend npm run build
 
 # Unit tests (Vitest); extra arguments go to vitest
 test *args:
