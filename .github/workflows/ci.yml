@@ -272,6 +272,9 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - name: Test the helper scripts
+        working-directory: .
+        run: python3 -m unittest discover -s scripts/shared/tests
       - run: npm run build
 
       - name: Check the build is one file of at most 250 KB

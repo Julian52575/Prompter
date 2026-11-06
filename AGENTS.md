@@ -52,6 +52,9 @@ source of truth. The hard rules:
   `REPLACE_WITH_*`, …) stay as they are; a new one must be handled by
   `adapt.py` and listed in README-ADAPT.md.
 - **Comments** stay short and explain why, not what.
+- **Read one section, not a whole doc**: `just read-md-section CONTRIBUTING.md#4-releases`.
+  `just agent-md-check` reports stale references, duplicated rules and the size of
+  this file; `just test-scripts` tests both helpers (`scripts/shared/`).
 - Record incidents and their fixes under `docs/troubleshooting/<area>/`
   (see CONTRIBUTING.md).
 - AI-assisted commits carry a `Co-Authored-By:` trailer naming the assistant.
@@ -79,7 +82,14 @@ write its wording. Then:
    render/validation tests in `render.test.ts`, add French labels in
    `ui/i18n.ts`, and run `vitest` and `tsc`. Tell the user what you changed
    from the pasted version.
-4. Commit and push only when asked (see the commit rules above).
+4. Scripts a template relies on go in `scripts/shared/` (Python, standard
+   library only) with their tests in `scripts/shared/tests/`, and each is one row
+   in `scripts/shared/README.tsv` (name, purpose, usage, requires, summary). The
+   receiver of the prompt has no checkout, so the prompt gives each script's raw
+   GitHub URL at the latest release tag (`releases/latest` API), else `main`
+   while there is no release, tells the AI to read it before running, and falls
+   back to writing its own from the README.tsv row.
+5. Commit and push only when asked (see the commit rules above).
 
 ## Working on a repository created from the template
 

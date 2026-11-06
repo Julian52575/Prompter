@@ -119,6 +119,10 @@ build:
 test *args:
     {{compose}} run --rm --no-deps -T frontend npx vitest run "$@"
 
+# Unit tests of the helper scripts (Python, standard library only)
+test-scripts:
+    python3 -m unittest discover -s scripts/shared/tests
+
 # Lint and typecheck the app
 lint:
     {{compose}} run --rm --no-deps -T frontend sh -c "npm run lint && npm run typecheck"
@@ -138,3 +142,11 @@ lint-workflows:
     actionlint
     zizmor .github/
     check-jsonschema --builtin-schema vendor.github-workflows .github/workflows/*.yml
+
+# Print one Markdown section: just read-md-section CONTRIBUTING.md#2-branches-and-commits
+read-md-section ref:
+    python3 scripts/shared/read_md_section.py "{{ref}}"
+
+# Size, stale references and duplicated rules of AGENTS.md (or another file)
+agent-md-check file="AGENTS.md":
+    python3 scripts/shared/agent_md_check.py "{{file}}"
