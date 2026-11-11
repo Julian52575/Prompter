@@ -9,6 +9,15 @@ import {
   offeredModes,
   randomId,
 } from "../core/catalog";
+import {
+  archiveName,
+  buildArchive,
+  DEFAULT_ARCHIVE_OPTIONS,
+  treeLines,
+  zipStore,
+  type ArchiveOptions,
+  type ArchivePrompt,
+} from "../core/archive";
 import { keepColor } from "../core/keepColor";
 import { isEmpty, render } from "../core/render";
 import {
@@ -28,10 +37,11 @@ import {
 } from "../core/roadmap";
 import { KEYS, repo, updateRecord } from "../core/storage";
 import type { Draft, Keep as KeepItem, Settings } from "../core/types";
+import { validateInputs } from "../core/validate";
 import { copyText } from "./clipboard";
 import { useApp, useStoreVersion } from "./context";
 import { localizeTemplate } from "./i18n";
-import { wrapPrompt } from "../core/wrap";
+import { agentWrapper, wrapPrompt } from "../core/wrap";
 
 /** Actions shared by the List and the Prompt Roadmap views. */
 function useKeepActions() {
@@ -84,22 +94,31 @@ function useKeepActions() {
       }),
     );
 
-  const copy = async (k: KeepItem, kind: "bare" | "review" = "bare") => {
+  /** The prompt as Copy gives it (bare, or wrapped in the Re-Prompt Request); null when its template is gone. */
+  const text = (k: KeepItem, kind: "bare" | "review" | "agent" = "bare"): string | null => {
     const tpl = templates.find((x) => x.id === k.templateId);
-    if (!tpl) return;
+    if (!tpl) return null;
     const modes = offeredModes(tpl, effectiveModes(r.modes())).filter((m) => k.modes.includes(m.id));
-    const text = render({
+    const out = render({
       template: tpl,
       inputs: matchValues(tpl.fields, k.values).values,
       modes,
       scope: k.scope,
       language: lang,
     });
-    const out = kind === "review" ? wrapPrompt(effectiveWrapper(r.wrapper()).text, text) : text;
+    if (kind === "bare") return out;
+    const wrapper = effectiveWrapper(r.wrapper()).text;
+    // "agent": the wording for an agent that carries the prompt out itself, used only in the project download.
+    return wrapPrompt(kind === "agent" ? agentWrapper(wrapper) : wrapper, out);
+  };
+
+  const copy = async (k: KeepItem, kind: "bare" | "review" = "bare") => {
+    const out = text(k, kind);
+    if (out === null) return;
     const res = await copyText(out);
     if (res === "copied") {
-      // Cancelled is only ever set and cleared by hand.
-      if (k.status !== "cancelled") setStatus(k, "copied");
+      // Cancelled and downloaded are only cleared by hand (Unmark).
+      if (k.status !== "cancelled" && k.status !== "downloaded") setStatus(k, "copied");
       announce(t.keep.copiedMsg);
     } else announce(t.keep.copyFailed);
   };
@@ -119,7 +138,14 @@ function useKeepActions() {
     return true;
   };
 
-  return { open, copy, remove, setStatus, templates };
+  /** True when a required field is empty, or the template is gone so the prompt cannot be built. */
+  const incomplete = (k: KeepItem) => {
+    const tpl = templates.find((x) => x.id === k.templateId);
+    if (!tpl) return true;
+    return validateInputs(tpl, matchValues(tpl.fields, k.values).values, k.scope, t.inputs).length > 0;
+  };
+
+  return { open, copy, text, remove, setStatus, incomplete, templates };
 }
 
 const statusText = (t: ReturnType<typeof useApp>["t"], s: KeepItem["status"]) =>
@@ -129,7 +155,9 @@ const statusText = (t: ReturnType<typeof useApp>["t"], s: KeepItem["status"]) =>
       ? t.keep.statusCompleted
       : s === "cancelled"
         ? t.keep.statusCancelled
-        : "";
+        : s === "downloaded"
+          ? t.keep.statusDownloaded
+          : "";
 
 function Status({ k }: { k: KeepItem }) {
   const { t } = useApp();
@@ -254,7 +282,7 @@ const shorten = (name: string, max = NAME_MAX) => {
 // Zoom is stored as the real scale (0.1 to 0.7) and shown as 10% to 100%, so the old 10-70% range reads as the full scale.
 const Z_MIN = 0.1;
 const Z_MAX = 0.7;
-const Z_DEFAULT = 0.4;
+const Z_DEFAULT = 0.5;
 const Z_STEP = 0.1 / 1.5;
 const zoomPct = (z: number) => Math.round(10 + (z - Z_MIN) * 150);
 
@@ -279,7 +307,10 @@ function KeepRoadmap() {
   const keeps = repo(store).keeps();
   const projects = [...new Set(keeps.map((k) => k.project))].sort((a, b) => a.localeCompare(b));
   const patchSettings = (patch: Partial<Settings>) =>
-    updateRecord<Partial<Settings>>(store, KEYS.settings, {}, (st) => ({ ...st, ...patch }));
+    updateRecord<Partial<Settings>>(store, KEYS.settings, {}, (st) => ({
+      ...st,
+      ...patch,
+    }));
   // Kept in settings, not component state, so a reload brings back the same project and prompt.
   const chosen = repo(store).settings().roadmapProject ?? "";
   const setChosen = (p: string) => patchSettings({ roadmapProject: p, roadmapListScroll: 0 });
@@ -309,8 +340,15 @@ function KeepRoadmap() {
   const saved = repo(store).settings().roadmapZoom;
   const zoom = typeof saved === "number" ? Math.min(Z_MAX, Math.max(Z_MIN, saved)) : Z_DEFAULT;
   const showTpl = repo(store).settings().roadmapShowTemplates !== false;
+  const showInc = repo(store).settings().roadmapShowIncomplete !== false;
+  const incompleteIds = new Set(mine.filter((k) => act.incomplete(k)).map((k) => k.id));
+  const inc = (k: KeepItem) =>
+    showInc && incompleteIds.has(k.id) ? <span class="tag rm-incomplete">{t.keep.incomplete}</span> : null;
   const setShowTpl = (on: boolean) =>
-    updateRecord<Partial<Settings>>(store, KEYS.settings, {}, (st) => ({ ...st, roadmapShowTemplates: on }));
+    updateRecord<Partial<Settings>>(store, KEYS.settings, {}, (st) => ({
+      ...st,
+      roadmapShowTemplates: on,
+    }));
   const tplName = (k: KeepItem) => {
     const tpl = act.templates.find((x) => x.id === k.templateId);
     return tpl ? localizeTemplate(t, tpl).name : k.templateName;
@@ -322,8 +360,21 @@ function KeepRoadmap() {
       ...st,
       roadmapHeight: Math.max(1, Math.round(f * 1000) / 1000),
     }));
-  const resize = useRef<{ y: number; h: number; scroll: number; moved: boolean; stop: () => void } | null>(null);
+  const resize = useRef<{
+    y: number;
+    h: number;
+    scroll: number;
+    moved: boolean;
+    stop: () => void;
+  } | null>(null);
   const canvasEl = useRef<HTMLDivElement>(null);
+  const [full, setFull] = useState(false);
+  useEffect(() => {
+    if (!full) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setFull(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [full]);
   const lastY = useRef(0);
   const cyclePreset = () => {
     const next = H_PRESETS.find((p) => p > heightF + 1e-6) ?? H_PRESETS[0];
@@ -331,7 +382,10 @@ function KeepRoadmap() {
     announce(t.keep.roadmapHeightLabel(Math.round(next * 100)));
   };
   const setZoom = (z: number) =>
-    updateRecord<Partial<Settings>>(store, KEYS.settings, {}, (st) => ({ ...st, roadmapZoom: z }));
+    updateRecord<Partial<Settings>>(store, KEYS.settings, {}, (st) => ({
+      ...st,
+      roadmapZoom: z,
+    }));
   const [hint, setHint] = useState<{ id: string; pos: Drop } | "empty" | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
   const [overList, setOverList] = useState(false);
@@ -468,6 +522,105 @@ function KeepRoadmap() {
     ));
   };
 
+  const issuesOf = (k: KeepItem): string[] => [
+    ...(act.incomplete(k) ? [t.keep.incomplete] : []),
+    ...(k.status === "completed" ? [t.keep.statusCompleted] : []),
+    ...(k.status === "cancelled" ? [t.keep.statusCancelled] : []),
+    ...(k.status === "downloaded" ? [t.keep.statusDownloaded] : []),
+  ];
+
+  const openDownload = () => {
+    const threads = rm.threads.filter((x) => x.items.length > 0);
+    const parentOf = (x: (typeof threads)[number]) => {
+      const p = x.from ? threadOf(rm, x.from) : undefined;
+      return p && p.id !== x.id ? p.id : null;
+    };
+    const rows: DownloadRow[] = threads.map((x) => ({
+      id: x.id,
+      name: x.name.trim() || t.keep.unnamedThread,
+      parent: parentOf(x),
+      prompts: x.items.map((id) => ({
+        id,
+        name: byId.get(id)!.name,
+        issues: issuesOf(byId.get(id)!),
+      })),
+    }));
+    const saved = repo(store).settings();
+    dialogs.show(
+      t.keep.downloadTitle,
+      (close) => (
+        <DownloadForm
+          project={project}
+          rows={rows}
+          initialOptions={{
+            ...DEFAULT_ARCHIVE_OPTIONS,
+            ...saved.downloadOptions,
+          }}
+          initialExcluded={saved.downloadExcluded ?? []}
+          onChoices={(options, excluded) =>
+            patchSettings({
+              downloadOptions: options,
+              downloadExcluded: excluded,
+            })
+          }
+          preview={(ids) => {
+            const chosenThreads = rm.threads.filter((x) => ids.includes(x.id));
+            const prompts: Record<string, ArchivePrompt> = {};
+            for (const th of chosenThreads)
+              for (const id of th.items) prompts[id] = { name: byId.get(id)!.name, text: "" };
+            const files = buildArchive({
+              project,
+              roadmap: { threads: chosenThreads, returned: {} },
+              prompts,
+              options: DEFAULT_ARCHIVE_OPTIONS,
+            });
+            return treeLines(
+              archiveName(project),
+              files.map((f) => f.path),
+            );
+          }}
+          close={close}
+          onDownload={(ids, options) => {
+            download(ids, options);
+            close();
+          }}
+        />
+      ),
+      { closeOnOutsideClick: true },
+    );
+  };
+
+  const download = (ids: string[], options: ArchiveOptions) => {
+    const chosenThreads = rm.threads.filter((x) => ids.includes(x.id));
+    const prompts: Record<string, ArchivePrompt> = {};
+    for (const th of chosenThreads)
+      for (const id of th.items) {
+        const k = byId.get(id)!;
+        prompts[id] = {
+          name: k.name,
+          status: k.status,
+          text: act.text(k, options.rePrompt ? "agent" : "bare") ?? "",
+        };
+      }
+    const files = buildArchive({
+      project,
+      roadmap: { threads: chosenThreads, returned: {} },
+      prompts,
+      options,
+    });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([zipStore(files) as BlobPart], { type: "application/zip" }));
+    a.download = archiveName(project);
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    // Downloaded prompts are blocked from the next download until the user unmarks them.
+    const sent = new Set(chosenThreads.flatMap((th) => th.items));
+    updateRecord<KeepItem[]>(store, KEYS.keeps, [], (all) =>
+      all.map((k) => (sent.has(k.id) ? { ...k, status: "downloaded" as const } : k)),
+    );
+    announce(t.keep.downloaded);
+  };
+
   const create = () =>
     dialogs.show(t.keep.createTitle, (close) => (
       <CreateForm
@@ -549,7 +702,12 @@ function KeepRoadmap() {
     const x = (c.col + 1) * COL;
     const y = c.row * ROW;
     // A dotted frame where the block would land; it surrounds any block already there.
-    const [gx, gy] = { before: [x, y - ROW], after: [x, y + ROW], left: [x - COL, y], right: [x + COL, y] }[pos];
+    const [gx, gy] = {
+      before: [x, y - ROW],
+      after: [x, y + ROW],
+      left: [x - COL, y],
+      right: [x + COL, y],
+    }[pos];
     const box = [gx - 0.5, gy - 0.5, BLOCK_W + 1, BLOCK_H + 1];
     return (
       <div
@@ -563,10 +721,25 @@ function KeepRoadmap() {
   return (
     <div class="roadmap">
       <div class="rm-main">
-        <div class="rm-left pane">
+        {full && <div class="rm-backdrop" aria-hidden="true" onClick={() => setFull(false)} />}
+        <div
+          class={`rm-left pane${full ? " rm-full" : ""}`}
+          role={full ? "dialog" : undefined}
+          aria-modal={full ? "true" : undefined}
+          aria-labelledby={full ? "rm-heading" : undefined}
+        >
           <div class="rm-bar">
             <h3 id="rm-heading">{t.keep.roadmap}</h3>
             <div class="item-actions">
+              <button
+                type="button"
+                id="rm-fullscreen"
+                onClick={() => setFull(!full)}
+                aria-label={full ? t.keep.exitFullscreen : t.keep.fullscreen}
+                title={full ? t.keep.exitFullscreen : t.keep.fullscreen}
+              >
+                {full ? "✕" : "⛶"}
+              </button>
               <button
                 type="button"
                 onClick={() => setZ(zoom - Z_STEP)}
@@ -595,11 +768,20 @@ function KeepRoadmap() {
               >
                 {t.keep.exportMermaid}
               </button>
+              <button
+                type="button"
+                id="rm-download"
+                class="primary"
+                onClick={openDownload}
+                disabled={L.cells.length === 0}
+              >
+                {t.keep.downloadProject}
+              </button>
             </div>
           </div>
           <div
             ref={canvasEl}
-            style={`height:${H_BASE_VH * heightF}vh;max-height:none`}
+            style={full ? "flex:1;min-height:0;max-height:none" : `height:${H_BASE_VH * heightF}vh;max-height:none`}
             class={`rm-canvas${hint === "empty" ? " rm-over" : ""}${panning ? " rm-panning" : ""}`}
             // Dragging empty space scrolls the roadmap; blocks and thread names keep their own behaviour.
             onPointerDown={(e) => {
@@ -709,10 +891,12 @@ function KeepRoadmap() {
                             )}
                             <span class="sr-only">
                               {k.name}. {showTpl ? `${t.keep.template}: ${tplName(k)}. ` : ""}
+                              {showInc && incompleteIds.has(k.id) ? `${t.keep.incomplete}. ` : ""}
                               {c.first ? `${t.keep.threadStart}. ` : ""}
                               {t.keep.stepOf(step, th.items.length)}
                             </span>
                             <Status k={k} />
+                            {inc(k)}
                           </button>
                         </div>
                         {c.first && (
@@ -734,66 +918,68 @@ function KeepRoadmap() {
               </div>
             )}
           </div>
-          <button
-            type="button"
-            class="rm-resize"
-            title={t.keep.resizeHint}
-            aria-label={`${t.keep.resizeRoadmap}. ${t.keep.roadmapHeightLabel(Math.round(heightF * 100))}`}
-            onPointerDown={(e) => {
-              if (e.button !== 0) return;
-              e.currentTarget.setPointerCapture(e.pointerId);
-              const r = {
-                y: e.clientY,
-                h: canvasEl.current?.offsetHeight ?? 0,
-                scroll: window.scrollY,
-                moved: false,
-                stop: () => {},
-              };
-              // Wheel scrolling moves the handle under a still pointer, so the height follows the page too.
-              const apply = () =>
-                r.moved &&
-                setHeightF(
-                  (r.h + lastY.current - r.y + window.scrollY - r.scroll) / ((H_BASE_VH / 100) * window.innerHeight),
-                );
-              window.addEventListener("scroll", apply);
-              r.stop = () => window.removeEventListener("scroll", apply);
-              lastY.current = e.clientY;
-              resize.current = r;
-            }}
-            onPointerMove={(e) => {
-              const r = resize.current;
-              if (!r) return;
-              lastY.current = e.clientY;
-              if (Math.abs(e.clientY - r.y) > 3) r.moved = true;
-              if (r.moved)
-                setHeightF(
-                  (r.h + e.clientY - r.y + window.scrollY - r.scroll) / ((H_BASE_VH / 100) * window.innerHeight),
-                );
-            }}
-            onPointerUp={() => {
-              const r = resize.current;
-              r?.stop();
-              resize.current = null;
-              // A press without a drag steps to the next preset.
-              if (r && !r.moved) cyclePreset();
-            }}
-            onPointerCancel={() => {
-              resize.current?.stop();
-              resize.current = null;
-            }}
-            onKeyDown={(e) => {
-              // Enter and Space act as a click; arrows give fine control.
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                cyclePreset();
-              } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-                e.preventDefault();
-                setHeightF(heightF + (e.key === "ArrowDown" ? 0.1 : -0.1));
-              }
-            }}
-          >
-            <span aria-hidden="true">⋯</span>
-          </button>
+          {!full && (
+            <button
+              type="button"
+              class="rm-resize"
+              title={t.keep.resizeHint}
+              aria-label={`${t.keep.resizeRoadmap}. ${t.keep.roadmapHeightLabel(Math.round(heightF * 100))}`}
+              onPointerDown={(e) => {
+                if (e.button !== 0) return;
+                e.currentTarget.setPointerCapture(e.pointerId);
+                const r = {
+                  y: e.clientY,
+                  h: canvasEl.current?.offsetHeight ?? 0,
+                  scroll: window.scrollY,
+                  moved: false,
+                  stop: () => {},
+                };
+                // Wheel scrolling moves the handle under a still pointer, so the height follows the page too.
+                const apply = () =>
+                  r.moved &&
+                  setHeightF(
+                    (r.h + lastY.current - r.y + window.scrollY - r.scroll) / ((H_BASE_VH / 100) * window.innerHeight),
+                  );
+                window.addEventListener("scroll", apply);
+                r.stop = () => window.removeEventListener("scroll", apply);
+                lastY.current = e.clientY;
+                resize.current = r;
+              }}
+              onPointerMove={(e) => {
+                const r = resize.current;
+                if (!r) return;
+                lastY.current = e.clientY;
+                if (Math.abs(e.clientY - r.y) > 3) r.moved = true;
+                if (r.moved)
+                  setHeightF(
+                    (r.h + e.clientY - r.y + window.scrollY - r.scroll) / ((H_BASE_VH / 100) * window.innerHeight),
+                  );
+              }}
+              onPointerUp={() => {
+                const r = resize.current;
+                r?.stop();
+                resize.current = null;
+                // A press without a drag steps to the next preset.
+                if (r && !r.moved) cyclePreset();
+              }}
+              onPointerCancel={() => {
+                resize.current?.stop();
+                resize.current = null;
+              }}
+              onKeyDown={(e) => {
+                // Enter and Space act as a click; arrows give fine control.
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  cyclePreset();
+                } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+                  e.preventDefault();
+                  setHeightF(heightF + (e.key === "ArrowDown" ? 0.1 : -0.1));
+                }
+              }}
+            >
+              <span aria-hidden="true">⋯</span>
+            </button>
+          )}
         </div>
 
         <section class="pane rm-selected-pane" aria-labelledby="rm-sel-h">
@@ -825,6 +1011,7 @@ function KeepRoadmap() {
                 </h4>
                 {showTpl && <span class="rm-tpl">{tplName(selected)}</span>}
                 <Status k={selected} />
+                {inc(selected)}
               </div>
               <div class="item-actions">
                 <ActionMenu
@@ -835,7 +1022,10 @@ function KeepRoadmap() {
                   disabled={selDeleted}
                   items={[
                     { label: t.keep.copy, run: () => act.copy(selected) },
-                    { label: t.keep.copyReprompt, run: () => act.copy(selected, "review") },
+                    {
+                      label: t.keep.copyReprompt,
+                      run: () => act.copy(selected, "review"),
+                    },
                   ]}
                 />
                 <button
@@ -852,9 +1042,26 @@ function KeepRoadmap() {
                   label={t.keep.markAs}
                   primary
                   items={[
-                    { label: t.keep.markCopied, run: () => act.setStatus(selected, "copied") },
-                    { label: t.keep.markCompleted, run: () => act.setStatus(selected, "completed") },
-                    { label: t.keep.markCancelled, run: () => act.setStatus(selected, "cancelled") },
+                    {
+                      label: t.keep.markCopied,
+                      run: () => act.setStatus(selected, "copied"),
+                    },
+                    {
+                      label: t.keep.markCompleted,
+                      run: () => act.setStatus(selected, "completed"),
+                    },
+                    {
+                      label: t.keep.markCancelled,
+                      run: () => act.setStatus(selected, "cancelled"),
+                    },
+                    ...(selected.status
+                      ? [
+                          {
+                            label: t.keep.unmark,
+                            run: () => act.setStatus(selected, undefined),
+                          },
+                        ]
+                      : []),
                   ]}
                 />
               </div>
@@ -868,11 +1075,6 @@ function KeepRoadmap() {
                 >
                   {t.keep.delete}
                 </button>
-                {selected.status && (
-                  <button type="button" onClick={() => act.setStatus(selected, undefined)}>
-                    {t.keep.clearStatus}
-                  </button>
-                )}
                 {thread ? (
                   <button
                     type="button"
@@ -950,6 +1152,19 @@ function KeepRoadmap() {
             />{" "}
             <label for="rm-show-templates">{t.keep.showTemplates}</label>
           </p>
+          <p class="field rm-check">
+            <input
+              id="rm-show-incomplete"
+              type="checkbox"
+              checked={showInc}
+              onChange={(e) =>
+                patchSettings({
+                  roadmapShowIncomplete: e.currentTarget.checked,
+                })
+              }
+            />{" "}
+            <label for="rm-show-incomplete">{t.keep.showIncomplete}</label>
+          </p>
           <p class="field">
             <label for="rm-project">{t.keep.project}</label>{" "}
             <select
@@ -1008,6 +1223,7 @@ function KeepRoadmap() {
                   )}
                 </button>
                 <Status k={k} />
+                {inc(k)}
               </li>
             ))}
           </ul>
@@ -1352,5 +1568,183 @@ function RenameTitle({
         </span>
       )}
     </>
+  );
+}
+
+interface DownloadRow {
+  id: string;
+  name: string;
+  parent: string | null;
+  prompts: { id: string; name: string; issues: string[] }[];
+}
+
+/** Dialog body: which threads to include and how the agent should work. */
+function DownloadForm({
+  project,
+  rows,
+  initialOptions,
+  initialExcluded,
+  onChoices,
+  preview,
+  onDownload,
+  close,
+}: {
+  project: string;
+  rows: DownloadRow[];
+  initialOptions: ArchiveOptions;
+  initialExcluded: string[];
+  /** Called when the choices change, so they can be remembered. */
+  onChoices: (options: ArchiveOptions, excludedThreadIds: string[]) => void;
+  preview: (threadIds: string[]) => string[];
+  onDownload: (threadIds: string[], options: ArchiveOptions) => void;
+  close: () => void;
+}) {
+  const { t } = useApp();
+  const [picked, setPicked] = useState(() => {
+    // Everything except what was left out last time; a thread under a left-out parent stays out.
+    const on = new Set<string>();
+    const visit = (parent: string | null) => {
+      for (const r of rows.filter((x) => x.parent === parent))
+        if (!initialExcluded.includes(r.id)) {
+          on.add(r.id);
+          visit(r.id);
+        }
+    };
+    visit(null);
+    return on;
+  });
+  const [options, setOptions] = useState<ArchiveOptions>(initialOptions);
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    onChoices(
+      options,
+      rows.filter((r) => !picked.has(r.id)).map((r) => r.id),
+    );
+  }, [picked, options]);
+
+  const kids = (id: string): string[] => rows.filter((r) => r.parent === id).flatMap((r) => [r.id, ...kids(r.id)]);
+  const order = (parent: string | null, depth: number): { row: DownloadRow; depth: number }[] =>
+    rows.filter((r) => r.parent === parent).flatMap((r) => [{ row: r, depth }, ...order(r.id, depth + 1)]);
+  const toggle = (id: string) =>
+    setPicked((cur) => {
+      const next = new Set(cur);
+      if (next.has(id)) [id, ...kids(id)].forEach((x) => next.delete(x));
+      else next.add(id);
+      return next;
+    });
+
+  const blockers = rows
+    .filter((r) => picked.has(r.id))
+    .flatMap((r) => r.prompts.filter((p) => p.issues.length > 0).map((p) => ({ thread: r.name, ...p })));
+  const blocked = blockers.length > 0 || picked.size === 0;
+  const set = (patch: Partial<ArchiveOptions>) => setOptions((o) => ({ ...o, ...patch }));
+
+  const choices: { key: keyof ArchiveOptions; label: string; hint: string }[] = [
+    {
+      key: "rePrompt",
+      label: t.keep.optRePrompt,
+      hint: t.keep.optRePromptHint,
+    },
+    {
+      key: "subAgents",
+      label: t.keep.optSubAgents,
+      hint: t.keep.optSubAgentsHint,
+    },
+    {
+      key: "sharedContext",
+      label: t.keep.optSharedContext,
+      hint: t.keep.optSharedContextHint,
+    },
+    {
+      key: "multiBranch",
+      label: t.keep.optMultiBranch,
+      hint: t.keep.optMultiBranchHint,
+    },
+    {
+      key: "worktree",
+      label: t.keep.optWorktree,
+      hint: t.keep.optWorktreeHint,
+    },
+    { key: "pause", label: t.keep.optPause, hint: t.keep.optPauseHint },
+  ];
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!blocked) onDownload([...picked], options);
+      }}
+    >
+      <p>{t.keep.downloadIntro(project)}</p>
+      {picked.size === 0 && <p class="field-error">{t.keep.noThreadSelected}</p>}
+      {blockers.length > 0 && (
+        <div class="field-error" role="alert">
+          <strong>{t.keep.blockedTitle}</strong>
+          <p>{t.keep.blockedHelp}</p>
+          <ul>
+            {blockers.map((b) => (
+              <li key={b.id}>{t.keep.blockedItem(b.thread, b.name, b.issues.join(", "))}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <fieldset class="dl-group">
+        <legend>{t.keep.threadsLegend}</legend>
+        {order(null, 0).map(({ row, depth }) => (
+          <p class="dl-row" key={row.id} style={`margin-left:${depth * 1.5}rem`}>
+            <input
+              id={`dl-thread-${row.id}`}
+              type="checkbox"
+              checked={picked.has(row.id)}
+              disabled={row.parent !== null && !picked.has(row.parent)}
+              onChange={() => toggle(row.id)}
+            />{" "}
+            <label for={`dl-thread-${row.id}`}>
+              {row.name} <span class="meta">({t.keep.promptCount(row.prompts.length)})</span>
+            </label>
+          </p>
+        ))}
+      </fieldset>
+      <fieldset class="dl-group">
+        <legend>{t.keep.optionsLegend}</legend>
+        {choices.map((c) => {
+          // A worktree needs its own branch, so that option stays on; the shared brief only exists with sub-agents.
+          const forced = c.key === "multiBranch" && options.worktree;
+          const needsAgents = c.key === "sharedContext" && !options.subAgents;
+          return (
+            <div class="dl-row" key={c.key}>
+              <input
+                id={`dl-opt-${c.key}`}
+                type="checkbox"
+                checked={(options[c.key] && !needsAgents) || forced}
+                disabled={forced || needsAgents}
+                aria-describedby={`dl-opt-${c.key}-hint`}
+                onChange={(e) => set({ [c.key]: e.currentTarget.checked })}
+              />{" "}
+              <label for={`dl-opt-${c.key}`}>{c.label}</label>
+              <p class="meta" id={`dl-opt-${c.key}-hint`}>
+                {c.hint}
+              </p>
+            </div>
+          );
+        })}
+      </fieldset>
+      <details class="dl-tree">
+        <summary>{t.keep.structureTitle}</summary>
+        <pre>{preview([...picked]).join("\n")}</pre>
+      </details>
+      <div class="actions">
+        <button type="button" data-initial onClick={close}>
+          {t.common.cancel}
+        </button>
+        <button type="submit" class="primary" disabled={blocked}>
+          {t.keep.download}
+        </button>
+      </div>
+    </form>
   );
 }

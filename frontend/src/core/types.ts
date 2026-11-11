@@ -161,8 +161,8 @@ export interface Keep {
   values: Inputs;
   modes: string[];
   scope: Scope;
-  /** Progress: copied means work is in progress. Cancelled is only ever set by hand. */
-  status?: "copied" | "completed" | "cancelled";
+  /** Progress: copied means work is in progress. Cancelled is only ever set by hand; downloaded is set by the project download and blocks another download until unmarked. */
+  status?: "copied" | "completed" | "cancelled" | "downloaded";
 }
 
 export type HistoryIndexRow = Pick<
@@ -184,8 +184,14 @@ export interface Settings {
   /** Roadmap height as a multiple of its minimum (1 or more); absent means the minimum. */
   roadmapHeight?: number;
   /** Project and prompt last shown on the Prompt Roadmap, restored on reload. */
+  /** Mark prompts with unfilled required fields on the Prompt Roadmap; absent means yes. */
+  roadmapShowIncomplete?: boolean;
   roadmapProject?: string;
   roadmapSelected?: string;
   /** Scroll position of the Project prompts list. */
   roadmapListScroll?: number;
+  /** Last choices in the Download project dialog, offered again next time. */
+  downloadOptions?: Partial<Record<"rePrompt" | "subAgents" | "sharedContext" | "multiBranch" | "worktree" | "pause", boolean>>;
+  /** Threads left out of the download (by id), so threads added later start included. */
+  downloadExcluded?: string[];
 }

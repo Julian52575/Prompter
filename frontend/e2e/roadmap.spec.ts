@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 import { pathToFileURL } from "node:url";
@@ -22,6 +23,11 @@ test("plan prompts on a roadmap and export it", async ({ page, context, browserN
   await expect(page.getByRole("list").getByRole("button", { name: "First" })).toBeVisible();
 
   await expect(page.locator(".rm-list .rm-tpl").first()).toBeVisible();
+  // Prompts saved without filling the template are marked incomplete, and the checkbox hides the mark.
+  await expect(page.locator(".rm-list .rm-incomplete").first()).toBeVisible();
+  await page.getByLabel("Show incomplete").uncheck();
+  await expect(page.locator(".rm-incomplete")).toHaveCount(0);
+  await page.getByLabel("Show incomplete").check();
 
   const canvas = page.locator(".rm-canvas");
   await page.locator(".rm-list li", { hasText: "First" }).dragTo(canvas);
@@ -59,7 +65,10 @@ test("plan prompts on a roadmap and export it", async ({ page, context, browserN
   await page.getByRole("button", { name: "Copy: Under name" }).click();
   await page.getByRole("button", { name: "Copy Re-Prompt Request" }).click();
   await expect(page.locator(".rm-grid .rm-block.rm-cancelled")).toHaveCount(1);
-  await page.getByRole("button", { name: "Clear status" }).click();
+  // Mark as has an Unmark option once a status is set.
+  await page.getByRole("button", { name: "Mark as", exact: false }).first().click();
+  await page.getByRole("button", { name: "Unmark" }).click();
+  await expect(page.locator(".rm-grid .rm-block.rm-cancelled")).toHaveCount(0);
 
   await page.getByRole("button", { name: "Rename: Under name" }).click();
   await page.getByLabel("Prompt name").fill("Renamed");
@@ -74,10 +83,9 @@ test("plan prompts on a roadmap and export it", async ({ page, context, browserN
   await page.getByLabel("Show templates").check();
 
   // Dragging empty space pans the roadmap.
-  await page.getByRole("button", { name: "Zoom in" }).click();
-  await page.getByRole("button", { name: "Zoom in" }).click();
-  await page.getByRole("button", { name: "Zoom in" }).click();
-  await page.getByRole("button", { name: "Zoom in" }).click();
+  // Zoom in as far as it goes, whatever the default is.
+  const zoomIn = page.getByRole("button", { name: "Zoom in" });
+  while (await zoomIn.isEnabled()) await zoomIn.click();
   const canvas2 = page.locator(".rm-canvas");
   const box = (await canvas2.boundingBox())!;
   await canvas2.evaluate((el) => (el.scrollTop = 0));
@@ -104,8 +112,9 @@ test("plan prompts on a roadmap and export it", async ({ page, context, browserN
   for (let i = 0; i < 5; i++) await handle.press("Enter");
 
   await page.getByRole("button", { name: "Zoom out" }).click();
+  const zoomLabel = await page.getByRole("button", { name: "Reset zoom" }).innerText();
   await page.reload();
-  await expect(page.getByRole("button", { name: "Reset zoom" })).toHaveText("Zoom 45%");
+  await expect(page.getByRole("button", { name: "Reset zoom" })).toHaveText(zoomLabel);
   // The selected prompt comes back after a reload.
   await expect(page.locator("#rm-details")).toBeVisible();
 
@@ -117,4 +126,100 @@ test("plan prompts on a roadmap and export it", async ({ page, context, browserN
   expect(code).toContain("p1 --> p2");
   expect(code).toContain("p2 --> p3");
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});
+
+test("download a project as a ZIP", async ({ page, browserName }) => {
+  test.skip(browserName !== "chromium", "downloads are checked in Chromium only");
+  await page.goto(FILE + "#/builder");
+  await page.getByRole("tablist", { name: "Template" }).getByRole("tab", { name: "Research", exact: true }).click();
+  await page.getByRole("radio", { name: "Bug & Optimisations Hunt" }).check();
+  await page.getByLabel("Goal (required)").fill("Stop the crash.");
+  await page.getByLabel("Context").fill("The app crashes on save.");
+  await page.getByRole("button", { name: "Add source (path, name or link)" }).click();
+  await page.getByLabel("Source (path, name or link) 1", { exact: true }).fill("src/save.ts");
+  await saveEmpty(page, "Alpha", "Dolphin");
+  await saveEmpty(page, "Beta");
+
+  await page.goto(FILE + "#/roadmap");
+  await page.getByRole("button", { name: "Create new empty" }).click();
+  await page.getByRole("dialog").getByLabel("Prompt name").fill("Blank");
+  await page.getByRole("dialog").getByRole("button", { name: "Create", exact: true }).click();
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.locator(".rm-list li", { hasText: "Alpha" }).dragTo(page.locator(".rm-canvas"));
+  await page.locator(".rm-list li", { hasText: "Beta" }).dragTo(page.locator(".rm-thread-name"));
+  const alpha = page.locator(".rm-grid .rm-block", { hasText: "Alpha" });
+  await page.locator(".rm-list li", { hasText: "Blank" }).dragTo(alpha, { targetPosition: { x: 85, y: 17 } });
+  await expect(page.locator(".rm-grid .rm-block")).toHaveCount(3);
+
+  // An incomplete prompt in a selected thread blocks the download until its thread is unticked.
+  await page.getByRole("button", { name: "Download project" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.getByRole("alert")).toContainText("Blank");
+  // The warning sits above the thread list, where it is seen first.
+  const alertY = (await dialog.getByRole("alert").boundingBox())!.y;
+  const threadsY = (await dialog.getByText("Threads to include").boundingBox())!.y;
+  expect(alertY).toBeLessThan(threadsY);
+  await expect(dialog.getByRole("button", { name: "Download", exact: true })).toBeDisabled();
+  await dialog.getByLabel(/Thread 1 - 1/).uncheck();
+  await expect(dialog.getByRole("button", { name: "Download", exact: true })).toBeEnabled();
+
+  // A click outside the dialog closes it; a click inside does not.
+  await dialog.getByText("Threads to include").click();
+  await expect(dialog).toBeVisible();
+  await page.mouse.click(4, 4);
+  await expect(dialog).toBeHidden();
+  await page.getByRole("button", { name: "Download project" }).click();
+  await expect(dialog.getByLabel(/Thread 1 - 1/)).not.toBeChecked();
+
+  // The structure preview is folded away until opened, and follows the ticked threads.
+  const tree = dialog.locator(".dl-tree");
+  await expect(tree.locator("pre")).toBeHidden();
+  await tree.locator("summary").click();
+  await expect(tree.locator("pre")).toContainText("01-Alpha/");
+  await expect(tree.locator("pre")).not.toContainText("Blank");
+
+  // The worktree option needs branches, so it switches that option on and locks it.
+  await dialog.getByLabel("Worktree").check();
+  await expect(dialog.getByLabel("Multi-branch commit")).toBeChecked();
+  await expect(dialog.getByLabel("Multi-branch commit")).toBeDisabled();
+  // The shared brief needs sub-agents: locked until that is ticked.
+  await expect(dialog.getByLabel("Shared context brief")).toBeDisabled();
+  await dialog.getByLabel("Sub-agent delegation").check();
+  await dialog.getByLabel("Shared context brief").check();
+  await dialog.getByLabel("Re-prompt first").check();
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    dialog.getByRole("button", { name: "Download", exact: true }).click(),
+  ]);
+  expect(download.suggestedFilename()).toBe("Dolphin.zip");
+  const text = readFileSync((await download.path())!).toString("utf8");
+  expect(text.startsWith("PK")).toBe(true);
+  for (const part of ["AGENTS.md", "Roadmap.mmd", "thread-1/01-Alpha/Prompt.md", "thread-1/02-Beta/Prompt.md"])
+    expect(text).toContain(part);
+  expect(text).toContain("Worktrees: ON");
+  expect(text).toContain("Shared context: ON");
+  expect(text).toContain("Re-prompt first: ON");
+  // The files are worded for the agent that carries the prompt out, not for a reviewer.
+  expect(text).toContain("You are the AI agent this prompt is for.");
+  expect(text).not.toContain("Do not carry out the task it describes");
+  expect(text).not.toContain("Blank");
+
+  // The choices come back when the dialog is opened again, and after a reload.
+  for (const reload of [false, true]) {
+    if (reload) {
+      await page.reload();
+    }
+    await page.getByRole("button", { name: "Download project" }).click();
+    const again = page.getByRole("dialog");
+    // Both prompts were sent, so another download is blocked until they are unmarked.
+    await expect(again.getByRole("alert")).toContainText("Downloaded");
+    await expect(again.getByRole("button", { name: "Download", exact: true })).toBeDisabled();
+    await expect(again.getByLabel("Worktree")).toBeChecked();
+    await expect(again.getByLabel("Re-prompt first")).toBeChecked();
+    await expect(again.getByLabel("Sub-agent delegation")).toBeChecked();
+    await expect(again.getByLabel("Shared context brief")).toBeChecked();
+    await expect(again.getByLabel(/Thread 1 - 1/)).not.toBeChecked();
+    await page.mouse.click(4, 4);
+    await expect(again).toBeHidden();
+  }
 });

@@ -149,12 +149,14 @@ export function layout(rm: Roadmap): Layout {
 const label = (s: string) => s.replace(/\s+/g, " ").trim().replace(/"/g, "#quot;");
 
 /** Mermaid flowchart of the plan; blocks carry the prompt name only. */
-export function toMermaid(rm: Roadmap, nameOf: (id: string) => string): string {
+export function toMermaid(rm: Roadmap, nameOf: (id: string) => string, pathOf?: (id: string) => string): string {
   const threads = rm.threads.filter((t) => t.items.length > 0);
   const ids = new Map<string, string>();
   for (const t of threads) for (const id of t.items) ids.set(id, `p${ids.size + 1}`);
   const node = (id: string) => `${ids.get(id)}["${label(nameOf(id))}"]`;
   const lines = ["flowchart TD"];
+  // Comments leave the drawing alone but tell a reader which file each node is.
+  if (pathOf) for (const [id, node] of ids) lines.push(`  %% ${node} = ${pathOf(id)}`);
   threads.forEach((t, i) => {
     const named = label(t.name) !== "";
     const pad = named ? "    " : "  ";

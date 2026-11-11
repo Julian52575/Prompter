@@ -428,7 +428,31 @@ Report back in this order:
   sourceScope: null,
 };
 
-export const BUILTIN_TEMPLATES: Template[] = [TASK_LIST, RESEARCH, IMPLEMENT_SPEC, WRAP_UP, PR_REVIEW, AGENTS_REVIEW];
+export const STANDARD: Template = {
+  id: "standard",
+  name: "Standard",
+  schema: 1,
+  version: 1,
+  fields: [
+    {
+      id: "context",
+      label: "Context",
+      type: "longtext",
+      required: false,
+      default: "Read README.md, AGENTS.md and any other collaborator or AI agent documents in the repository.",
+    },
+    { id: "instructions", label: "Instructions", type: "longtext", required: true },
+    { id: "proof", label: "Proof of Completion", type: "longtext", required: false },
+  ],
+  preamble:
+    "Before you begin, read the context, if any, then carry out the instructions below.",
+  closing:
+    "After completing the work, report the proof of completion, if one is given. State anything you could not complete and why.",
+  replyModes: "none",
+  sourceScope: null,
+};
+
+export const BUILTIN_TEMPLATES: Template[] = [STANDARD, TASK_LIST, RESEARCH, IMPLEMENT_SPEC, WRAP_UP, PR_REVIEW, AGENTS_REVIEW];
 
 export const CONVERSATION: ReplyMode = {
   id: "conversation",

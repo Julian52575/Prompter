@@ -518,6 +518,9 @@ summary {
 
 dialog {
   max-width: min(40rem, calc(100vw - 2rem));
+  /* A tall dialog (such as the download options) scrolls instead of running off the screen. */
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
   width: 100%;
 }
 dialog::backdrop {
@@ -2250,4 +2253,103 @@ code {
 /* A wheel or touch scroll that reaches the end of the prompt list stops there instead of scrolling the page. */
 .rm-right .rm-list {
   overscroll-behavior: contain;
+}
+
+/* Incomplete: a solid red label (error colour, with text, so it never relies on colour alone). */
+.roadmap .rm-incomplete {
+  border-color: var(--error);
+  background: var(--error);
+  color: var(--sf);
+  font-weight: 700;
+}
+.roadmap .rm-block .tag.rm-incomplete {
+  top: auto;
+  bottom: -0.75em;
+  right: 0.5em;
+  background: var(--error);
+  color: var(--sf);
+}
+
+/* Download dialog */
+.dl-group {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--muted);
+}
+.dl-group legend {
+  padding: 0 0.4rem;
+  font-weight: 700;
+}
+.dl-row {
+  margin: 0.4rem 0;
+}
+.dl-row label {
+  margin: 0;
+}
+.dl-row .meta {
+  margin: 0 0 0 2rem;
+}
+.dl-tree {
+  margin: 0 0 1rem;
+}
+.dl-tree summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+.dl-tree pre {
+  max-height: 14rem;
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.75rem;
+  overflow: auto;
+  border: 2px solid var(--muted);
+  background: var(--sf);
+  color: var(--fg);
+  font-size: 0.875rem;
+}
+.dl-tree summary {
+  list-style: none;
+}
+.dl-tree summary::-webkit-details-marker {
+  display: none;
+}
+.dl-tree summary::before {
+  content: "▸ ";
+}
+.dl-tree[open] summary::before {
+  content: "▾ ";
+}
+/* Option titles in the download dialog; thread names stay regular. */
+div.dl-row > label {
+  font-weight: 700;
+}
+/* Positioned, so the hidden screen-reader text of each row is clipped by the scrolling list instead of stretching the page. */
+.rm-list {
+  position: relative;
+}
+
+/* Downloaded: accent bar and label, like the other statuses (text keeps it from relying on colour). */
+.status-downloaded {
+  color: var(--accent);
+}
+.roadmap .rm-block.rm-downloaded {
+  box-shadow: inset 0 -0.35em 0 var(--accent);
+}
+
+.rm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgb(0 0 0 / 0.6);
+}
+.rm-left.rm-full {
+  position: fixed;
+  inset: 4vh 4vw;
+  z-index: 41;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* The exit button sits at the top right. */
+.rm-bar #rm-fullscreen {
+  order: 99;
 }

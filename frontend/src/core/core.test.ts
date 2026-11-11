@@ -124,7 +124,7 @@ describe("layers", () => {
   test("user defaults replace built-ins and report updates", () => {
     const mine = { ...TASK_LIST, name: "Mine", basedOn: { id: "task-list", version: 0 } };
     const list = effectiveTemplates({ "task-list": mine, "c-1": { ...RESEARCH, id: "c-1" } });
-    expect(list.map((t) => t.name)).toEqual(["Mine", "Research", "Implement Specification", "Wrap-up", "Pull-Request Review", "AGENTS.md Review", "Research"]);
+    expect(list.map((t) => t.name)).toEqual(["Standard", "Mine", "Research", "Implement Specification", "Wrap-up", "Pull-Request Review", "AGENTS.md Review", "Research"]);
     expect(hasUpdate(mine, TASK_LIST)).toBe(true);
     expect(hasUpdate({ ...mine, basedOn: { id: "task-list", version: 2 } }, TASK_LIST)).toBe(false);
   });
