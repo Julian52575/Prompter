@@ -150,6 +150,21 @@ export interface HistoryEntry {
   summary: string;
 }
 
+/** A filled template saved from the Builder to generate its prompt later. */
+export interface Keep {
+  id: string;
+  name: string;
+  project: string;
+  savedAt: number;
+  templateId: string;
+  templateName: string;
+  values: Inputs;
+  modes: string[];
+  scope: Scope;
+  /** Progress: copied means work is in progress. Cancelled is only ever set by hand. */
+  status?: "copied" | "completed" | "cancelled";
+}
+
 export type HistoryIndexRow = Pick<
   HistoryEntry,
   "id" | "createdAt" | "templateId" | "templateName" | "summary" | "edited"
@@ -162,4 +177,10 @@ export interface Settings {
   lastTemplate: string | null;
   dismissed: string[];
   confirmedProviders: string[];
+  /** Prompt Roadmap scale, 0.1 to 0.7; absent means 0.4. */
+  roadmapZoom?: number;
+  /** Show each prompt's template in its roadmap block; absent means yes. */
+  roadmapShowTemplates?: boolean;
+  /** Roadmap height as a multiple of its minimum (1 or more); absent means the minimum. */
+  roadmapHeight?: number;
 }

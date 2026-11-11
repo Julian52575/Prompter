@@ -70,7 +70,7 @@ test("every page stays within the memory budget", async ({ page }) => {
   await measure("Builder – Task list");
 
   await page.getByRole("tab", { name: "Research", exact: true }).click();
-  await page.getByRole("radio", { name: "Bug Hunt" }).check();
+  await page.getByRole("radio", { name: "Bug & Optimisations Hunt" }).check();
   await page.getByLabel("Goal (required)").fill("Stop the crash on save.");
   await page.getByLabel("Context").fill("The app crashes when saving a large file.\n".repeat(20));
   await page.getByRole("button", { name: "Generate" }).click();

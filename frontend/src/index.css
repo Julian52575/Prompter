@@ -100,11 +100,18 @@ h2 {
 h1 {
   font-size: 2rem;
 }
+/* Section titles: underlined and a step bigger, on every page. */
+h2,
+h3 {
+  text-decoration: underline;
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.2em;
+}
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.65rem;
 }
 h3 {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   margin: 1.5rem 0 0.5rem;
 }
 h4 {
@@ -392,6 +399,22 @@ button:disabled {
 .list-row p,
 .history-row p {
   margin: 0 0 0.25rem;
+}
+.keep-row h3,
+.keep-row h4 {
+  margin: 0 0 0.25rem;
+}
+.keep-project {
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.1em 0.5em;
+  font-size: 0.8rem;
+  background: hsl(var(--kh) var(--ks) var(--kl));
+  color: #fff;
+}
+.keep-name {
+  font-size: 1.15rem;
+  overflow-wrap: anywhere;
 }
 .summary {
   overflow-wrap: anywhere;
@@ -1669,4 +1692,562 @@ code {
 .info:hover .info-pop,
 .info:focus-within .info-pop {
   display: block;
+}
+
+/* To-Do Keep views and the Prompt Roadmap */
+.roadmap {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+@media (max-width: 52rem) {
+  .roadmap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.rm-main,
+.rm-right {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+}
+.rm-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: center;
+}
+.rm-bar h3,
+.rm-right h3 {
+  margin: 0 0 0.5rem;
+}
+.rm-canvas {
+  overflow: auto;
+  /* Short enough that the selected prompt's buttons stay on screen without scrolling. */
+  max-height: 36vh;
+  min-height: 10rem;
+  border: 2px dashed var(--muted);
+  padding: 1rem;
+}
+.rm-over {
+  outline: 3px dashed var(--accent);
+}
+.rm-empty {
+  margin: 2rem auto;
+  text-align: center;
+}
+.rm-scale {
+  /* Room so the selection outline is not clipped at the edges. */
+  padding: 0.75rem;
+  overflow: hidden;
+}
+.rm-grid {
+  position: relative;
+  transform-origin: 0 0;
+}
+.rm-lines {
+  position: absolute;
+  inset: 0;
+  color: var(--muted);
+  stroke: currentColor;
+  stroke-width: 0.15;
+}
+.rm-lines .rm-branch {
+  stroke-dasharray: 0.5 0.4;
+}
+.rm-cell {
+  position: absolute;
+  width: 14em;
+}
+.rm-block {
+  position: relative;
+  height: 5.5em;
+  box-sizing: border-box;
+  background: var(--sf);
+  color: var(--fg);
+  cursor: grab;
+}
+/* Thread start: heavy frame and bold name. Later prompts: thin plain frame. */
+.rm-head {
+  border: 0.3em solid var(--fg);
+  font-weight: 700;
+}
+.rm-child {
+  border: 0.12em solid var(--muted);
+  font-weight: 400;
+}
+.rm-step {
+  position: absolute;
+  top: -0.75em;
+  left: 0.5em;
+  padding: 0 0.4em;
+  font-size: 0.7em;
+  font-weight: 700;
+  line-height: 1.5;
+  background: var(--fg);
+  color: var(--sf);
+}
+.rm-block button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0 0.4em;
+  font-size: inherit;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  overflow: hidden;
+}
+.rm-name {
+  /* Up to two lines; longer names are already cut with "..." in the markup. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  text-align: center;
+  line-height: 1.25;
+}
+/* A corner label on the frame, like the step badge, so it never competes with the name. */
+.roadmap .rm-block .tag {
+  position: absolute;
+  top: -0.75em;
+  right: 0.5em;
+  margin: 0;
+  padding: 0 0.4em;
+  border-width: 0.12em;
+  font-size: 0.7em;
+  line-height: 1.5;
+  background: var(--sf);
+}
+.rm-copied {
+  box-shadow: inset 0 -0.35em 0 var(--focus);
+}
+.rm-completed {
+  box-shadow: inset 0 -0.35em 0 var(--success);
+}
+.rm-selected {
+  outline: 0.2em solid var(--accent);
+  outline-offset: 0.1em;
+}
+.rm-dragging {
+  opacity: 0.5;
+}
+.rm-grid .rm-thread-name {
+  position: absolute;
+  /* 5.5em of the grid, in this input's smaller em. */
+  top: calc(5.5em / 1.05);
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1.05em;
+  padding: 0.1em 0.3em;
+  font-weight: 700;
+  text-align: center;
+  /* A filled tab hanging from the thread start, apart from the prompt blocks. */
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 0.15em solid var(--accent);
+  border-top: 0;
+}
+.rm-grid .rm-thread-name::placeholder {
+  color: inherit;
+  opacity: 0.85;
+}
+.rm-line {
+  position: absolute;
+  background: var(--muted);
+  pointer-events: none;
+  z-index: 1;
+}
+.rm-line-on {
+  background: var(--accent);
+  /* Keeps the line apart from the accent-coloured thread tab above it. */
+  outline: 0.15em solid var(--sf);
+}
+.rm-hint {
+  position: absolute;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.2em dotted var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+}
+.rm-list {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0.25rem;
+  min-height: 2.5rem;
+}
+.rm-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+  margin: 0.25rem 0;
+  padding: 0.25rem 0.5rem;
+  border: 2px solid var(--muted);
+  cursor: grab;
+}
+.rm-thread-list li {
+  cursor: default;
+}
+.rm-list li button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.rm-list li .tag {
+  margin: 0;
+}
+.status-copied {
+  /* Same colour as the bar under a copied block. */
+  color: var(--focus);
+}
+.status-completed {
+  color: var(--success);
+}
+
+/* Roadmap buttons sit inside their own frame: no theme shadow, border or rounding; an outline marks hover. */
+.roadmap .rm-block button,
+.roadmap .rm-list li button {
+  box-shadow: none;
+  border: 0;
+  border-radius: 0;
+  min-height: 0;
+  min-width: 0;
+  background: transparent;
+  color: inherit;
+  transform: none;
+}
+.roadmap .rm-block button:hover,
+.roadmap .rm-list li button:hover {
+  outline: 0.15em dashed var(--accent);
+  outline-offset: -0.3em;
+}
+.roadmap .rm-block,
+.roadmap .rm-grid .rm-thread-name {
+  box-shadow: none;
+  border-radius: 0;
+}
+.roadmap .rm-block.rm-copied {
+  box-shadow: inset 0 -0.35em 0 var(--focus);
+}
+.roadmap .rm-block.rm-completed {
+  box-shadow: inset 0 -0.35em 0 var(--success);
+}
+/* Only the text grows: the block's em-based size must not change. */
+.rm-head .rm-name {
+  font-size: 1.15em;
+}
+
+/* Cancelled: greyed with explicit colours (not opacity) so text keeps its contrast; struck through as a non-colour cue. */
+.status-cancelled {
+  color: var(--muted);
+}
+.roadmap .rm-block.rm-cancelled {
+  border-color: var(--muted);
+  color: var(--muted);
+  box-shadow: inset 0 -0.35em 0 var(--muted);
+}
+.rm-cancelled .rm-name,
+.rm-list li.rm-cancelled button {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+.rm-list li.rm-cancelled {
+  border-color: var(--muted);
+}
+
+/* Action menus: a button opening a short list. */
+.menu {
+  position: relative;
+  display: inline-block;
+}
+.menu-list {
+  position: absolute;
+  z-index: 5;
+  top: 100%;
+  left: 0;
+  min-width: 100%;
+  margin: 0.25rem 0 0;
+  padding: 0.25rem;
+  list-style: none;
+  background: var(--sf);
+  border: var(--border) solid var(--fg);
+}
+.menu .menu-list button {
+  width: 100%;
+  justify-content: flex-start;
+  white-space: nowrap;
+  box-shadow: none;
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  transform: none;
+}
+.menu .menu-list button:hover {
+  outline: 0.15rem dashed var(--accent);
+  outline-offset: -0.3rem;
+}
+
+/* Selected prompt: the whole block, as drawn on the roadmap (name, step and status together). */
+.roadmap .rm-detail {
+  height: auto;
+  min-height: 3.5em;
+  margin: 1rem 0 0.75rem;
+  padding: 0.6em 0.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+.roadmap .rm-detail .rm-name {
+  margin: 0;
+  font-size: 1.15em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+  text-decoration: none;
+}
+.roadmap .rm-detail.rm-cancelled .rm-name {
+  text-decoration: line-through;
+}
+
+/* Section titles sit at the top of their pane. */
+.roadmap .pane h3 {
+  margin-top: 0;
+}
+.rm-bar .item-actions {
+  margin: 0;
+}
+.rm-bar {
+  margin-bottom: 0.75rem;
+}
+
+/* Click-to-rename title in the selected prompt block. */
+.roadmap .rm-detail .rm-title-btn {
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  overflow-wrap: anywhere;
+  text-decoration: underline dotted;
+  text-underline-offset: 0.2em;
+  cursor: text;
+  transform: none;
+}
+.roadmap .rm-detail .rm-title-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  /* Edited in place: only a dashed outline marks that it is a field. */
+  outline: 0.15em dashed var(--accent);
+  outline-offset: 0.2em;
+}
+
+/* Thread name as a full-width banner, like the tab under a thread's first block. */
+.roadmap .rm-thread-banner {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 0;
+  margin: 0 0 0.5rem;
+  padding: 0.5rem;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+}
+.roadmap .rm-thread-banner::placeholder {
+  color: inherit;
+  opacity: 0.85;
+}
+.rm-num {
+  flex: none;
+  min-width: 1.6em;
+  padding: 0 0.4em;
+  background: var(--fg);
+  color: var(--sf);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: center;
+}
+/* The title fills the block, so the field opens at the same size and the text stays centred as it grows. */
+.roadmap .rm-detail .rm-name {
+  flex: 1;
+  min-width: 0;
+}
+.roadmap .rm-detail .rm-title-btn,
+.roadmap .rm-detail .rm-title-input {
+  display: block;
+  width: 100%;
+  line-height: inherit;
+}
+.roadmap .rm-detail textarea.rm-title-input {
+  resize: none;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.rm-grow {
+  display: grid;
+}
+.rm-grow::after {
+  content: attr(data-value) " ";
+  grid-area: 1 / 1;
+  visibility: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  text-align: center;
+  font: inherit;
+  line-height: inherit;
+}
+.rm-grow > textarea {
+  grid-area: 1 / 1;
+  height: 100%;
+}
+
+/* Template name: a small box under the prompt name. */
+.roadmap .rm-tpl {
+  display: block;
+  align-self: center;
+  max-width: 100%;
+  margin-top: 0.25em;
+  padding: 0 0.4em;
+  border: 0.1em solid currentColor;
+  font-size: 0.7em;
+  font-weight: 400;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.roadmap .rm-detail {
+  flex-direction: column;
+}
+.roadmap .rm-detail .rm-name {
+  flex: none;
+  width: 100%;
+}
+.rm-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.rm-check label {
+  margin: 0;
+}
+
+/* Wide layout: Project prompts spans the full height of the left column. The list fills the space (empty
+   until it grows) and scrolls once full, so the section never resizes with the number of prompts. */
+@media (min-width: 52.01rem) {
+  .roadmap > .rm-right {
+    /* No height of its own, so the row is as tall as the left column. */
+    contain: size;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+  }
+  .rm-right > .pane {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  .rm-right > .pane .rm-list {
+    flex: 1 1 0;
+    min-height: 4rem;
+    overflow-y: auto;
+  }
+}
+
+.rm-canvas {
+  cursor: grab;
+}
+.rm-canvas.rm-panning {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* In the prompt list the template box sits under the name, left-aligned. */
+.roadmap .rm-list li button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.roadmap .rm-list .rm-tpl {
+  align-self: flex-start;
+}
+
+/* Fixed minimum, so the space a thread list would fill stays empty instead of the section resizing. */
+.roadmap .rm-selected-pane {
+  min-height: 34rem;
+}
+.roadmap .rm-detail .rm-name {
+  display: block;
+  -webkit-line-clamp: unset;
+}
+.roadmap .rm-grid .rm-block button {
+  /* Keeps the first line clear of the step badge on the frame. */
+  padding-top: 0.4em;
+}
+
+/* Height handle under the roadmap: drag, or press to step through presets. */
+.roadmap .rm-resize {
+  display: block;
+  width: 100%;
+  min-height: 0;
+  margin-top: 0.5rem;
+  padding: 0.1rem 0;
+  border: 2px solid var(--muted);
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--sf);
+  color: var(--fg);
+  font-size: 1.1rem;
+  line-height: 1;
+  text-align: center;
+  cursor: ns-resize;
+  touch-action: none;
+  transform: none;
+}
+.roadmap .rm-resize:hover {
+  outline: 0.15rem dashed var(--accent);
+  outline-offset: -0.35rem;
+}
+
+/* A wheel or touch scroll that reaches the end of the prompt list stops there instead of scrolling the page. */
+.rm-right .rm-list {
+  overscroll-behavior: contain;
 }

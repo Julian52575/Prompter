@@ -333,10 +333,10 @@ Answer the question directly. Cite supporting files and sources, and identify an
 exports[`Research > bughunt / case-closed / conversation / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -351,7 +351,7 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
 ## Output mode
 This takes priority over conflicting reporting instructions above.
@@ -365,10 +365,10 @@ Do not write or edit any file, commit, push, or open a pull request until you ha
 exports[`Research > bughunt / case-closed / conversation / open with 1 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -384,7 +384,7 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
 ## Output mode
 This takes priority over conflicting reporting instructions above.
@@ -398,10 +398,10 @@ Do not write or edit any file, commit, push, or open a pull request until you ha
 exports[`Research > bughunt / case-closed / conversation / restricted with 2 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -418,7 +418,7 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
 ## Output mode
 This takes priority over conflicting reporting instructions above.
@@ -432,10 +432,10 @@ Do not write or edit any file, commit, push, or open a pull request until you ha
 exports[`Research > bughunt / case-closed / no mode / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -450,17 +450,17 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
 exports[`Research > bughunt / case-closed / no mode / open with 1 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -476,17 +476,17 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
 exports[`Research > bughunt / case-closed / no mode / restricted with 2 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -503,17 +503,17 @@ Research long and solid. Act like a lawyer closing a case. For a bug, treat the 
 
 Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each cited by file and line or by source and section); Argument (step by step from exhibits to verdict, marking each step as fact or inference); Remedy (the change for a bug, the practical answer for a question, the specification or lesson for the others); Grounds for appeal (what would overturn the verdict). State doubts only under Grounds for appeal. Do not offer alternatives or add a preamble. If the evidence cannot support a verdict, answer "Case dismissed for insufficient evidence" and list the missing exhibits. Never invent citations.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
 exports[`Research > bughunt / cheap-lookup / conversation / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -524,7 +524,7 @@ No sources are listed. You may search for sources; cite each one you use.
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
 ## Output mode
 This takes priority over conflicting reporting instructions above.
@@ -538,10 +538,10 @@ Do not write or edit any file, commit, push, or open a pull request until you ha
 exports[`Research > bughunt / cheap-lookup / conversation / open with 1 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -553,7 +553,7 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
 ## Output mode
 This takes priority over conflicting reporting instructions above.
@@ -567,10 +567,10 @@ Do not write or edit any file, commit, push, or open a pull request until you ha
 exports[`Research > bughunt / cheap-lookup / conversation / restricted with 2 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -583,7 +583,7 @@ Use only the listed sources. Treat anything else as off-limits.
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 
 ## Output mode
 This takes priority over conflicting reporting instructions above.
@@ -597,10 +597,10 @@ Do not write or edit any file, commit, push, or open a pull request until you ha
 exports[`Research > bughunt / cheap-lookup / no mode / open with 0 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -611,17 +611,17 @@ No sources are listed. You may search for sources; cite each one you use.
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
 exports[`Research > bughunt / cheap-lookup / no mode / open with 1 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -633,17 +633,17 @@ Use the listed sources first. You may search elsewhere; label each cited source 
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 
 exports[`Research > bughunt / cheap-lookup / no mode / restricted with 2 sources 1`] = `
 "Write all of your replies to me in English. Keep code, identifiers and file contents in their original language.
 
-Research the goal, context, and sources. Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.
+Research the goal, context, and sources. For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -656,7 +656,7 @@ Use only the listed sources. Treat anything else as off-limits.
 ## Effort
 Do a quick lookup to save time and tokens. Use what is easy to reach, such as the files and documentation at hand, and what is easy to verify. Do not search exhaustively or run broad investigations. Give your best answer, mark each claim as verified or assumed, and say what you did not check.
 
-Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
+Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. Do not commit, push, or open a pull request unless I ask.
 "
 `;
 

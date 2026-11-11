@@ -163,7 +163,7 @@ describe("Research", () => {
 ${pre}
 
 ## Goal
-**Bug Hunt:** Make it stop.
+**Bug & Optimisations Hunt:** Make it stop.
 
 ## Context
 The app crashes.
@@ -227,7 +227,7 @@ ${CONVERSATION.instruction}
   test("user text is never scanned for placeholders", () => {
     const t = { ...RESEARCH, preamble: "Goal: {{goal}} / {{goalType}}" };
     const out = render({ template: t, inputs: { ...base("bughunt", []), goal: "{{situation}}" }, modes: [], scope: "open", language: "en" });
-    expect(out).toContain("\nGoal: {{situation}} / Bug Hunt\n");
+    expect(out).toContain("\nGoal: {{situation}} / Bug & Optimisations Hunt\n");
   });
 });
 

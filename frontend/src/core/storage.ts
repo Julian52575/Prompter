@@ -1,6 +1,7 @@
 import { BUILTIN_PROVIDERS } from "./builtins";
 import { isValidTemplate } from "./lint";
-import type { Draft, HistoryEntry, HistoryIndexRow, Provider, ReplyMode, Settings, Template, Wrapper } from "./types";
+import type { Roadmap } from "./roadmap";
+import type { Draft, HistoryEntry, HistoryIndexRow, Keep, Provider, ReplyMode, Settings, Template, Wrapper } from "./types";
 
 export const STORAGE_VERSION = 1;
 export const EXPORT_VERSION = 1;
@@ -16,10 +17,12 @@ export const KEYS = {
   providers: "pb.providers",
   drafts: "pb.drafts",
   history: "pb.history",
+  keeps: "pb.keeps",
+  roadmaps: "pb.roadmaps",
   entry: (id: string) => `pb.h.${id}`,
 } as const;
 
-export type RecordKind = "settings" | "templates" | "modes" | "wrapper" | "providers" | "drafts" | "history" | "entry" | "other";
+export type RecordKind = "settings" | "templates" | "modes" | "wrapper" | "providers" | "drafts" | "history" | "keeps" | "roadmaps" | "entry" | "other";
 const RECORD_KINDS: Record<string, RecordKind> = {
   [KEYS.settings]: "settings",
   [KEYS.templates]: "templates",
@@ -28,6 +31,8 @@ const RECORD_KINDS: Record<string, RecordKind> = {
   [KEYS.providers]: "providers",
   [KEYS.drafts]: "drafts",
   [KEYS.history]: "history",
+  [KEYS.keeps]: "keeps",
+  [KEYS.roadmaps]: "roadmaps",
 };
 export const recordKind = (key: string): RecordKind =>
   RECORD_KINDS[key] ?? (key.startsWith("pb.h.") ? "entry" : "other");
@@ -373,6 +378,8 @@ export const repo = (s: Store) => ({
   providers: () => s.get<Partial<Record<string, Partial<Provider>>>>(KEYS.providers, {}),
   drafts: (): Record<string, Draft> =>
     Object.fromEntries(Object.entries(s.get<Record<string, Draft>>(KEYS.drafts, {})).map(([k, d]) => [k, normalizeDraft(d)])),
+  keeps: () => s.get<Keep[]>(KEYS.keeps, []).sort((a, b) => b.savedAt - a.savedAt),
+  roadmaps: () => s.get<Record<string, Roadmap>>(KEYS.roadmaps, {}),
   historyIndex: () => s.get<HistoryIndexRow[]>(KEYS.history, []),
   entry: (id: string) => normalizeEntry(s.get<HistoryEntry | null>(KEYS.entry(id), null)),
 });
@@ -412,6 +419,10 @@ export interface ExportFile {
   providers: Record<string, Partial<Provider>>;
   drafts: Record<string, Draft>;
   history: HistoryEntry[];
+  /** Absent in files exported before To-Do Keep existed. */
+  keeps?: Keep[];
+  /** Per project; absent in files exported before the Prompt Roadmap existed. */
+  roadmaps?: Record<string, Roadmap>;
 }
 
 export function exportData(s: Store, now = new Date()): ExportFile {
@@ -427,6 +438,8 @@ export function exportData(s: Store, now = new Date()): ExportFile {
     wrapper: r.wrapper(),
     providers: r.providers() as Record<string, Partial<Provider>>,
     drafts: r.drafts(),
+    keeps: r.keeps(),
+    roadmaps: r.roadmaps(),
     history: r
       .historyIndex()
       .map((row) => r.entry(row.id))
@@ -455,6 +468,8 @@ export function validateExport(data: unknown, knownModes: string[]): string[] {
   if (data.wrapper !== null && !(isObj(data.wrapper) && typeof data.wrapper.text === "string"))
     p.push("The review wrapper is malformed.");
   if (!Array.isArray(data.history)) p.push('"history" must be a list.');
+  if (data.keeps !== undefined && !Array.isArray(data.keeps)) p.push('"keeps" must be a list.');
+  if (data.roadmaps !== undefined && !isObj(data.roadmaps)) p.push('"roadmaps" must be an object.');
   if (p.length) return p;
   const modeIds = [...knownModes, ...Object.keys(data.modes as Obj)];
   for (const [id, t] of Object.entries(data.templates as Obj))
@@ -464,6 +479,18 @@ export function validateExport(data: unknown, knownModes: string[]): string[] {
       p.push(`Output mode "${id}" is invalid.`);
   for (const [id, d] of Object.entries(data.drafts as Obj))
     if (!isObj(d) || !isObj(d.values) || typeof d.output !== "string") p.push(`The draft for "${id}" is invalid.`);
+  ((data.keeps as unknown[] | undefined) ?? []).forEach((k, i) => {
+    if (
+      !isObj(k) ||
+      typeof k.id !== "string" ||
+      typeof k.name !== "string" ||
+      typeof k.project !== "string" ||
+      typeof k.savedAt !== "number" ||
+      typeof k.templateId !== "string" ||
+      !isObj(k.values)
+    )
+      p.push(`To-Do Keep item ${i + 1} is invalid.`);
+  });
   (data.history as unknown[]).forEach((e, i) => {
     if (
       !isObj(e) ||
@@ -504,6 +531,8 @@ export function importData(s: Store, f: ExportFile, how: "replace" | "merge", ov
     if (f.wrapper) changes.set(KEYS.wrapper, j(f.wrapper));
     changes.set(KEYS.providers, j(f.providers));
     changes.set(KEYS.drafts, j(f.drafts));
+    if (f.keeps?.length) changes.set(KEYS.keeps, j(f.keeps));
+    if (f.roadmaps && Object.keys(f.roadmaps).length) changes.set(KEYS.roadmaps, j(f.roadmaps));
     for (const e of f.history) changes.set(KEYS.entry(e.id), j(e));
     changes.set(KEYS.history, j(f.history.map(indexRow).sort((a, b) => b.createdAt - a.createdAt)));
   } else {
@@ -516,6 +545,10 @@ export function importData(s: Store, f: ExportFile, how: "replace" | "merge", ov
     changes.set(KEYS.templates, j(merge(r.templates(), f.templates)));
     changes.set(KEYS.modes, j(merge(r.modes(), f.modes)));
     changes.set(KEYS.drafts, j(merge(r.drafts(), f.drafts)));
+    const haveKeeps = new Set(r.keeps().map((k) => k.id));
+    const newKeeps = (f.keeps ?? []).filter((k) => !haveKeeps.has(k.id));
+    if (newKeeps.length) changes.set(KEYS.keeps, j([...r.keeps(), ...newKeeps]));
+    if (f.roadmaps) changes.set(KEYS.roadmaps, j(merge(r.roadmaps(), f.roadmaps)));
     const index = r.historyIndex();
     const have = new Set(index.map((x) => x.id));
     const added = f.history.filter((e) => !have.has(e.id));

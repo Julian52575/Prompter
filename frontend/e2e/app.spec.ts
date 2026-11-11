@@ -22,7 +22,7 @@ async function chooseTemplate(page: Page, name: string) {
 
 async function fillReview(page: Page) {
   await chooseTemplate(page, "Research");
-  await page.getByRole("radio", { name: "Bug Hunt" }).check();
+  await page.getByRole("radio", { name: "Bug & Optimisations Hunt" }).check();
   await page.getByLabel("Goal (required)").fill("Stop the crash.");
   await page.getByLabel("Context").fill("The app crashes on save.");
   await page.getByRole("button", { name: "Add source (path, name or link)" }).click();
@@ -290,7 +290,7 @@ test("clear form resets fields, radios and the prompt after confirming", async (
   await dialog.getByRole("button", { name: "Clear" }).click();
   await expect(page.getByLabel("Goal (required)")).toHaveValue("");
   await expect(page.getByLabel("Context")).toHaveValue("");
-  await expect(page.getByRole("radio", { name: "Bug Hunt" })).not.toBeChecked();
+  await expect(page.getByRole("radio", { name: "Bug & Optimisations Hunt" })).not.toBeChecked();
   await expect(page.getByRole("radio", { name: "Case-closed" })).toBeChecked();
   await expect(page.getByRole("checkbox", { name: "Conversation" })).not.toBeChecked();
   await expect(page.getByRole("radio", { name: /^Open/ })).toBeChecked();
@@ -333,7 +333,7 @@ test.describe("language", () => {
     await page.getByRole("button", { name: "Générer" }).click();
     const prompt = page.getByLabel("Prompt généré");
     await expect(prompt).toHaveValue(/^Write all of your replies to me in French\. [^\n]+\n\nResearch the goal/);
-    await expect(prompt).toHaveValue(/## Goal\n\*\*Bug Hunt:\*\* Arrêter le crash\./);
+    await expect(prompt).toHaveValue(/## Goal\n\*\*Bug & Optimisations Hunt:\*\* Arrêter le crash\./);
     await expect(prompt).toHaveValue(/## Effort\n/);
 
     await page.getByRole("link", { name: "Paramètres" }).click();

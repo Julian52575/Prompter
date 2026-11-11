@@ -13,7 +13,8 @@ import {
   STORAGE_VERSION,
   validateExport,
 } from "./storage";
-import type { HistoryEntry, Template } from "./types";
+import { keepColor } from "./keepColor";
+import type { HistoryEntry, Keep, Template } from "./types";
 import { buildLink, LINK_CAP, lintProvider, lintWrapper, wrapPrompt } from "./wrap";
 
 const entry = (id: string, createdAt: number): HistoryEntry => ({
@@ -263,5 +264,56 @@ describe("storage", () => {
   test("meter text", () => {
     expect(formatSize(1.2 * 1024 * 1024)).toBe("1.2 MB");
     expect(formatSize(1.2 * 1024 * 1024, "fr")).toBe("1,2 Mo");
+  });
+});
+
+describe("keepColor", () => {
+  const key = (s: string) => JSON.stringify(keepColor(s));
+
+  test("is stable", () => {
+    expect(key("Apollo")).toBe(key("Apollo"));
+  });
+
+  test("same-length strings built differently get different colours", () => {
+    const names = ["abc", "acb", "bac", "cba", "abd", "ABC", "Apollo", "Apolol", "Zeus", "Zues"];
+    expect(new Set(names.map(key)).size).toBe(names.length);
+  });
+
+  test("white text stays readable on every colour", () => {
+    for (let i = 0; i < 500; i++) {
+      const { hue, saturation, lightness } = keepColor(`project ${i}`);
+      const f = (n: number) => {
+        const k = (n + hue / 30) % 12;
+        const a = (saturation / 100) * Math.min(lightness / 100, 1 - lightness / 100);
+        const c = lightness / 100 - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+        return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+      };
+      const lum = 0.2126 * f(0) + 0.7152 * f(8) + 0.0722 * f(4);
+      expect(1.05 / (lum + 0.05)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});
+
+describe("keeps", () => {
+  test("are listed newest first and survive an export round trip", () => {
+    const mk = (id: string, savedAt: number): Keep => ({
+      id,
+      name: id,
+      project: "P",
+      savedAt,
+      templateId: "t",
+      templateName: "T",
+      values: {},
+      modes: [],
+      scope: "open",
+    });
+    const s = new Store(memoryBackend());
+    s.setJson(KEYS.keeps, [mk("old", 1), mk("new", 2)]);
+    expect(repo(s).keeps().map((k) => k.id)).toEqual(["new", "old"]);
+    const file = exportData(s);
+    expect(validateExport(file, [])).toEqual([]);
+    const t = new Store(memoryBackend());
+    expect(importData(t, file, "replace")).toBe(true);
+    expect(repo(t).keeps()).toHaveLength(2);
   });
 });

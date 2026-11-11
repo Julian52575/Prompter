@@ -4,11 +4,12 @@ import { Builder } from "./Builder";
 import { type AppApi, AppContext, type DirtySource, useApp, useStoreVersion, type View } from "./context";
 import { useDialogHost } from "./Dialogs";
 import { History } from "./History";
+import { Keep, Roadmap } from "./Keep";
 import { browserLanguage, DICTS } from "./i18n";
 import { Notice } from "./Notice";
 import { Settings } from "./Settings";
 
-const VIEWS: View[] = ["builder", "history", "settings"];
+const VIEWS: View[] = ["builder", "keep", "roadmap", "history", "settings"];
 
 const viewFromHash = (): View => {
   const v = location.hash.replace(/^#\//, "");
@@ -29,6 +30,7 @@ export function App({ store }: { store: Store }) {
   const dirty = useRef(new Set<DirtySource>());
   const builderNotice = useRef<string | null>(null);
   const openNewTemplate = useRef(false);
+  const editingKeep = useRef<{ name: string; project: string } | null>(null);
   const viewRef = useRef(view);
   viewRef.current = view;
 
@@ -63,6 +65,7 @@ export function App({ store }: { store: Store }) {
     },
     builderNotice,
     openNewTemplate,
+    editingKeep,
   };
 
   useEffect(() => {
@@ -170,6 +173,8 @@ export function App({ store }: { store: Store }) {
       )}
       <main id="main" tabIndex={-1}>
         {view === "builder" && <Builder />}
+        {view === "keep" && <Keep />}
+        {view === "roadmap" && <Roadmap />}
         {view === "history" && <History />}
         {view === "settings" && <Settings />}
       </main>

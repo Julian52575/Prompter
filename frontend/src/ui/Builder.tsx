@@ -14,12 +14,13 @@ import {
 } from "../core/catalog";
 import { render, summarize } from "../core/render";
 import { addHistoryEntry, KEYS, providerList, repo, saveHistoryEntry, updateRecord } from "../core/storage";
-import type { Draft, OutputType, Provider, Scope, Settings, Template } from "../core/types";
+import type { Draft, Keep, OutputType, Provider, Scope, Settings, Template } from "../core/types";
 import { domId, type InputError, validateInputs } from "../core/validate";
 import { buildLink, unwrapPrompt, wrapPrompt } from "../core/wrap";
 import { copyText } from "./clipboard";
 import { focusLater, focusNow, useApp, useStoreVersion } from "./context";
 import { Form } from "./Form";
+import { SaveKeepForm } from "./Keep";
 import { InfoTip } from "./InfoTip";
 import { localizeMode, localizeTemplate } from "./i18n";
 import { Notice } from "./Notice";
@@ -207,6 +208,49 @@ export function Builder() {
     patch({ output: text, baseline: text, entryId });
     setTimeout(() => outRef.current?.focus(), 0);
     announce(t.builder.generated);
+  };
+
+  const saveKeep = () => {
+    // Unfinished prompts can be saved too: a name on the roadmap helps planning.
+    const d = draftRef.current;
+    const projects = [...new Set(repo(store).keeps().map((k) => k.project))].sort((a, b) => a.localeCompare(b));
+    dialogs.show(t.keep.saveTitle, (close) => (
+      <SaveKeepForm
+        projects={projects}
+        initial={app.editingKeep.current}
+        close={close}
+        onSave={async (name, project) => {
+          const existing = repo(store).keeps().find((k) => k.project === project && k.name === name);
+          if (existing) {
+            const res = await dialogs.confirm({
+              title: t.keep.overwriteTitle,
+              body: t.keep.overwriteBody(name, project),
+              confirm: t.keep.overwrite,
+              danger: true,
+            });
+            if (res.choice !== "confirm") return false;
+          }
+          const item: Keep = {
+            // Same id keeps the roadmap position and thread.
+            id: existing?.id ?? randomId(),
+            name,
+            project,
+            savedAt: Date.now(),
+            templateId: template.id,
+            templateName: template.name,
+            values: structuredClone(d.values),
+            modes: d.modes.filter((id) => offered.some((m) => m.id === id)),
+            scope: d.scope,
+            ...(existing?.status ? { status: existing.status } : {}),
+          };
+          updateRecord<Keep[]>(store, KEYS.keeps, [], (all) => [item, ...all.filter((k) => k.id !== item.id)]);
+          app.editingKeep.current = { name, project };
+          setStatus(t.keep.saved);
+          announce(t.keep.saved);
+          return true;
+        }}
+      />
+    ));
   };
 
   const clearForm = async () => {
@@ -464,6 +508,9 @@ export function Builder() {
         })()}
         <button type="button" id="generate" class="primary big" onClick={generate}>
           {t.builder.generate}
+        </button>{" "}
+        <button type="button" id="save-keep" onClick={saveKeep}>
+          {t.builder.saveKeep}
         </button>{" "}
         <button type="button" id="clear-form" onClick={clearForm}>
           {t.builder.clearForm}

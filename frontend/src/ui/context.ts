@@ -4,7 +4,7 @@ import type { Store } from "../core/storage";
 import type { DialogApi } from "./Dialogs";
 import type { Dict, Language } from "./i18n";
 
-export type View = "builder" | "history" | "settings";
+export type View = "builder" | "keep" | "roadmap" | "history" | "settings";
 
 /** A record this tab may hold unsaved changes to, for the multi-tab banner. */
 export interface DirtySource {
@@ -28,6 +28,8 @@ export interface AppApi {
   registerDirty(src: DirtySource): () => void;
   /** One-off message the Builder shows on its next render (Restore). */
   builderNotice: { current: string | null };
+  /** Saved prompt opened for editing; the next save offers its name and project. */
+  editingKeep: { current: { name: string; project: string } | null };
   /** Set before navigating to Settings to open the new-template editor there. */
   openNewTemplate: { current: boolean };
 }

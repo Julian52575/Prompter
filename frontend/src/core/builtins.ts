@@ -47,8 +47,8 @@ export const RESEARCH: Template = {
   // 2: Goal type and Goal first. 3: Action required added, Files merged into Sources.
   // 4: Learn the stack became Teaches the user about. 5: Chat action added. 6: Create a specification goal type.
   // 7: Renamed Research; Deliverable replaces Goal type; Action required dropped; Effort added.
-  // 8: Stories added.
-  version: 8,
+  // 8: Stories added. 9: Bug Hunt became Bug & Optimisations Hunt.
+  version: 9,
   fields: [
     {
       id: "goalType",
@@ -57,7 +57,7 @@ export const RESEARCH: Template = {
       required: true,
       output: "none",
       options: [
-        { value: "bughunt", label: "Bug Hunt" },
+        { value: "bughunt", label: "Bug & Optimisations Hunt" },
         { value: "teacher", label: "Teacher mode" },
         { value: "answer", label: "Answer mode" },
         { value: "spec", label: "Specification mode" },
@@ -109,7 +109,7 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
   preamble: {
     by: "goalType",
     variants: {
-      bughunt: `${RESEARCH_INTRO} Trace the bug to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior.`,
+      bughunt: `${RESEARCH_INTRO} For a bug, trace it to its root cause, or work out how it could occur, then make the smallest change that fixes or prevents it without breaking existing behavior. For an optimisation, measure or reason about the cost first, then reduce it (performance, memory, unnecessary work, or simplification) while keeping behavior the same; avoid speculative micro-optimisations.`,
       teacher: `${RESEARCH_INTRO} Gather the knowledge needed to teach the user about the goal: the facts, how the parts fit together, and where learners usually go wrong.`,
       answer: `${RESEARCH_INTRO} Find and combine the evidence needed to answer the question.`,
       spec: `${RESEARCH_INTRO} Look for a specification that already covers the goal, in the repository, the sources, or the context. If one exists, review it against the code and sources, then update it. If none exists, gather what is needed to write one: the requirements, constraints, existing behavior, and open questions.`,
@@ -119,7 +119,7 @@ Output, in this order: Verdict (one sentence); Evidence (numbered exhibits, each
   closing: {
     by: "goalType",
     variants: {
-      bughunt: `Run relevant tests and report the root cause, the change, and the test results. Cite supporting files and sources. ${NO_PUBLISH}`,
+      bughunt: `Run relevant tests. Report the root cause or the optimisation, the change, and the results; for an optimisation, give evidence of the gain (a benchmark, a measurement, or a stated complexity change), and say so if you could not measure it. Cite supporting files and sources. ${NO_PUBLISH}`,
       teacher:
         "Teach the topic patiently, step by step, starting from what the user already knows. Ground each step in facts from the files and sources, relate it to the user's needs, and point out mistakes the user could make. Cite supporting evidence and distinguish facts from inference.",
       answer:
