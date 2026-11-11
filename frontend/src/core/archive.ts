@@ -502,5 +502,5 @@ export function treeLines(root: string, paths: string[]): string[] {
   return lines;
 }
 
-/** File name for the download: the project name made safe, plus .zip. */
-export const archiveName = (project: string) => `${safe(project, 40) || "project"}.zip`;
+/** File name for the download: Prompter-, the project name made safe, then .zip. */
+export const archiveName = (project: string) => `Prompter-${safe(project, 40) || "project"}.zip`;

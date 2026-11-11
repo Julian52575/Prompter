@@ -209,7 +209,7 @@ test("download a project as a ZIP", async ({ page, browserName }) => {
     page.waitForEvent("download"),
     dialog.getByRole("button", { name: "Download", exact: true }).click(),
   ]);
-  expect(download.suggestedFilename()).toBe("Dolphin.zip");
+  expect(download.suggestedFilename()).toBe("Prompter-Dolphin.zip");
   const text = readFileSync((await download.path())!).toString("utf8");
   expect(text.startsWith("PK")).toBe(true);
   // Everything sits in a Project-<name> folder, with the helper scripts and their liability notice.

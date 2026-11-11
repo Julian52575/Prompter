@@ -246,8 +246,8 @@ describe("archive", () => {
   });
 
   it("names the download after the project", () => {
-    expect(archiveName("My Project / 1")).toBe("My-Project-1.zip");
-    expect(archiveName("///")).toBe("project.zip");
+    expect(archiveName("My Project / 1")).toBe("Prompter-My-Project-1.zip");
+    expect(archiveName("///")).toBe("Prompter-project.zip");
   });
 });
 
