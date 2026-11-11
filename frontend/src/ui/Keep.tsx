@@ -278,7 +278,18 @@ function KeepRoadmap() {
   const act = useKeepActions();
   const keeps = repo(store).keeps();
   const projects = [...new Set(keeps.map((k) => k.project))].sort((a, b) => a.localeCompare(b));
-  const [chosen, setChosen] = useState("");
+  const patchSettings = (patch: Partial<Settings>) =>
+    updateRecord<Partial<Settings>>(store, KEYS.settings, {}, (st) => ({ ...st, ...patch }));
+  // Kept in settings, not component state, so a reload brings back the same project and prompt.
+  const chosen = repo(store).settings().roadmapProject ?? "";
+  const setChosen = (p: string) => patchSettings({ roadmapProject: p, roadmapListScroll: 0 });
+  const listEl = useRef<HTMLUListElement>(null);
+  const scrollTimer = useRef<number | undefined>(undefined);
+  const savedListScroll = useRef(repo(store).settings().roadmapListScroll ?? 0);
+  useEffect(() => {
+    if (listEl.current) listEl.current.scrollTop = savedListScroll.current;
+    return () => window.clearTimeout(scrollTimer.current);
+  }, []);
   const project = projects.includes(chosen) ? chosen : (projects[0] ?? "");
   const mine = keeps.filter((k) => k.project === project);
   const byId = new Map(mine.map((k) => [k.id, k]));
@@ -290,7 +301,9 @@ function KeepRoadmap() {
     .sort((a, b) => Math.max(b.savedAt, rm.returned[b.id] ?? 0) - Math.max(a.savedAt, rm.returned[a.id] ?? 0));
   const L = layout(rm);
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const savedSelected = repo(store).settings().roadmapSelected;
+  const selectedId = savedSelected && byId.has(savedSelected) ? savedSelected : null;
+  const setSelectedId = (id: string | null) => patchSettings({ roadmapSelected: id ?? undefined });
   const selected = selectedId ? (byId.get(selectedId) ?? null) : null;
   const [activeThread, setActiveThread] = useState<string | null>(null);
   const saved = repo(store).settings().roadmapZoom;
@@ -944,6 +957,7 @@ function KeepRoadmap() {
               value={project}
               onChange={(e) => {
                 setChosen(e.currentTarget.value);
+                if (listEl.current) listEl.current.scrollTop = 0;
                 setSelectedId(null);
                 setActiveThread(null);
               }}
@@ -961,7 +975,14 @@ function KeepRoadmap() {
             </button>
           </div>
           <ul
+            ref={listEl}
             class={`rm-list${overList ? " rm-over" : ""}`}
+            onScroll={(e) => {
+              const top = e.currentTarget.scrollTop;
+              // Debounced: scrolling fires far more often than a saved setting should change.
+              window.clearTimeout(scrollTimer.current);
+              scrollTimer.current = window.setTimeout(() => patchSettings({ roadmapListScroll: Math.round(top) }), 150);
+            }}
             onDragOver={listOver}
             onDragLeave={() => setOverList(false)}
             onDrop={listDrop}

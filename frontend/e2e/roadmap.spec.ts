@@ -106,6 +106,8 @@ test("plan prompts on a roadmap and export it", async ({ page, context, browserN
   await page.getByRole("button", { name: "Zoom out" }).click();
   await page.reload();
   await expect(page.getByRole("button", { name: "Reset zoom" })).toHaveText("Zoom 45%");
+  // The selected prompt comes back after a reload.
+  await expect(page.locator("#rm-details")).toBeVisible();
 
   await page.getByRole("button", { name: "Export Mermaid" }).click();
   const code = await page.getByLabel("Mermaid code").inputValue();

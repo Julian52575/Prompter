@@ -183,4 +183,9 @@ export interface Settings {
   roadmapShowTemplates?: boolean;
   /** Roadmap height as a multiple of its minimum (1 or more); absent means the minimum. */
   roadmapHeight?: number;
+  /** Project and prompt last shown on the Prompt Roadmap, restored on reload. */
+  roadmapProject?: string;
+  roadmapSelected?: string;
+  /** Scroll position of the Project prompts list. */
+  roadmapListScroll?: number;
 }
