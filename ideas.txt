@@ -1,2 +1,0 @@
-1- Dedicate to sub-agent for task list with shared context build first.
-2- Follow a plan.
