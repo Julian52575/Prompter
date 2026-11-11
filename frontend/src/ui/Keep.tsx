@@ -18,7 +18,9 @@ import {
   type ArchiveOptions,
   type ArchivePrompt,
 } from "../core/archive";
+import { parseCompletion, planCompletion, type Change } from "../core/completion";
 import { keepColor } from "../core/keepColor";
+import { SHARED_SCRIPTS } from "../core/scripts";
 import { isEmpty, render } from "../core/render";
 import {
   append,
@@ -362,10 +364,10 @@ function KeepRoadmap() {
     }));
   const resize = useRef<{
     y: number;
-    h: number;
-    scroll: number;
+    offset: number;
     moved: boolean;
     stop: () => void;
+    apply: () => void;
   } | null>(null);
   const canvasEl = useRef<HTMLDivElement>(null);
   const [full, setFull] = useState(false);
@@ -539,6 +541,11 @@ function KeepRoadmap() {
       id: x.id,
       name: x.name.trim() || t.keep.unnamedThread,
       parent: parentOf(x),
+      // The prompt this thread branches from, when it sits in a parent thread.
+      anchor: (() => {
+        const a = parentOf(x) && x.from ? byId.get(x.from) : undefined;
+        return a ? { name: a.name, done: a.status === "completed" } : null;
+      })(),
       prompts: x.items.map((id) => ({
         id,
         name: byId.get(id)!.name,
@@ -563,22 +570,12 @@ function KeepRoadmap() {
               downloadExcluded: excluded,
             })
           }
-          preview={(ids) => {
-            const chosenThreads = rm.threads.filter((x) => ids.includes(x.id));
-            const prompts: Record<string, ArchivePrompt> = {};
-            for (const th of chosenThreads)
-              for (const id of th.items) prompts[id] = { name: byId.get(id)!.name, text: "" };
-            const files = buildArchive({
-              project,
-              roadmap: { threads: chosenThreads, returned: {} },
-              prompts,
-              options: DEFAULT_ARCHIVE_OPTIONS,
-            });
-            return treeLines(
+          preview={(ids) =>
+            treeLines(
               archiveName(project),
-              files.map((f) => f.path),
-            );
-          }}
+              archiveFor(ids, DEFAULT_ARCHIVE_OPTIONS, false).map((f) => f.path),
+            )
+          }
           close={close}
           onDownload={(ids, options) => {
             download(ids, options);
@@ -590,7 +587,8 @@ function KeepRoadmap() {
     );
   };
 
-  const download = (ids: string[], options: ArchiveOptions) => {
+  /** The files for the chosen threads. A thread whose parent thread is left out starts from a finished prompt. */
+  const archiveFor = (ids: string[], options: ArchiveOptions, withText: boolean) => {
     const chosenThreads = rm.threads.filter((x) => ids.includes(x.id));
     const prompts: Record<string, ArchivePrompt> = {};
     for (const th of chosenThreads)
@@ -599,15 +597,49 @@ function KeepRoadmap() {
         prompts[id] = {
           name: k.name,
           status: k.status,
-          text: act.text(k, options.rePrompt ? "agent" : "bare") ?? "",
+          text: withText ? (act.text(k, options.rePrompt ? "agent" : "bare") ?? "") : "",
         };
       }
-    const files = buildArchive({
+    const external: Record<string, { name: string; thread: string }> = {};
+    for (const th of chosenThreads) {
+      const parent = th.from ? threadOf(rm, th.from) : undefined;
+      if (th.from && parent && parent.id !== th.id && !ids.includes(parent.id) && byId.has(th.from))
+        external[th.from] = { name: byId.get(th.from)!.name, thread: parent.name.trim() || t.keep.unnamedThread };
+    }
+    return buildArchive({
       project,
       roadmap: { threads: chosenThreads, returned: {} },
       prompts,
+      external,
+      scripts: SHARED_SCRIPTS,
       options,
     });
+  };
+
+  const importCompletion = () =>
+    dialogs.show(t.keep.importTitle, (close) => (
+      <ImportCompletionForm
+        keeps={repo(store).keeps()}
+        close={close}
+        onApply={(changes) => {
+          const byId = new Map(changes.map((c) => [c.id, c.to]));
+          updateRecord<KeepItem[]>(store, KEYS.keeps, [], (all) =>
+            all.map((k) => {
+              if (!byId.has(k.id)) return k;
+              const { status: _old, ...rest } = k;
+              const to = byId.get(k.id);
+              return to ? { ...rest, status: to } : rest;
+            }),
+          );
+          announce(t.keep.importApplied(changes.length));
+          close();
+        }}
+      />
+    ));
+
+  const download = (ids: string[], options: ArchiveOptions) => {
+    const chosenThreads = rm.threads.filter((x) => ids.includes(x.id));
+    const files = archiveFor(ids, options, true);
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([zipStore(files) as BlobPart], { type: "application/zip" }));
     a.download = archiveName(project);
@@ -777,6 +809,9 @@ function KeepRoadmap() {
               >
                 {t.keep.downloadProject}
               </button>
+              <button type="button" id="rm-import" onClick={importCompletion}>
+                {t.keep.importCompletion}
+              </button>
             </div>
           </div>
           <div
@@ -927,33 +962,42 @@ function KeepRoadmap() {
               onPointerDown={(e) => {
                 if (e.button !== 0) return;
                 e.currentTarget.setPointerCapture(e.pointerId);
+                const top = canvasEl.current?.getBoundingClientRect().top ?? 0;
                 const r = {
                   y: e.clientY,
-                  h: canvasEl.current?.offsetHeight ?? 0,
-                  scroll: window.scrollY,
+                  // How far below the roadmap's bottom edge the pointer was grabbed, kept while dragging.
+                  offset: (canvasEl.current?.offsetHeight ?? 0) - (e.clientY - top),
                   moved: false,
                   stop: () => {},
+                  apply: () => {},
                 };
-                // Wheel scrolling moves the handle under a still pointer, so the height follows the page too.
-                const apply = () =>
-                  r.moved &&
-                  setHeightF(
-                    (r.h + lastY.current - r.y + window.scrollY - r.scroll) / ((H_BASE_VH / 100) * window.innerHeight),
-                  );
-                window.addEventListener("scroll", apply);
-                r.stop = () => window.removeEventListener("scroll", apply);
+                // The height is the pointer's distance from the roadmap's top edge, measured live, so it follows the
+                // pointer while the wheel scrolls the page and cannot feed back on its own growth.
+                const apply = () => {
+                  const t0 = canvasEl.current?.getBoundingClientRect().top ?? 0;
+                  setHeightF((lastY.current - t0 + r.offset) / ((H_BASE_VH / 100) * window.innerHeight));
+                };
+                const onScroll = () => r.moved && apply();
+                window.addEventListener("scroll", onScroll);
+                // The browser would otherwise keep a node below the roadmap in place as it grows, which scrolls the
+                // page, which grows the roadmap again.
+                const root = document.documentElement;
+                const anchoring = root.style.overflowAnchor;
+                root.style.overflowAnchor = "none";
+                r.stop = () => {
+                  window.removeEventListener("scroll", onScroll);
+                  root.style.overflowAnchor = anchoring;
+                };
                 lastY.current = e.clientY;
                 resize.current = r;
+                r.apply = apply;
               }}
               onPointerMove={(e) => {
                 const r = resize.current;
                 if (!r) return;
                 lastY.current = e.clientY;
                 if (Math.abs(e.clientY - r.y) > 3) r.moved = true;
-                if (r.moved)
-                  setHeightF(
-                    (r.h + e.clientY - r.y + window.scrollY - r.scroll) / ((H_BASE_VH / 100) * window.innerHeight),
-                  );
+                if (r.moved) r.apply();
               }}
               onPointerUp={() => {
                 const r = resize.current;
@@ -1575,6 +1619,7 @@ interface DownloadRow {
   id: string;
   name: string;
   parent: string | null;
+  anchor: { name: string; done: boolean } | null;
   prompts: { id: string; name: string; issues: string[] }[];
 }
 
@@ -1600,19 +1645,18 @@ function DownloadForm({
   close: () => void;
 }) {
   const { t } = useApp();
-  const [picked, setPicked] = useState(() => {
-    // Everything except what was left out last time; a thread under a left-out parent stays out.
+  const order = (parent: string | null, depth: number): { row: DownloadRow; depth: number }[] =>
+    rows.filter((r) => r.parent === parent).flatMap((r) => [{ row: r, depth }, ...order(r.id, depth + 1)]);
+  /** A thread needs its parent thread ticked, unless the prompt it branches from is already Completed. */
+  const settle = (want: Set<string>) => {
     const on = new Set<string>();
-    const visit = (parent: string | null) => {
-      for (const r of rows.filter((x) => x.parent === parent))
-        if (!initialExcluded.includes(r.id)) {
-          on.add(r.id);
-          visit(r.id);
-        }
-    };
-    visit(null);
+    for (const { row } of order(null, 0))
+      if (want.has(row.id) && (row.parent === null || on.has(row.parent) || row.anchor?.done)) on.add(row.id);
     return on;
-  });
+  };
+  const [picked, setPicked] = useState(() =>
+    settle(new Set(rows.filter((r) => !initialExcluded.includes(r.id)).map((r) => r.id))),
+  );
   const [options, setOptions] = useState<ArchiveOptions>(initialOptions);
   const first = useRef(true);
   useEffect(() => {
@@ -1626,15 +1670,12 @@ function DownloadForm({
     );
   }, [picked, options]);
 
-  const kids = (id: string): string[] => rows.filter((r) => r.parent === id).flatMap((r) => [r.id, ...kids(r.id)]);
-  const order = (parent: string | null, depth: number): { row: DownloadRow; depth: number }[] =>
-    rows.filter((r) => r.parent === parent).flatMap((r) => [{ row: r, depth }, ...order(r.id, depth + 1)]);
   const toggle = (id: string) =>
     setPicked((cur) => {
       const next = new Set(cur);
-      if (next.has(id)) [id, ...kids(id)].forEach((x) => next.delete(x));
+      if (next.has(id)) next.delete(id);
       else next.add(id);
-      return next;
+      return settle(next);
     });
 
   const blockers = rows
@@ -1700,12 +1741,18 @@ function DownloadForm({
               id={`dl-thread-${row.id}`}
               type="checkbox"
               checked={picked.has(row.id)}
-              disabled={row.parent !== null && !picked.has(row.parent)}
+              disabled={row.parent !== null && !picked.has(row.parent) && !row.anchor?.done}
+              aria-describedby={row.anchor ? `dl-thread-${row.id}-note` : undefined}
               onChange={() => toggle(row.id)}
             />{" "}
             <label for={`dl-thread-${row.id}`}>
               {row.name} <span class="meta">({t.keep.promptCount(row.prompts.length)})</span>
             </label>
+            {row.anchor && (
+              <span class="meta dl-note" id={`dl-thread-${row.id}-note`}>
+                {row.anchor.done ? t.keep.startsFromDone(row.anchor.name) : t.keep.needsParentDone(row.anchor.name)}
+              </span>
+            )}
           </p>
         ))}
       </fieldset>
@@ -1743,6 +1790,89 @@ function DownloadForm({
         </button>
         <button type="submit" class="primary" disabled={blocked}>
           {t.keep.download}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+/** Dialog body: paste the completion report an agent wrote, see what it changes, then apply it. */
+function ImportCompletionForm({
+  keeps,
+  onApply,
+  close,
+}: {
+  keeps: KeepItem[];
+  onApply: (changes: Change[]) => void;
+  close: () => void;
+}) {
+  const { t } = useApp();
+  const [text, setText] = useState("");
+  const parsed = parseCompletion(text);
+  const plan = parsed.ok ? planCompletion(parsed.report, keeps) : null;
+  const label = (s: KeepItem["status"]) => statusText(t, s) || t.keep.statusNone;
+  const problem =
+    text.trim() === ""
+      ? ""
+      : !parsed.ok
+        ? { empty: "", notJson: t.keep.importNotJson, notReport: t.keep.importNotReport, newer: t.keep.importNewer }[
+            parsed.error
+          ]
+        : "";
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (plan && plan.changes.length > 0) onApply(plan.changes);
+      }}
+    >
+      <p>{t.keep.importHelp}</p>
+      <div class="field">
+        <label for="import-text">{t.keep.importLabel}</label>
+        <textarea
+          id="import-text"
+          rows={8}
+          value={text}
+          data-initial
+          spellcheck={false}
+          aria-invalid={problem ? "true" : undefined}
+          aria-describedby="import-result"
+          onInput={(e) => setText(e.currentTarget.value)}
+        />
+      </div>
+      <div id="import-result" aria-live="polite">
+        {problem && <p class="field-error">{problem}</p>}
+        {plan && (
+          <>
+            {plan.changes.length === 0 ? (
+              <p>{t.keep.importNothing}</p>
+            ) : (
+              <>
+                <p>
+                  <strong>{t.keep.importChanges(plan.changes.length)}</strong>
+                </p>
+                <ul class="import-list">
+                  {plan.changes.map((c) => (
+                    <li key={c.id}>
+                      {c.name}: {label(c.from)} → {label(c.to)}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {plan.unknown.length > 0 && <p class="field-error">{t.keep.importUnknown(plan.unknown.join(", "))}</p>}
+            {parsed.ok && parsed.report.skipped > 0 && (
+              <p class="meta">{t.keep.importSkipped(parsed.report.skipped)}</p>
+            )}
+          </>
+        )}
+      </div>
+      <div class="actions">
+        <button type="button" onClick={close}>
+          {t.common.cancel}
+        </button>
+        <button type="submit" class="primary" disabled={!plan || plan.changes.length === 0}>
+          {t.keep.importApply}
         </button>
       </div>
     </form>

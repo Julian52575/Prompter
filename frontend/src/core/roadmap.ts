@@ -81,7 +81,9 @@ export function place(rm: Roadmap, id: string, target: string | null, pos: Drop,
 /** Adds to the end of a thread, or as a new root thread. */
 export function append(rm: Roadmap, id: string, threadId: string | null, newThreadId: string): Roadmap {
   const th = rm.threads.find((t) => t.id === threadId);
-  return th ? place(rm, id, th.items[th.items.length - 1], "after", newThreadId) : place(rm, id, null, "after", newThreadId);
+  return th
+    ? place(rm, id, th.items[th.items.length - 1], "after", newThreadId)
+    : place(rm, id, null, "after", newThreadId);
 }
 
 export const renameThread = (rm: Roadmap, threadId: string, name: string): Roadmap => ({
@@ -130,7 +132,8 @@ export function layout(rm: Roadmap): Layout {
   const visit = (t: Thread) => {
     if (cols.has(t.id)) return;
     cols.set(t.id, -1);
-    const kids = (side: Thread["side"]) => threads.filter((c) => anchored(c) && owner.get(c.from!) === t && c.side === side);
+    const kids = (side: Thread["side"]) =>
+      threads.filter((c) => anchored(c) && owner.get(c.from!) === t && c.side === side);
     // Earliest branch nearest its parent.
     for (const c of kids("left").reverse()) visit(c);
     cols.set(t.id, next++);
@@ -149,7 +152,12 @@ export function layout(rm: Roadmap): Layout {
 const label = (s: string) => s.replace(/\s+/g, " ").trim().replace(/"/g, "#quot;");
 
 /** Mermaid flowchart of the plan; blocks carry the prompt name only. */
-export function toMermaid(rm: Roadmap, nameOf: (id: string) => string, pathOf?: (id: string) => string): string {
+export function toMermaid(
+  rm: Roadmap,
+  nameOf: (id: string) => string,
+  pathOf?: (id: string) => string,
+  notes: string[] = [],
+): string {
   const threads = rm.threads.filter((t) => t.items.length > 0);
   const ids = new Map<string, string>();
   for (const t of threads) for (const id of t.items) ids.set(id, `p${ids.size + 1}`);
@@ -157,6 +165,7 @@ export function toMermaid(rm: Roadmap, nameOf: (id: string) => string, pathOf?: 
   const lines = ["flowchart TD"];
   // Comments leave the drawing alone but tell a reader which file each node is.
   if (pathOf) for (const [id, node] of ids) lines.push(`  %% ${node} = ${pathOf(id)}`);
+  for (const n of notes) lines.push(`  %% ${n.replace(/\s+/g, " ")}`);
   threads.forEach((t, i) => {
     const named = label(t.name) !== "";
     const pad = named ? "    " : "  ";

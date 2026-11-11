@@ -24,7 +24,8 @@ export default defineConfig({
   // Relative paths: the build opens from file://.
   base: "./",
   build: { modulePreload: { polyfill: false }, reportCompressedSize: false },
-  server: { host: "0.0.0.0", port: 5173, strictPort: true },
+  // The project download bundles ../scripts/shared, outside this folder.
+  server: { host: "0.0.0.0", port: 5173, strictPort: true, fs: { allow: [".", "../scripts"] } },
   test: {
     environment: "jsdom",
     globals: true,

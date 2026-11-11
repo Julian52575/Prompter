@@ -103,12 +103,21 @@ test("plan prompts on a roadmap and export it", async ({ page, context, browserN
   await handle.press("Enter");
   const h1 = (await page.locator(".rm-canvas").boundingBox())!.height;
   expect(h1).toBeGreaterThan(h0);
+  // Centre the handle on screen so the drag stays inside the window.
+  await handle.evaluate((el) => el.scrollIntoView({ block: "center" }));
   const hb = (await handle.boundingBox())!;
   await page.mouse.move(hb.x + hb.width / 2, hb.y + hb.height / 2);
   await page.mouse.down();
   await page.mouse.move(hb.x + hb.width / 2, hb.y + hb.height / 2 + 80, { steps: 5 });
-  await page.mouse.up();
   expect((await page.locator(".rm-canvas").boundingBox())!.height).toBeGreaterThan(h1 + 40);
+  // Scrolling with the wheel during the drag adds the scrolled distance and nothing more (no runaway growth).
+  const h2 = (await page.locator(".rm-canvas").boundingBox())!.height;
+  await page.mouse.wheel(0, 150);
+  await page.waitForTimeout(300);
+  const h3 = (await page.locator(".rm-canvas").boundingBox())!.height;
+  expect(h3).toBeGreaterThanOrEqual(h2);
+  expect(h3).toBeLessThan(h2 + 150 + 60);
+  await page.mouse.up();
   for (let i = 0; i < 5; i++) await handle.press("Enter");
 
   await page.getByRole("button", { name: "Zoom out" }).click();
@@ -163,6 +172,15 @@ test("download a project as a ZIP", async ({ page, browserName }) => {
   await dialog.getByLabel(/Thread 1 - 1/).uncheck();
   await expect(dialog.getByRole("button", { name: "Download", exact: true })).toBeEnabled();
 
+  // A branch can only leave its parent thread out once the prompt it starts from is Completed.
+  const branch = dialog.getByLabel(/Thread 1 - 1/);
+  await dialog.getByLabel(/^Thread 1 \(/).uncheck();
+  await expect(branch).toBeDisabled();
+  await expect(dialog).toContainText("Mark that prompt Completed");
+  await dialog.getByLabel(/^Thread 1 \(/).check();
+  await branch.check();
+  await dialog.getByLabel(/Thread 1 - 1/).uncheck();
+
   // A click outside the dialog closes it; a click inside does not.
   await dialog.getByText("Threads to include").click();
   await expect(dialog).toBeVisible();
@@ -194,8 +212,21 @@ test("download a project as a ZIP", async ({ page, browserName }) => {
   expect(download.suggestedFilename()).toBe("Dolphin.zip");
   const text = readFileSync((await download.path())!).toString("utf8");
   expect(text.startsWith("PK")).toBe(true);
-  for (const part of ["AGENTS.md", "Roadmap.mmd", "thread-1/01-Alpha/Prompt.md", "thread-1/02-Beta/Prompt.md"])
+  // Everything sits in a Project-<name> folder, with the helper scripts and their liability notice.
+  for (const part of [
+    "Project-Dolphin/AGENTS.md",
+    "Project-Dolphin/Roadmap.mmd",
+    "Project-Dolphin/thread-1/01-Alpha/Prompt.md",
+    "Project-Dolphin/thread-1/02-Beta/Prompt.md",
+    "Project-Dolphin/scripts/shared/LIABILITY.md",
+    "Project-Dolphin/scripts/shared/README.tsv",
+    "Project-Dolphin/scripts/shared/completion_to_md.py",
+  ])
     expect(text).toContain(part);
+  expect(text).toContain("First: settle uncertainties");
+  expect(text).toContain("read-only pre-flight");
+  expect(text).toContain("## Completion record");
+  expect(text).toContain("Run none, and let no sub-agent run any, until I say yes");
   expect(text).toContain("Worktrees: ON");
   expect(text).toContain("Shared context: ON");
   expect(text).toContain("Re-prompt first: ON");
@@ -222,4 +253,49 @@ test("download a project as a ZIP", async ({ page, browserName }) => {
     await page.mouse.click(4, 4);
     await expect(again).toBeHidden();
   }
+});
+
+test("import a completion report to update prompt statuses", async ({ page }) => {
+  await page.goto(FILE + "#/builder");
+  await saveEmpty(page, "Alpha", "Dolphin");
+  await saveEmpty(page, "Beta");
+  await page.goto(FILE + "#/roadmap");
+
+  await page.getByRole("button", { name: "Import completion" }).click();
+  const dialog = page.getByRole("dialog");
+  const apply = dialog.getByRole("button", { name: "Apply" });
+  await expect(apply).toBeDisabled();
+  await dialog.getByLabel("Completion report").fill("not json");
+  await expect(dialog).toContainText("not valid JSON");
+  await expect(apply).toBeDisabled();
+
+  // Prompts are matched by name when the id is not known here.
+  const report = {
+    format: "prompter-completion",
+    version: 1,
+    project: "Dolphin",
+    threads: [
+      {
+        name: "Thread 1",
+        prompts: [
+          { id: "unknown", name: "Alpha", status: "completed", summary: "done" },
+          { name: "Beta", status: "cancelled" },
+          { name: "Gone", status: "completed" },
+        ],
+      },
+    ],
+  };
+  await dialog.getByLabel("Completion report").fill("```json\n" + JSON.stringify(report) + "\n```");
+  await expect(dialog).toContainText("Alpha: no status → Completed");
+  await expect(dialog).toContainText("Beta: no status → Cancelled");
+  await expect(dialog).toContainText("Not found in Prompter, ignored: Gone");
+  await apply.click();
+  await expect(dialog).toBeHidden();
+  await expect(page.locator(".rm-list li", { hasText: "Alpha" }).locator(".status")).toHaveText("Completed");
+  await expect(page.locator(".rm-list li", { hasText: "Beta" }).locator(".status")).toHaveText("Cancelled");
+
+  // A second import with the same outcomes has nothing left to change.
+  await page.getByRole("button", { name: "Import completion" }).click();
+  await page.getByRole("dialog").getByLabel("Completion report").fill(JSON.stringify(report));
+  await expect(page.getByRole("dialog")).toContainText("Nothing to update");
 });

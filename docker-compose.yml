@@ -17,6 +17,8 @@ services:
       dockerfile: Dev.Dockerfile
     volumes:
       - ./frontend:/app:z
+      # The project download bundles scripts/shared; /scripts is the same relative path as on the host.
+      - ./scripts:/scripts:ro,z
       - frontend-node-modules:/app/node_modules
     # 127.0.0.1 only: without an address, Docker and Podman publish on every interface.
     ports:

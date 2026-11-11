@@ -2353,3 +2353,13 @@ div.dl-row > label {
 .rm-bar #rm-fullscreen {
   order: 99;
 }
+.dl-note {
+  display: block;
+  margin: 0 0 0 2rem;
+}
+.import-list {
+  max-height: 12rem;
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+  overflow: auto;
+}
